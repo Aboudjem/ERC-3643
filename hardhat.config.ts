@@ -4,6 +4,7 @@ import { HardhatUserConfig } from "hardhat/config";
 import "solidity-coverage";
 import "@nomiclabs/hardhat-solhint";
 import "@primitivefi/hardhat-dodoc";
+import "hardhat-gas-reporter";
 
 const config: HardhatUserConfig = {
   solidity: {

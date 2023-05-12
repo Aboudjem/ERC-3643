@@ -155,7 +155,7 @@ interface IClaimIssuersRegistry {
      *  @param _issuer the address of the ClaimIssuer contract
      *  @return true if the issuer is claim, false otherwise.
      */
-    function isClaimIssuer(address _issuer) external view returns (bool);
+    function isClaimIssuer(IClaimIssuer _issuer) external view returns (bool);
 
     /**
      *  @dev Function for getting all the claim topic of claim claim issuer
@@ -175,7 +175,7 @@ interface IClaimIssuersRegistry {
      *  @return true if the issuer is claim for this claim topic.
      */
     function hasClaimTopic(
-        address _issuer,
+        IClaimIssuer _issuer,
         uint256 _claimTopic
     ) external view returns (bool);
 }
