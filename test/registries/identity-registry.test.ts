@@ -12,7 +12,7 @@ describe("IdentityRegistry", () => {
       const address = ethers.Wallet.createRandom().address;
       await expect(
         IdentityRegistry.deploy(ethers.constants.AddressZero, address, address)
-      ).to.be.revertedWith("invalid argument - zero address");
+      ).to.be.revertedWith("ERC-3643: Invalid zero address");
     });
 
     it("should reject zero address for Claim Topics Registry", async () => {
@@ -22,7 +22,7 @@ describe("IdentityRegistry", () => {
       const address = ethers.Wallet.createRandom().address;
       await expect(
         IdentityRegistry.deploy(address, ethers.constants.AddressZero, address)
-      ).to.be.revertedWith("invalid argument - zero address");
+      ).to.be.revertedWith("ERC-3643: Invalid zero address");
     });
 
     it("should reject zero address for Identity Storage", async () => {
@@ -32,7 +32,7 @@ describe("IdentityRegistry", () => {
       const address = ethers.Wallet.createRandom().address;
       await expect(
         IdentityRegistry.deploy(address, address, ethers.constants.AddressZero)
-      ).to.be.revertedWith("invalid argument - zero address");
+      ).to.be.revertedWith("ERC-3643: Invalid zero address");
     });
   });
 

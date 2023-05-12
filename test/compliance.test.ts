@@ -96,7 +96,7 @@
 
 //           await expect(
 //             compliance.bindToken(ethers.constants.AddressZero)
-//           ).to.be.revertedWith("invalid argument - zero address");
+//           ).to.be.revertedWith("ERC-3643: Invalid zero address");
 //         });
 //       });
 //     });
@@ -125,7 +125,7 @@
 
 //           await expect(
 //             compliance.unbindToken(ethers.constants.AddressZero)
-//           ).to.be.revertedWith("invalid argument - zero address");
+//           ).to.be.revertedWith("ERC-3643: Invalid zero address");
 //         });
 //       });
 
@@ -200,7 +200,7 @@
 
 //           await expect(
 //             compliance.addModule(ethers.constants.AddressZero)
-//           ).to.be.revertedWith("invalid argument - zero address");
+//           ).to.be.revertedWith("ERC-3643: Invalid zero address");
 //         });
 //       });
 
@@ -288,7 +288,7 @@
 
 //           await expect(
 //             compliance.removeModule(ethers.constants.AddressZero)
-//           ).to.be.revertedWith("invalid argument - zero address");
+//           ).to.be.revertedWith("ERC-3643: Invalid zero address");
 //         });
 //       });
 
@@ -365,7 +365,7 @@
 //             compliance
 //               .connect(charlieWallet)
 //               .transferred(ethers.constants.AddressZero, bobWallet.address, 10)
-//           ).to.be.revertedWith("invalid argument - zero address");
+//           ).to.be.revertedWith("ERC-3643: Invalid zero address");
 //         });
 //       });
 
@@ -384,7 +384,7 @@
 //                 ethers.constants.AddressZero,
 //                 10
 //               )
-//           ).to.be.revertedWith("invalid argument - zero address");
+//           ).to.be.revertedWith("ERC-3643: Invalid zero address");
 //         });
 //       });
 
@@ -450,7 +450,7 @@
 //             compliance
 //               .connect(charlieWallet)
 //               .created(ethers.constants.AddressZero, 10)
-//           ).to.be.revertedWith("invalid argument - zero address");
+//           ).to.be.revertedWith("ERC-3643: Invalid zero address");
 //         });
 //       });
 
@@ -512,7 +512,7 @@
 //             compliance
 //               .connect(charlieWallet)
 //               .destroyed(ethers.constants.AddressZero, 10)
-//           ).to.be.revertedWith("invalid argument - zero address");
+//           ).to.be.revertedWith("ERC-3643: Invalid zero address");
 //         });
 //       });
 

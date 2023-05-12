@@ -103,7 +103,7 @@ contract IdentityRegistryStorage is IIdentityRegistryStorage, AccessControl {
     ) external override onlyRole(AGENT_ROLE) {
         require(
             _userAddress != address(0) && address(_identity) != address(0),
-            "invalid argument - zero address"
+            "ERC-3643: Invalid zero address"
         );
         require(
             address(_identities[_userAddress].identityContract) == address(0),
@@ -123,7 +123,7 @@ contract IdentityRegistryStorage is IIdentityRegistryStorage, AccessControl {
     ) external override onlyRole(AGENT_ROLE) {
         require(
             _userAddress != address(0) && address(_identity) != address(0),
-            "invalid argument - zero address"
+            "ERC-3643: Invalid zero address"
         );
         require(
             address(_identities[_userAddress].identityContract) != address(0),
@@ -141,7 +141,7 @@ contract IdentityRegistryStorage is IIdentityRegistryStorage, AccessControl {
         address _userAddress,
         uint16 _country
     ) external override onlyRole(AGENT_ROLE) {
-        require(_userAddress != address(0), "invalid argument - zero address");
+        require(_userAddress != address(0), "ERC-3643: Invalid zero address");
         require(
             address(_identities[_userAddress].identityContract) != address(0),
             "address not stored yet"
@@ -156,7 +156,7 @@ contract IdentityRegistryStorage is IIdentityRegistryStorage, AccessControl {
     function removeIdentityFromStorage(
         address _userAddress
     ) external override onlyRole(AGENT_ROLE) {
-        require(_userAddress != address(0), "invalid argument - zero address");
+        require(_userAddress != address(0), "ERC-3643: Invalid zero address");
         require(
             address(_identities[_userAddress].identityContract) != address(0),
             "address not stored yet"
@@ -174,7 +174,7 @@ contract IdentityRegistryStorage is IIdentityRegistryStorage, AccessControl {
     ) external override onlyRole(OWNER_ROLE) {
         require(
             _identityRegistry != address(0),
-            "invalid argument - zero address"
+            "ERC-3643: Invalid zero address"
         );
         require(
             _identityRegistries.length < 300,
@@ -193,7 +193,7 @@ contract IdentityRegistryStorage is IIdentityRegistryStorage, AccessControl {
     ) external override onlyRole(OWNER_ROLE) {
         require(
             _identityRegistry != address(0),
-            "invalid argument - zero address"
+            "ERC-3643: Invalid zero address"
         );
         require(
             _identityRegistries.length > 0,

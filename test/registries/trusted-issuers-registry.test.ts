@@ -32,7 +32,7 @@ describe("ClaimIssuersRegistry", () => {
             claimIssuersRegistry
               .connect(deployer)
               .addClaimIssuer(ethers.constants.AddressZero, [10])
-          ).to.be.revertedWith("invalid argument - zero address");
+          ).to.be.revertedWith("ERC-3643: Invalid zero address");
         });
       });
 
@@ -144,7 +144,7 @@ describe("ClaimIssuersRegistry", () => {
             claimIssuersRegistry
               .connect(deployer)
               .removeClaimIssuer(ethers.constants.AddressZero)
-          ).to.be.revertedWith("invalid argument - zero address");
+          ).to.be.revertedWith("ERC-3643: Invalid zero address");
         });
       });
 
@@ -237,7 +237,7 @@ describe("ClaimIssuersRegistry", () => {
             claimIssuersRegistry
               .connect(deployer)
               .updateIssuerClaimTopics(ethers.constants.AddressZero, [10])
-          ).to.be.revertedWith("invalid argument - zero address");
+          ).to.be.revertedWith("ERC-3643: Invalid zero address");
         });
       });
 

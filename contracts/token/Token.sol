@@ -132,7 +132,7 @@ contract Token is IToken, AccessControl, Pausable {
         // legacy contracts.
         require(
             _identityRegistry != address(0) && _compliance != address(0),
-            "invalid argument - zero address"
+            "ERC-3643: Invalid zero address"
         );
         require(
             keccak256(abi.encode(_name)) != keccak256(abi.encode("")) &&

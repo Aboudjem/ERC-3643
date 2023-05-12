@@ -83,10 +83,10 @@ contract ClaimIssuersRegistry is IClaimIssuersRegistry, Ownable {
     function addClaimIssuer(
         IClaimIssuer _claimIssuer,
         uint256[] calldata _claimTopics
-    ) external override onlyOwner {
+    ) external onlyOwner {
         require(
             address(_claimIssuer) != address(0),
-            "invalid argument - zero address"
+            "ERC-3643: Invalid zero address"
         );
         require(
             _claimIssuerClaimTopics[address(_claimIssuer)].length == 0,
@@ -117,7 +117,7 @@ contract ClaimIssuersRegistry is IClaimIssuersRegistry, Ownable {
     ) external override onlyOwner {
         require(
             address(_claimIssuer) != address(0),
-            "invalid argument - zero address"
+            "ERC-3643: Invalid zero address"
         );
         require(
             _claimIssuerClaimTopics[address(_claimIssuer)].length != 0,
@@ -167,7 +167,7 @@ contract ClaimIssuersRegistry is IClaimIssuersRegistry, Ownable {
     ) external override onlyOwner {
         require(
             address(_claimIssuer) != address(0),
-            "invalid argument - zero address"
+            "ERC-3643: Invalid zero address"
         );
         require(
             _claimIssuerClaimTopics[address(_claimIssuer)].length != 0,

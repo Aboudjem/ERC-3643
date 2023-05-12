@@ -49,7 +49,7 @@ describe("IdentityRegistryStorage", () => {
                 ethers.constants.AddressZero,
                 42
               )
-          ).to.be.revertedWith("invalid argument - zero address");
+          ).to.be.revertedWith("ERC-3643: Invalid zero address");
         });
       });
 
@@ -74,7 +74,7 @@ describe("IdentityRegistryStorage", () => {
                 charlieIdentity.address,
                 42
               )
-          ).to.be.revertedWith("invalid argument - zero address");
+          ).to.be.revertedWith("ERC-3643: Invalid zero address");
         });
       });
 
@@ -147,7 +147,7 @@ describe("IdentityRegistryStorage", () => {
                 charlieWallet.address,
                 ethers.constants.AddressZero
               )
-          ).to.be.revertedWith("invalid argument - zero address");
+          ).to.be.revertedWith("ERC-3643: Invalid zero address");
         });
       });
 
@@ -171,7 +171,7 @@ describe("IdentityRegistryStorage", () => {
                 ethers.constants.AddressZero,
                 charlieIdentity.address
               )
-          ).to.be.revertedWith("invalid argument - zero address");
+          ).to.be.revertedWith("ERC-3643: Invalid zero address");
         });
       });
 
@@ -236,7 +236,7 @@ describe("IdentityRegistryStorage", () => {
             identityRegistryStorage
               .connect(tokenAgent)
               .modifyStoredInvestorCountry(ethers.constants.AddressZero, 42)
-          ).to.be.revertedWith("invalid argument - zero address");
+          ).to.be.revertedWith("ERC-3643: Invalid zero address");
         });
       });
 
@@ -297,7 +297,7 @@ describe("IdentityRegistryStorage", () => {
             identityRegistryStorage
               .connect(tokenAgent)
               .removeIdentityFromStorage(ethers.constants.AddressZero)
-          ).to.be.revertedWith("invalid argument - zero address");
+          ).to.be.revertedWith("ERC-3643: Invalid zero address");
         });
       });
 
@@ -354,7 +354,7 @@ describe("IdentityRegistryStorage", () => {
             identityRegistryStorage
               .connect(deployer)
               .bindIdentityRegistry(ethers.constants.AddressZero)
-          ).to.be.revertedWith("invalid argument - zero address");
+          ).to.be.revertedWith("ERC-3643: Invalid zero address");
         });
       });
 
@@ -415,7 +415,7 @@ describe("IdentityRegistryStorage", () => {
             identityRegistryStorage
               .connect(deployer)
               .unbindIdentityRegistry(ethers.constants.AddressZero)
-          ).to.be.revertedWith("invalid argument - zero address");
+          ).to.be.revertedWith("ERC-3643: Invalid zero address");
         });
       });
 
