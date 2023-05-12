@@ -4,7 +4,6 @@ This log documents all notable changes to the ERC-3643 project. The project is a
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-
 ## [0.1.1] - 2023-05-13 - Claim Issuers Registry
 
 ### 🔄 Renamed
@@ -39,7 +38,6 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ### ❌ Removed
 
 - 🎨 Removed the large ASCII art from the comments for cleaner and leaner code presentation.
-
 
 ## 📦 Unreleased
 
