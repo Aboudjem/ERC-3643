@@ -90,16 +90,16 @@ contract ClaimIssuersRegistry is IClaimIssuersRegistry, Ownable {
         );
         require(
             _claimIssuerClaimTopics[address(_claimIssuer)].length == 0,
-            "claim Issuer already exists"
+            "ERC-3643: Issuer already exists"
         );
-        require(_claimTopics.length > 0, "claim claim topics cannot be empty");
+        require(_claimTopics.length > 0, "ERC-3643: Empty claim topics");
         require(
             _claimTopics.length <= 15,
-            "cannot have more than 15 claim topics"
+            "ERC-3643: Empty claim topics"
         );
         require(
             _claimIssuers.length < 50,
-            "cannot have more than 50 claim issuers"
+            "ERC-3643: Max 50 claim issuers"
         );
         _claimIssuers.push(_claimIssuer);
         _claimIssuerClaimTopics[address(_claimIssuer)] = _claimTopics;
@@ -175,7 +175,7 @@ contract ClaimIssuersRegistry is IClaimIssuersRegistry, Ownable {
         );
         require(
             _claimTopics.length <= 15,
-            "cannot have more than 15 claim topics"
+            "ERC-3643: Empty claim topics"
         );
         require(_claimTopics.length > 0, "claim topics cannot be empty");
 

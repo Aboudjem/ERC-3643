@@ -52,7 +52,7 @@ describe("ClaimIssuersRegistry", () => {
             claimIssuersRegistry
               .connect(deployer)
               .addClaimIssuer(claimIssuerContract.address, claimTopics)
-          ).to.be.revertedWith("claim Issuer already exists");
+          ).to.be.revertedWith(""ERC-3643: Issuer already exists"");
         });
       });
 
@@ -67,7 +67,7 @@ describe("ClaimIssuersRegistry", () => {
             claimIssuersRegistry
               .connect(deployer)
               .addClaimIssuer(deployer.address, [])
-          ).to.be.revertedWith("claim claim topics cannot be empty");
+          ).to.be.revertedWith("ERC-3643: Empty claim topics");
         });
       });
 
@@ -84,7 +84,7 @@ describe("ClaimIssuersRegistry", () => {
             claimIssuersRegistry
               .connect(deployer)
               .addClaimIssuer(deployer.address, claimTopics)
-          ).to.be.revertedWith("cannot have more than 15 claim topics");
+          ).to.be.revertedWith("ERC-3643: Max 15 claim topics");
         });
       });
 
@@ -110,7 +110,7 @@ describe("ClaimIssuersRegistry", () => {
             claimIssuersRegistry
               .connect(deployer)
               .addClaimIssuer(deployer.address, claimTopics)
-          ).to.be.revertedWith("cannot have more than 50 claim issuers");
+          ).to.be.revertedWith("ERC-3643: Max 50 claim issuers");
         });
       });
     });
@@ -269,7 +269,7 @@ describe("ClaimIssuersRegistry", () => {
             claimIssuersRegistry
               .connect(deployer)
               .updateIssuerClaimTopics(claimIssuerContract.address, claimTopics)
-          ).to.be.revertedWith("cannot have more than 15 claim topics");
+          ).to.be.revertedWith("ERC-3643: Max 15 claim topics");
         });
       });
 
