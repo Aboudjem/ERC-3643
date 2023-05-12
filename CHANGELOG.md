@@ -1,6 +1,6 @@
 # 🚀 ERC-3643 - Change Log
 
-This log documents all notable changes to the ERC-3643 Lite project. The project is a simplified version of the T-REX (ERC-3643), tailored for accessibility, ease of understanding, optimized gas cost, increased flexibility, and lighter contract weight.
+This log documents all notable changes to the ERC-3643 project. The project is a simplified version of the T-REX (ERC-3643), tailored for accessibility, ease of understanding, optimized gas cost, increased flexibility, and lighter contract weight.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
