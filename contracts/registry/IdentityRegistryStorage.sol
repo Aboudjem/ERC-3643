@@ -169,7 +169,9 @@ contract IdentityRegistryStorage is IIdentityRegistryStorage, AccessControl {
     /**
      *  @dev See {IIdentityRegistryStorage-bindIdentityRegistry}.
      */
-    function bindIdentityRegistry(address _identityRegistry) external onlyRole(OWNER_ROLE) override {
+    function bindIdentityRegistry(
+        address _identityRegistry
+    ) external override onlyRole(OWNER_ROLE) {
         require(
             _identityRegistry != address(0),
             "invalid argument - zero address"
@@ -188,7 +190,7 @@ contract IdentityRegistryStorage is IIdentityRegistryStorage, AccessControl {
      */
     function unbindIdentityRegistry(
         address _identityRegistry
-    ) external onlyRole(OWNER_ROLE) override {
+    ) external override onlyRole(OWNER_ROLE) {
         require(
             _identityRegistry != address(0),
             "invalid argument - zero address"

@@ -63,7 +63,6 @@
 pragma solidity 0.8.17;
 
 interface ICompliance {
-
     /**
      *  this event is emitted when a token has been bound to the compliance contract
      *  the event is emitted by the bindToken function

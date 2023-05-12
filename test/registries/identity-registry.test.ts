@@ -42,7 +42,7 @@ describe("IdentityRegistry", () => {
         const {
           suite: { identityRegistry },
           accounts: { anotherWallet },
-          identities: { bobIdentity, charlieIdentity }
+          identities: { bobIdentity, charlieIdentity },
         } = await loadFixture(deployFullSuiteFixture);
 
         await expect(
@@ -62,7 +62,7 @@ describe("IdentityRegistry", () => {
         const {
           suite: { identityRegistry },
           accounts: { anotherWallet },
-          identities: { bobIdentity }
+          identities: { bobIdentity },
         } = await loadFixture(deployFullSuiteFixture);
 
         await expect(
@@ -81,7 +81,7 @@ describe("IdentityRegistry", () => {
       it("should revert", async () => {
         const {
           suite: { identityRegistry },
-          accounts: { anotherWallet, bobWallet }
+          accounts: { anotherWallet, bobWallet },
         } = await loadFixture(deployFullSuiteFixture);
 
         await expect(
@@ -100,7 +100,7 @@ describe("IdentityRegistry", () => {
       it("should revert", async () => {
         const {
           suite: { identityRegistry },
-          accounts: { anotherWallet }
+          accounts: { anotherWallet },
         } = await loadFixture(deployFullSuiteFixture);
 
         await expect(
@@ -123,7 +123,7 @@ describe("IdentityRegistry", () => {
       it("should revert", async () => {
         const {
           suite: { identityRegistry },
-          accounts: { anotherWallet }
+          accounts: { anotherWallet },
         } = await loadFixture(deployFullSuiteFixture);
 
         await expect(
@@ -140,7 +140,7 @@ describe("IdentityRegistry", () => {
       it("should set the identity registry storage", async () => {
         const {
           suite: { identityRegistry },
-          accounts: { deployer }
+          accounts: { deployer },
         } = await loadFixture(deployFullSuiteFixture);
 
         const tx = await identityRegistry
@@ -161,7 +161,7 @@ describe("IdentityRegistry", () => {
       it("should revert", async () => {
         const {
           suite: { identityRegistry },
-          accounts: { anotherWallet }
+          accounts: { anotherWallet },
         } = await loadFixture(deployFullSuiteFixture);
 
         await expect(
@@ -178,7 +178,7 @@ describe("IdentityRegistry", () => {
       it("should set the claim topics registry", async () => {
         const {
           suite: { identityRegistry },
-          accounts: { deployer }
+          accounts: { deployer },
         } = await loadFixture(deployFullSuiteFixture);
 
         const tx = await identityRegistry
@@ -199,7 +199,7 @@ describe("IdentityRegistry", () => {
       it("should revert", async () => {
         const {
           suite: { identityRegistry },
-          accounts: { anotherWallet }
+          accounts: { anotherWallet },
         } = await loadFixture(deployFullSuiteFixture);
 
         await expect(
@@ -216,7 +216,7 @@ describe("IdentityRegistry", () => {
       it("should set the claimssuers registry", async () => {
         const {
           suite: { identityRegistry },
-          accounts: { deployer }
+          accounts: { deployer },
         } = await loadFixture(deployFullSuiteFixture);
 
         const tx = await identityRegistry
@@ -238,7 +238,7 @@ describe("IdentityRegistry", () => {
         const {
           suite: { identityRegistry, claimTopicsRegistry },
           accounts: { tokenAgent, charlieWallet },
-          identities: { charlieIdentity }
+          identities: { charlieIdentity },
         } = await loadFixture(deployFullSuiteFixture);
 
         await identityRegistry
@@ -264,9 +264,9 @@ describe("IdentityRegistry", () => {
           suite: {
             identityRegistry,
             claimTopicsRegistry,
-            claimIssuersRegistry
+            claimIssuersRegistry,
           },
-          accounts: { aliceWallet }
+          accounts: { aliceWallet },
         } = await loadFixture(deployFullSuiteFixture);
 
         await expect(identityRegistry.isVerified(aliceWallet.address)).to
@@ -291,7 +291,7 @@ describe("IdentityRegistry", () => {
         const {
           suite: { identityRegistry, claimTopicsRegistry, claimIssuerContract },
           accounts: { aliceWallet },
-          identities: { aliceIdentity }
+          identities: { aliceIdentity },
         } = await loadFixture(deployFullSuiteFixture);
 
         await expect(identityRegistry.isVerified(aliceWallet.address)).to
@@ -315,10 +315,10 @@ describe("IdentityRegistry", () => {
             identityRegistry,
             claimTopicsRegistry,
             claimIssuersRegistry,
-            claimIssuerContract
+            claimIssuerContract,
           },
           accounts: { aliceWallet },
-          identities: { aliceIdentity }
+          identities: { aliceIdentity },
         } = await loadFixture(deployFullSuiteFixture);
 
         const trickyClaimIssuer = await ethers.deployContract(
@@ -369,10 +369,10 @@ describe("IdentityRegistry", () => {
           suite: {
             identityRegistry,
             claimTopicsRegistry,
-            claimIssuersRegistry
+            claimIssuersRegistry,
           },
           accounts: { aliceWallet },
-          identities: { aliceIdentity }
+          identities: { aliceIdentity },
         } = await loadFixture(deployFullSuiteFixture);
 
         const trickyClaimIssuer = await ethers.deployContract(

@@ -11,7 +11,7 @@ describe("Token - Recovery", () => {
         const {
           suite: { token },
           accounts: { bobWallet, anotherWallet },
-          identities: { bobIdentity }
+          identities: { bobIdentity },
         } = await loadFixture(deployFullSuiteFixture);
 
         await bobIdentity
@@ -45,7 +45,7 @@ describe("Token - Recovery", () => {
           const {
             suite: { token },
             accounts: { tokenAgent, aliceWallet, bobWallet, anotherWallet },
-            identities: { bobIdentity }
+            identities: { bobIdentity },
           } = await loadFixture(deployFullSuiteFixture);
 
           await token
@@ -72,7 +72,7 @@ describe("Token - Recovery", () => {
           const {
             suite: { token },
             accounts: { tokenAgent, bobWallet, anotherWallet },
-            identities: { bobIdentity }
+            identities: { bobIdentity },
           } = await loadFixture(deployFullSuiteFixture);
 
           await expect(
@@ -92,7 +92,7 @@ describe("Token - Recovery", () => {
           const {
             suite: { token },
             accounts: { tokenAgent, bobWallet, anotherWallet },
-            identities: { bobIdentity }
+            identities: { bobIdentity },
           } = await loadFixture(deployFullSuiteFixture);
 
           await bobIdentity
@@ -139,7 +139,7 @@ describe("Token - Recovery", () => {
           const {
             suite: { token },
             accounts: { tokenAgent, bobWallet, anotherWallet },
-            identities: { bobIdentity }
+            identities: { bobIdentity },
           } = await loadFixture(deployFullSuiteFixture);
 
           await bobIdentity

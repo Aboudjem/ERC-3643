@@ -336,7 +336,9 @@ describe("IdentityRegistryStorage", () => {
           identityRegistryStorage
             .connect(anotherWallet)
             .bindIdentityRegistry(charlieIdentity.address)
-        ).to.be.revertedWith("AccessControl: account 0xa0ee7a142d267c1f36714e4a8f75612f20a79720 is missing role 0xb19546dff01e856fb3f010c267a7b1c60363cf8a4664e21cc89c26224620214e");
+        ).to.be.revertedWith(
+          "AccessControl: account 0xa0ee7a142d267c1f36714e4a8f75612f20a79720 is missing role 0xb19546dff01e856fb3f010c267a7b1c60363cf8a4664e21cc89c26224620214e"
+        );
       });
     });
 
@@ -395,7 +397,9 @@ describe("IdentityRegistryStorage", () => {
           identityRegistryStorage
             .connect(anotherWallet)
             .unbindIdentityRegistry(charlieIdentity.address)
-        ).to.be.revertedWith("AccessControl: account 0xa0ee7a142d267c1f36714e4a8f75612f20a79720 is missing role 0xb19546dff01e856fb3f010c267a7b1c60363cf8a4664e21cc89c26224620214e");
+        ).to.be.revertedWith(
+          "AccessControl: account 0xa0ee7a142d267c1f36714e4a8f75612f20a79720 is missing role 0xb19546dff01e856fb3f010c267a7b1c60363cf8a4664e21cc89c26224620214e"
+        );
       });
     });
 

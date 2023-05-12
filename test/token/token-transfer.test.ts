@@ -3,7 +3,7 @@ import { expect } from "chai";
 import { ethers } from "hardhat";
 import {
   deployFullSuiteFixture,
-  deploySuiteWithModularCompliancesFixture
+  deploySuiteWithModularCompliancesFixture,
 } from "../fixtures/deploy-full-suite.fixture";
 import { AGENT_ROLE, accessControlRevert } from "../utils";
 
@@ -12,7 +12,7 @@ describe("Token - Transfers", () => {
     it("should approve a contract to spend a certain amount of tokens", async () => {
       const {
         suite: { token },
-        accounts: { aliceWallet, anotherWallet }
+        accounts: { aliceWallet, anotherWallet },
       } = await loadFixture(deployFullSuiteFixture);
 
       const tx = await token
@@ -32,7 +32,7 @@ describe("Token - Transfers", () => {
     it("should increase the allowance of a contract to spend a certain amount of tokens", async () => {
       const {
         suite: { token },
-        accounts: { aliceWallet, anotherWallet }
+        accounts: { aliceWallet, anotherWallet },
       } = await loadFixture(deployFullSuiteFixture);
 
       await token.connect(aliceWallet).approve(anotherWallet.address, 100);
@@ -54,7 +54,7 @@ describe("Token - Transfers", () => {
     it("should decrease the allowance of a contract to spend a certain amount of tokens", async () => {
       const {
         suite: { token },
-        accounts: { aliceWallet, anotherWallet }
+        accounts: { aliceWallet, anotherWallet },
       } = await loadFixture(deployFullSuiteFixture);
 
       await token.connect(aliceWallet).approve(anotherWallet.address, 150);
@@ -77,7 +77,7 @@ describe("Token - Transfers", () => {
       it("should revert", async () => {
         const {
           suite: { token },
-          accounts: { aliceWallet, bobWallet, tokenAgent }
+          accounts: { aliceWallet, bobWallet, tokenAgent },
         } = await loadFixture(deployFullSuiteFixture);
 
         await token.connect(tokenAgent).pause();
@@ -92,7 +92,7 @@ describe("Token - Transfers", () => {
       it("should revert", async () => {
         const {
           suite: { token },
-          accounts: { tokenAgent, aliceWallet, bobWallet }
+          accounts: { tokenAgent, aliceWallet, bobWallet },
         } = await loadFixture(deployFullSuiteFixture);
 
         await token
@@ -109,7 +109,7 @@ describe("Token - Transfers", () => {
       it("should revert", async () => {
         const {
           suite: { token },
-          accounts: { tokenAgent, aliceWallet, bobWallet }
+          accounts: { tokenAgent, aliceWallet, bobWallet },
         } = await loadFixture(deployFullSuiteFixture);
 
         await token
@@ -126,7 +126,7 @@ describe("Token - Transfers", () => {
       it("should revert", async () => {
         const {
           suite: { token },
-          accounts: { aliceWallet, bobWallet }
+          accounts: { aliceWallet, bobWallet },
         } = await loadFixture(deployFullSuiteFixture);
 
         const balance = await token.balanceOf(aliceWallet.address);
@@ -143,7 +143,7 @@ describe("Token - Transfers", () => {
       it("should revert", async () => {
         const {
           suite: { token },
-          accounts: { aliceWallet, bobWallet, tokenAgent }
+          accounts: { aliceWallet, bobWallet, tokenAgent },
         } = await loadFixture(deployFullSuiteFixture);
 
         const balance = await token.balanceOf(aliceWallet.address);
@@ -161,7 +161,7 @@ describe("Token - Transfers", () => {
       it("should revert", async () => {
         const {
           suite: { token },
-          accounts: { aliceWallet, anotherWallet }
+          accounts: { aliceWallet, anotherWallet },
         } = await loadFixture(deployFullSuiteFixture);
 
         await expect(
@@ -174,7 +174,7 @@ describe("Token - Transfers", () => {
       it("should transfer tokens", async () => {
         const {
           suite: { token },
-          accounts: { aliceWallet, bobWallet }
+          accounts: { aliceWallet, bobWallet },
         } = await loadFixture(deployFullSuiteFixture);
 
         const tx = await token
@@ -191,7 +191,7 @@ describe("Token - Transfers", () => {
     it("should transfer tokens", async () => {
       const {
         suite: { token },
-        accounts: { aliceWallet, bobWallet }
+        accounts: { aliceWallet, bobWallet },
       } = await loadFixture(deployFullSuiteFixture);
 
       const tx = await token
@@ -211,7 +211,7 @@ describe("Token - Transfers", () => {
       it("should revert", async () => {
         const {
           suite: { token },
-          accounts: { aliceWallet, bobWallet, tokenAgent }
+          accounts: { aliceWallet, bobWallet, tokenAgent },
         } = await loadFixture(deployFullSuiteFixture);
 
         await token.connect(tokenAgent).pause();
@@ -228,7 +228,7 @@ describe("Token - Transfers", () => {
       it("should revert", async () => {
         const {
           suite: { token },
-          accounts: { aliceWallet, bobWallet, tokenAgent }
+          accounts: { aliceWallet, bobWallet, tokenAgent },
         } = await loadFixture(deployFullSuiteFixture);
 
         await token
@@ -247,7 +247,7 @@ describe("Token - Transfers", () => {
       it("should revert", async () => {
         const {
           suite: { token },
-          accounts: { aliceWallet, bobWallet, tokenAgent }
+          accounts: { aliceWallet, bobWallet, tokenAgent },
         } = await loadFixture(deployFullSuiteFixture);
 
         await token
@@ -266,7 +266,7 @@ describe("Token - Transfers", () => {
       it("should revert", async () => {
         const {
           suite: { token },
-          accounts: { aliceWallet, bobWallet }
+          accounts: { aliceWallet, bobWallet },
         } = await loadFixture(deployFullSuiteFixture);
 
         const balance = await token.balanceOf(aliceWallet.address);
@@ -287,7 +287,7 @@ describe("Token - Transfers", () => {
       it("should revert", async () => {
         const {
           suite: { token },
-          accounts: { aliceWallet, bobWallet, tokenAgent }
+          accounts: { aliceWallet, bobWallet, tokenAgent },
         } = await loadFixture(deployFullSuiteFixture);
 
         const balance = await token.balanceOf(aliceWallet.address);
@@ -307,7 +307,7 @@ describe("Token - Transfers", () => {
       it("should revert", async () => {
         const {
           suite: { token },
-          accounts: { aliceWallet, anotherWallet }
+          accounts: { aliceWallet, anotherWallet },
         } = await loadFixture(deployFullSuiteFixture);
 
         await expect(
@@ -322,7 +322,7 @@ describe("Token - Transfers", () => {
       it("should transfer tokens and reduce allowance of transferred value", async () => {
         const {
           suite: { token },
-          accounts: { aliceWallet, bobWallet, anotherWallet }
+          accounts: { aliceWallet, bobWallet, anotherWallet },
         } = await loadFixture(deployFullSuiteFixture);
 
         await token.connect(aliceWallet).approve(anotherWallet.address, 100);
@@ -346,7 +346,7 @@ describe("Token - Transfers", () => {
       it("should revert", async () => {
         const {
           suite: { token },
-          accounts: { aliceWallet, bobWallet }
+          accounts: { aliceWallet, bobWallet },
         } = await loadFixture(deployFullSuiteFixture);
 
         await expect(
@@ -361,7 +361,7 @@ describe("Token - Transfers", () => {
       it("should revert", async () => {
         const {
           suite: { token },
-          accounts: { aliceWallet, bobWallet, tokenAgent }
+          accounts: { aliceWallet, bobWallet, tokenAgent },
         } = await loadFixture(deployFullSuiteFixture);
 
         const balance = await token.balanceOf(aliceWallet.address);
@@ -382,7 +382,7 @@ describe("Token - Transfers", () => {
       it("should revert", async () => {
         const {
           suite: { token },
-          accounts: { aliceWallet, anotherWallet, tokenAgent }
+          accounts: { aliceWallet, anotherWallet, tokenAgent },
         } = await loadFixture(deployFullSuiteFixture);
 
         await expect(
@@ -397,7 +397,7 @@ describe("Token - Transfers", () => {
       it("should unfroze tokens", async () => {
         const {
           suite: { token },
-          accounts: { aliceWallet, bobWallet, tokenAgent }
+          accounts: { aliceWallet, bobWallet, tokenAgent },
         } = await loadFixture(deployFullSuiteFixture);
 
         const balance = await token.balanceOf(aliceWallet.address);
@@ -430,7 +430,7 @@ describe("Token - Transfers", () => {
       it("should revert", async () => {
         const {
           suite: { token },
-          accounts: { aliceWallet }
+          accounts: { aliceWallet },
         } = await loadFixture(deployFullSuiteFixture);
 
         await expect(
@@ -443,7 +443,7 @@ describe("Token - Transfers", () => {
       it("should revert", async () => {
         const {
           suite: { token },
-          accounts: { anotherWallet, tokenAgent }
+          accounts: { anotherWallet, tokenAgent },
         } = await loadFixture(deployFullSuiteFixture);
 
         await expect(
@@ -458,7 +458,7 @@ describe("Token - Transfers", () => {
       it("should revert", async () => {
         const {
           suite: { token },
-          accounts: { aliceWallet }
+          accounts: { aliceWallet },
         } = await loadFixture(deployFullSuiteFixture);
 
         await expect(
@@ -471,7 +471,7 @@ describe("Token - Transfers", () => {
       it("should revert", async () => {
         const {
           suite: { token },
-          accounts: { aliceWallet, tokenAgent }
+          accounts: { aliceWallet, tokenAgent },
         } = await loadFixture(deployFullSuiteFixture);
 
         const balance = await token.balanceOf(aliceWallet.address);
@@ -486,7 +486,7 @@ describe("Token - Transfers", () => {
       it("should burn and decrease frozen balance", async () => {
         const {
           suite: { token },
-          accounts: { aliceWallet, tokenAgent }
+          accounts: { aliceWallet, tokenAgent },
         } = await loadFixture(deployFullSuiteFixture);
 
         const balance = await token.balanceOf(aliceWallet.address);

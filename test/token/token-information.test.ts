@@ -10,7 +10,7 @@ describe("Token - Information", () => {
       it("should revert", async () => {
         const {
           suite: { token },
-          accounts: { anotherWallet }
+          accounts: { anotherWallet },
         } = await loadFixture(deployFullSuiteFixture);
         await expect(
           token
@@ -23,7 +23,7 @@ describe("Token - Information", () => {
     describe("when the caller is the owner", () => {
       it("should set the onchainID", async () => {
         const {
-          suite: { token }
+          suite: { token },
         } = await loadFixture(deployFullSuiteFixture);
         const tx = await token.setOnchainID(ethers.constants.AddressZero);
         await expect(tx)
@@ -45,7 +45,7 @@ describe("Token - Information", () => {
       it("should revert", async () => {
         const {
           suite: { token },
-          accounts: { anotherWallet }
+          accounts: { anotherWallet },
         } = await loadFixture(deployFullSuiteFixture);
         await expect(
           token
@@ -62,7 +62,7 @@ describe("Token - Information", () => {
     it("should return the total supply", async () => {
       const {
         suite: { token },
-        accounts: { aliceWallet, bobWallet }
+        accounts: { aliceWallet, bobWallet },
       } = await loadFixture(deployFullSuiteFixture);
 
       const balance = await token
@@ -77,7 +77,7 @@ describe("Token - Information", () => {
       it("should revert", async () => {
         const {
           suite: { token },
-          accounts: { anotherWallet }
+          accounts: { anotherWallet },
         } = await loadFixture(deployFullSuiteFixture);
         await expect(
           token
@@ -95,7 +95,7 @@ describe("Token - Information", () => {
       it("should revert", async () => {
         const {
           suite: { token },
-          accounts: { anotherWallet }
+          accounts: { anotherWallet },
         } = await loadFixture(deployFullSuiteFixture);
         await expect(token.connect(anotherWallet).pause()).to.be.revertedWith(
           "AccessControl: account 0xa0ee7a142d267c1f36714e4a8f75612f20a79720 is missing role 0xcab5a0bfe0b79d2c4b1c2e02599fa044d115b7511f9659307cb4276950967709"
@@ -108,7 +108,7 @@ describe("Token - Information", () => {
         it("should pause the token", async () => {
           const {
             suite: { token },
-            accounts: { tokenAgent }
+            accounts: { tokenAgent },
           } = await loadFixture(deployFullSuiteFixture);
           const tx = await token.connect(tokenAgent).pause();
           await expect(tx)
@@ -122,7 +122,7 @@ describe("Token - Information", () => {
         it("should revert", async () => {
           const {
             suite: { token },
-            accounts: { tokenAgent }
+            accounts: { tokenAgent },
           } = await loadFixture(deployFullSuiteFixture);
           await token.connect(tokenAgent).pause();
           await expect(token.connect(tokenAgent).pause()).to.be.revertedWith(
@@ -138,7 +138,7 @@ describe("Token - Information", () => {
       it("should revert", async () => {
         const {
           suite: { token },
-          accounts: { anotherWallet }
+          accounts: { anotherWallet },
         } = await loadFixture(deployFullSuiteFixture);
         await expect(token.connect(anotherWallet).unpause()).to.be.revertedWith(
           accessControlRevert(anotherWallet, AGENT_ROLE)
@@ -151,7 +151,7 @@ describe("Token - Information", () => {
         it("should unpause the token", async () => {
           const {
             suite: { token },
-            accounts: { tokenAgent }
+            accounts: { tokenAgent },
           } = await loadFixture(deployFullSuiteFixture);
           await token.connect(tokenAgent).pause();
           const tx = await token.connect(tokenAgent).unpause();
@@ -166,7 +166,7 @@ describe("Token - Information", () => {
         it("should revert", async () => {
           const {
             suite: { token },
-            accounts: { tokenAgent }
+            accounts: { tokenAgent },
           } = await loadFixture(deployFullSuiteFixture);
           await expect(token.connect(tokenAgent).unpause()).to.be.revertedWith(
             "Pausable: not paused"
@@ -181,7 +181,7 @@ describe("Token - Information", () => {
       it("should revert", async () => {
         const {
           suite: { token },
-          accounts: { anotherWallet }
+          accounts: { anotherWallet },
         } = await loadFixture(deployFullSuiteFixture);
         await expect(
           token
@@ -199,7 +199,7 @@ describe("Token - Information", () => {
       it("should revert", async () => {
         const {
           suite: { token },
-          accounts: { anotherWallet }
+          accounts: { anotherWallet },
         } = await loadFixture(deployFullSuiteFixture);
         await expect(
           token
@@ -216,7 +216,7 @@ describe("Token - Information", () => {
         it("should revert", async () => {
           const {
             suite: { token },
-            accounts: { tokenAgent, anotherWallet }
+            accounts: { tokenAgent, anotherWallet },
           } = await loadFixture(deployFullSuiteFixture);
           await expect(
             token
@@ -233,7 +233,7 @@ describe("Token - Information", () => {
       it("should revert", async () => {
         const {
           suite: { token },
-          accounts: { anotherWallet }
+          accounts: { anotherWallet },
         } = await loadFixture(deployFullSuiteFixture);
         await expect(
           token
@@ -250,7 +250,7 @@ describe("Token - Information", () => {
         it("should revert", async () => {
           const {
             suite: { token },
-            accounts: { tokenAgent, anotherWallet }
+            accounts: { tokenAgent, anotherWallet },
           } = await loadFixture(deployFullSuiteFixture);
           await expect(
             token

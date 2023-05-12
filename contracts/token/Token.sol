@@ -537,7 +537,7 @@ contract Token is IToken, AccessControl, Pausable {
     function mint(
         address _to,
         uint256 _amount
-    ) public onlyRole(AGENT_ROLE) override {
+    ) public override onlyRole(AGENT_ROLE) {
         require(
             _tokenIdentityRegistry.isVerified(_to),
             "Identity is not verified."

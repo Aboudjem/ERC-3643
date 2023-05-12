@@ -29,7 +29,7 @@ export async function deployFullSuiteFixture() {
     bobWallet,
     charlieWallet,
     davidWallet,
-    anotherWallet
+    anotherWallet,
   ] = await ethers.getSigners();
   const claimIssuerSigningKey = ethers.Wallet.createRandom();
   const aliceActionKey = ethers.Wallet.createRandom();
@@ -177,7 +177,7 @@ export async function deployFullSuiteFixture() {
     topic: claimTopics[0],
     scheme: 1,
     identity: aliceIdentity.address,
-    signature: ""
+    signature: "",
   };
 
   claimForAlice.signature = await claimIssuerSigningKey.signMessage(
@@ -210,7 +210,7 @@ export async function deployFullSuiteFixture() {
     topic: claimTopics[0],
     scheme: 1,
     identity: bobIdentity.address,
-    signature: ""
+    signature: "",
   };
 
   claimForBob.signature = await claimIssuerSigningKey.signMessage(
@@ -257,12 +257,12 @@ export async function deployFullSuiteFixture() {
       bobWallet,
       charlieWallet,
       davidWallet,
-      anotherWallet
+      anotherWallet,
     },
     identities: {
       aliceIdentity,
       bobIdentity,
-      charlieIdentity
+      charlieIdentity,
     },
     suite: {
       claimIssuerContract,
@@ -272,10 +272,10 @@ export async function deployFullSuiteFixture() {
       basicCompliance,
       identityRegistry,
       tokenOID,
-      token
+      token,
     },
     implementations: {
-      identityImplementation
-    }
+      identityImplementation,
+    },
   };
 }
