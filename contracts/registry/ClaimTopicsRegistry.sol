@@ -41,9 +41,10 @@
  *
  *     The T-REX software is licensed under a proprietary license or the GPL v.3.
  *     If you choose to receive it under the GPL v.3 license, the following applies:
- *     T-REX is a suite of smart contracts developed by Tokeny to manage and transfer financial assets on the ethereum blockchain
+ *     T-REX is a suite of smart contracts implementing the ERC-3643 standard and
+ *     developed by Tokeny to manage and transfer financial assets on EVM blockchains
  *
- *     Copyright (C) 2022, Tokeny sàrl.
+ *     Copyright (C) 2023, Tokeny sàrl.
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -58,23 +59,56 @@
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 pragma solidity 0.8.17;
 
-import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Pausable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "./interface/IClaimTopicsRegistry.sol";
 
-contract TestERC20 is Ownable, ERC20Pausable {
-    constructor(string memory name, string memory symbol) ERC20(name, symbol) {}
+contract ClaimTopicsRegistry is IClaimTopicsRegistry, Ownable {
+    /// @dev All required Claim Topics
+    uint256[] private _claimTopics;
 
-    function pause() public onlyOwner {
-        _pause();
+    /**
+     *  @dev See {IClaimTopicsRegistry-addClaimTopic}.
+     */
+    function addClaimTopic(uint256 _claimTopic) external override onlyOwner {
+        uint256 length = _claimTopics.length;
+        require(length < 15, "cannot require more than 15 topics");
+        for (uint256 i = 0; i < length; i++) {
+            require(
+                _claimTopics[i] != _claimTopic,
+                "claimTopic already exists"
+            );
+        }
+        _claimTopics.push(_claimTopic);
+        emit ClaimTopicAdded(_claimTopic);
     }
 
-    function mint(address recipient, uint256 amount) public onlyOwner {
-        _mint(recipient, amount);
+    /**
+     *  @dev See {IClaimTopicsRegistry-removeClaimTopic}.
+     */
+    function removeClaimTopic(uint256 _claimTopic) external override onlyOwner {
+        uint256 length = _claimTopics.length;
+        for (uint256 i = 0; i < length; i++) {
+            if (_claimTopics[i] == _claimTopic) {
+                _claimTopics[i] = _claimTopics[length - 1];
+                _claimTopics.pop();
+                emit ClaimTopicRemoved(_claimTopic);
+                break;
+            }
+        }
     }
 
-    function unpause() public onlyOwner {
-        _unpause();
+    /**
+     *  @dev See {IClaimTopicsRegistry-getClaimTopics}.
+     */
+    function getClaimTopics()
+        external
+        view
+        override
+        returns (uint256[] memory)
+    {
+        return _claimTopics;
     }
 }

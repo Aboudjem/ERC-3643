@@ -17,3 +17,4 @@ docgen/
 # NPM
 gas-report
 /bin/
+.env
