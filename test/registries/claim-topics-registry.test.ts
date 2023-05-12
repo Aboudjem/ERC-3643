@@ -33,7 +33,7 @@ describe("ClaimTopicsRegistry", () => {
 
           await expect(
             claimTopicsRegistry.connect(deployer).addClaimTopic(14)
-          ).to.be.revertedWith("cannot require more than 15 topics");
+          ).to.be.revertedWith("ERC-3643: Max 15 topics");
         });
       });
 
@@ -48,7 +48,7 @@ describe("ClaimTopicsRegistry", () => {
 
           await expect(
             claimTopicsRegistry.connect(deployer).addClaimTopic(1)
-          ).to.be.revertedWith("claimTopic already exists");
+          ).to.be.revertedWith("ERC-3643: Topic exists");
         });
       });
     });

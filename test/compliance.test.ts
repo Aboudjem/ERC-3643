@@ -30,7 +30,7 @@
 
 //         await expect(
 //           compliance.connect(anotherWallet).bindToken(token.address)
-//         ).to.be.revertedWith("only owner or token can call");
+//         ).to.be.revertedWith("ERC-3643: Caller not authorized");
 //       });
 //     });
 
@@ -52,7 +52,7 @@
 
 //           await expect(
 //             compliance.connect(anotherWallet).bindToken(token.address)
-//           ).to.be.revertedWith("only owner or token can call");
+//           ).to.be.revertedWith("ERC-3643: Caller not authorized");
 //         });
 //       });
 
@@ -96,7 +96,7 @@
 
 //           await expect(
 //             compliance.bindToken(ethers.constants.AddressZero)
-//           ).to.be.revertedWith("invalid argument - zero address");
+//           ).to.be.revertedWith("ERC-3643: Invalid zero address");
 //         });
 //       });
 //     });
@@ -112,7 +112,7 @@
 
 //         await expect(
 //           compliance.connect(anotherWallet).unbindToken(token.address)
-//         ).to.be.revertedWith("only owner or token can call");
+//         ).to.be.revertedWith("ERC-3643: Caller not authorized");
 //       });
 //     });
 
@@ -125,7 +125,7 @@
 
 //           await expect(
 //             compliance.unbindToken(ethers.constants.AddressZero)
-//           ).to.be.revertedWith("invalid argument - zero address");
+//           ).to.be.revertedWith("ERC-3643: Invalid zero address");
 //         });
 //       });
 
@@ -200,7 +200,7 @@
 
 //           await expect(
 //             compliance.addModule(ethers.constants.AddressZero)
-//           ).to.be.revertedWith("invalid argument - zero address");
+//           ).to.be.revertedWith("ERC-3643: Invalid zero address");
 //         });
 //       });
 
@@ -288,7 +288,7 @@
 
 //           await expect(
 //             compliance.removeModule(ethers.constants.AddressZero)
-//           ).to.be.revertedWith("invalid argument - zero address");
+//           ).to.be.revertedWith("ERC-3643: Invalid zero address");
 //         });
 //       });
 
@@ -365,7 +365,7 @@
 //             compliance
 //               .connect(charlieWallet)
 //               .transferred(ethers.constants.AddressZero, bobWallet.address, 10)
-//           ).to.be.revertedWith("invalid argument - zero address");
+//           ).to.be.revertedWith("ERC-3643: Invalid zero address");
 //         });
 //       });
 
@@ -384,7 +384,7 @@
 //                 ethers.constants.AddressZero,
 //                 10
 //               )
-//           ).to.be.revertedWith("invalid argument - zero address");
+//           ).to.be.revertedWith("ERC-3643: Invalid zero address");
 //         });
 //       });
 
@@ -450,7 +450,7 @@
 //             compliance
 //               .connect(charlieWallet)
 //               .created(ethers.constants.AddressZero, 10)
-//           ).to.be.revertedWith("invalid argument - zero address");
+//           ).to.be.revertedWith("ERC-3643: Invalid zero address");
 //         });
 //       });
 
@@ -512,7 +512,7 @@
 //             compliance
 //               .connect(charlieWallet)
 //               .destroyed(ethers.constants.AddressZero, 10)
-//           ).to.be.revertedWith("invalid argument - zero address");
+//           ).to.be.revertedWith("ERC-3643: Invalid zero address");
 //         });
 //       });
 

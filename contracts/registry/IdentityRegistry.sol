@@ -106,7 +106,7 @@ contract IdentityRegistry is IIdentityRegistry, AccessControl {
             _claimIssuersRegistry != address(0) &&
                 _claimTopicsRegistry != address(0) &&
                 _identityStorage != address(0),
-            "invalid argument - zero address"
+            "ERC-3643: Invalid zero address"
         );
         _grantRole(bytes32(0), _msgSender());
         _grantRole(OWNER_ROLE, _msgSender());

@@ -83,24 +83,18 @@ contract ClaimIssuersRegistry is IClaimIssuersRegistry, Ownable {
     function addClaimIssuer(
         IClaimIssuer _claimIssuer,
         uint256[] calldata _claimTopics
-    ) external override onlyOwner {
+    ) external onlyOwner {
         require(
             address(_claimIssuer) != address(0),
-            "invalid argument - zero address"
+            "ERC-3643: Invalid zero address"
         );
         require(
             _claimIssuerClaimTopics[address(_claimIssuer)].length == 0,
-            "claim Issuer already exists"
+            "ERC-3643: Issuer already exists"
         );
-        require(_claimTopics.length > 0, "claim claim topics cannot be empty");
-        require(
-            _claimTopics.length <= 15,
-            "cannot have more than 15 claim topics"
-        );
-        require(
-            _claimIssuers.length < 50,
-            "cannot have more than 50 claim issuers"
-        );
+        require(_claimTopics.length > 0, "ERC-3643: Empty claim topics");
+        require(_claimTopics.length <= 15, "ERC-3643: Empty claim topics");
+        require(_claimIssuers.length < 50, "ERC-3643: Max 50 claim issuers");
         _claimIssuers.push(_claimIssuer);
         _claimIssuerClaimTopics[address(_claimIssuer)] = _claimTopics;
         for (uint256 i = 0; i < _claimTopics.length; i++) {
@@ -117,11 +111,11 @@ contract ClaimIssuersRegistry is IClaimIssuersRegistry, Ownable {
     ) external override onlyOwner {
         require(
             address(_claimIssuer) != address(0),
-            "invalid argument - zero address"
+            "ERC-3643: Invalid zero address"
         );
         require(
             _claimIssuerClaimTopics[address(_claimIssuer)].length != 0,
-            "NOT a claim issuer"
+            "ERC-3643: Not a claim issuer"
         );
         uint256 length = _claimIssuers.length;
         for (uint256 i = 0; i < length; i++) {
@@ -167,17 +161,14 @@ contract ClaimIssuersRegistry is IClaimIssuersRegistry, Ownable {
     ) external override onlyOwner {
         require(
             address(_claimIssuer) != address(0),
-            "invalid argument - zero address"
+            "ERC-3643: Invalid zero address"
         );
         require(
             _claimIssuerClaimTopics[address(_claimIssuer)].length != 0,
-            "NOT a claim issuer"
+            "ERC-3643: Not a claim issuer"
         );
-        require(
-            _claimTopics.length <= 15,
-            "cannot have more than 15 claim topics"
-        );
-        require(_claimTopics.length > 0, "claim topics cannot be empty");
+        require(_claimTopics.length <= 15, "ERC-3643: Empty claim topics");
+        require(_claimTopics.length > 0, "ERC-3643: No claim topics");
 
         for (
             uint256 i = 0;
@@ -249,7 +240,7 @@ contract ClaimIssuersRegistry is IClaimIssuersRegistry, Ownable {
     ) external view override returns (uint256[] memory) {
         require(
             _claimIssuerClaimTopics[address(_claimIssuer)].length != 0,
-            "claim Issuer doesn't exist"
+            "ERC-3643: Issuer doesn't exist"
         );
         return _claimIssuerClaimTopics[address(_claimIssuer)];
     }

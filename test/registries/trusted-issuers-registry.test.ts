@@ -32,7 +32,7 @@ describe("ClaimIssuersRegistry", () => {
             claimIssuersRegistry
               .connect(deployer)
               .addClaimIssuer(ethers.constants.AddressZero, [10])
-          ).to.be.revertedWith("invalid argument - zero address");
+          ).to.be.revertedWith("ERC-3643: Invalid zero address");
         });
       });
 
@@ -52,7 +52,7 @@ describe("ClaimIssuersRegistry", () => {
             claimIssuersRegistry
               .connect(deployer)
               .addClaimIssuer(claimIssuerContract.address, claimTopics)
-          ).to.be.revertedWith("claim Issuer already exists");
+          ).to.be.revertedWith("ERC-3643: Issuer already exists");
         });
       });
 
@@ -67,7 +67,7 @@ describe("ClaimIssuersRegistry", () => {
             claimIssuersRegistry
               .connect(deployer)
               .addClaimIssuer(deployer.address, [])
-          ).to.be.revertedWith("claim claim topics cannot be empty");
+          ).to.be.revertedWith("ERC-3643: Empty claim topics");
         });
       });
 
@@ -84,7 +84,7 @@ describe("ClaimIssuersRegistry", () => {
             claimIssuersRegistry
               .connect(deployer)
               .addClaimIssuer(deployer.address, claimTopics)
-          ).to.be.revertedWith("cannot have more than 15 claim topics");
+          ).to.be.revertedWith("ERC-3643: Empty claim topics");
         });
       });
 
@@ -110,7 +110,7 @@ describe("ClaimIssuersRegistry", () => {
             claimIssuersRegistry
               .connect(deployer)
               .addClaimIssuer(deployer.address, claimTopics)
-          ).to.be.revertedWith("cannot have more than 50 claim issuers");
+          ).to.be.revertedWith("ERC-3643: Max 50 claim issuers");
         });
       });
     });
@@ -144,7 +144,7 @@ describe("ClaimIssuersRegistry", () => {
             claimIssuersRegistry
               .connect(deployer)
               .removeClaimIssuer(ethers.constants.AddressZero)
-          ).to.be.revertedWith("invalid argument - zero address");
+          ).to.be.revertedWith("ERC-3643: Invalid zero address");
         });
       });
 
@@ -159,7 +159,7 @@ describe("ClaimIssuersRegistry", () => {
             claimIssuersRegistry
               .connect(deployer)
               .removeClaimIssuer(deployer.address)
-          ).to.be.revertedWith("NOT a claim issuer");
+          ).to.be.revertedWith("ERC-3643: Not a claim issuer");
         });
       });
 
@@ -237,7 +237,7 @@ describe("ClaimIssuersRegistry", () => {
             claimIssuersRegistry
               .connect(deployer)
               .updateIssuerClaimTopics(ethers.constants.AddressZero, [10])
-          ).to.be.revertedWith("invalid argument - zero address");
+          ).to.be.revertedWith("ERC-3643: Invalid zero address");
         });
       });
 
@@ -252,7 +252,7 @@ describe("ClaimIssuersRegistry", () => {
             claimIssuersRegistry
               .connect(deployer)
               .updateIssuerClaimTopics(deployer.address, [10])
-          ).to.be.revertedWith("NOT a claim issuer");
+          ).to.be.revertedWith("ERC-3643: Not a claim issuer");
         });
       });
 
@@ -269,7 +269,7 @@ describe("ClaimIssuersRegistry", () => {
             claimIssuersRegistry
               .connect(deployer)
               .updateIssuerClaimTopics(claimIssuerContract.address, claimTopics)
-          ).to.be.revertedWith("cannot have more than 15 claim topics");
+          ).to.be.revertedWith("ERC-3643: Empty claim topics");
         });
       });
 
@@ -284,7 +284,7 @@ describe("ClaimIssuersRegistry", () => {
             claimIssuersRegistry
               .connect(deployer)
               .updateIssuerClaimTopics(claimIssuerContract.address, [])
-          ).to.be.revertedWith("claim topics cannot be empty");
+          ).to.be.revertedWith("ERC-3643: No claim topics");
         });
       });
 
@@ -341,7 +341,7 @@ describe("ClaimIssuersRegistry", () => {
           claimIssuersRegistry
             .connect(deployer)
             .getClaimIssuerClaimTopics(deployer.address)
-        ).to.be.revertedWith("claim Issuer doesn't exist");
+        ).to.be.revertedWith("ERC-3643: Issuer doesn't exist");
       });
     });
   });

@@ -93,7 +93,7 @@ contract BasicCompliance is ICompliance, AccessControl {
             hasRole(ADMIN_ROLE, _msgSender()) ||
                 hasRole(ADMIN_ROLE, _msgSender()) ||
                 address(tokenBound) == address(0),
-            "only owner or token can call"
+            "ERC-3643: Caller not authorized"
         );
         tokenBound = IToken(_token);
         emit TokenBound(_token);
@@ -106,9 +106,9 @@ contract BasicCompliance is ICompliance, AccessControl {
         require(
             hasRole(ADMIN_ROLE, _msgSender()) ||
                 hasRole(TOKEN_ROLE, _msgSender()),
-            "only owner or token can call"
+            "ERC-3643: Caller not authorized"
         );
-        require(_token == address(tokenBound), "This token is not bound");
+        require(_token == address(tokenBound), "ERC-3643: Token not bound");
         delete tokenBound;
         emit TokenUnbound(_token);
     }
