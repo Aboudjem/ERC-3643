@@ -137,9 +137,9 @@ contract Token is IToken, AccessControl, Pausable {
         require(
             keccak256(abi.encode(_name)) != keccak256(abi.encode("")) &&
                 keccak256(abi.encode(_symbol)) != keccak256(abi.encode("")),
-            "invalid argument - empty string"
+            "ERC-3643: No empty string"
         );
-        require(0 <= _decimals && _decimals <= 18, "decimals between 0 and 18");
+        require(0 <= _decimals && _decimals <= 18, "ERC-3643: Decimals 0-18");
 
         _tokenName = _name;
         _tokenSymbol = _symbol;
@@ -263,10 +263,10 @@ contract Token is IToken, AccessControl, Pausable {
         address _to,
         uint256 _amount
     ) external override whenNotPaused returns (bool) {
-        require(!_frozen[_to] && !_frozen[_from], "wallet is frozen");
+        require(!_frozen[_to] && !_frozen[_from], "ERC-3643: Wallet frozen");
         require(
             _amount <= balanceOf(_from) - (_frozenTokens[_from]),
-            "Insufficient Balance"
+            "ERC-3643: Low balance"
         );
         if (
             _tokenIdentityRegistry.isVerified(_to) &&
@@ -492,10 +492,13 @@ contract Token is IToken, AccessControl, Pausable {
         address _to,
         uint256 _amount
     ) public override whenNotPaused returns (bool) {
-        require(!_frozen[_to] && !_frozen[msg.sender], "wallet is frozen");
+        require(
+            !_frozen[_to] && !_frozen[msg.sender],
+            "ERC-3643: Wallet frozen"
+        );
         require(
             _amount <= balanceOf(msg.sender) - (_frozenTokens[msg.sender]),
-            "Insufficient Balance"
+            "ERC-3643: Low balance"
         );
         if (
             _tokenIdentityRegistry.isVerified(_to) &&
@@ -516,7 +519,7 @@ contract Token is IToken, AccessControl, Pausable {
         address _to,
         uint256 _amount
     ) public override onlyRole(AGENT_ROLE) returns (bool) {
-        require(balanceOf(_from) >= _amount, "sender balance too low");
+        require(balanceOf(_from) >= _amount, "ERC-3643: Sender low balance");
         uint256 freeBalance = balanceOf(_from) - (_frozenTokens[_from]);
         if (_amount > freeBalance) {
             uint256 tokensToUnfreeze = _amount - (freeBalance);
@@ -540,11 +543,11 @@ contract Token is IToken, AccessControl, Pausable {
     ) public override onlyRole(AGENT_ROLE) {
         require(
             _tokenIdentityRegistry.isVerified(_to),
-            "Identity is not verified."
+            "ERC-3643: Unverified identity"
         );
         require(
             _tokenCompliance.canTransfer(address(0), _to, _amount),
-            "Compliance not followed"
+            "ERC-3643: Compliance failure"
         );
         _mint(_to, _amount);
         _tokenCompliance.created(_to, _amount);

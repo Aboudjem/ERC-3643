@@ -74,12 +74,9 @@ contract ClaimTopicsRegistry is IClaimTopicsRegistry, Ownable {
      */
     function addClaimTopic(uint256 _claimTopic) external override onlyOwner {
         uint256 length = _claimTopics.length;
-        require(length < 15, "cannot require more than 15 topics");
+        require(length < 15, "ERC-3643: Max 15 topics");
         for (uint256 i = 0; i < length; i++) {
-            require(
-                _claimTopics[i] != _claimTopic,
-                "claimTopic already exists"
-            );
+            require(_claimTopics[i] != _claimTopic, "ERC-3643: Topic exists");
         }
         _claimTopics.push(_claimTopic);
         emit ClaimTopicAdded(_claimTopic);

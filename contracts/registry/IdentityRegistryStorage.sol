@@ -107,7 +107,7 @@ contract IdentityRegistryStorage is IIdentityRegistryStorage, AccessControl {
         );
         require(
             address(_identities[_userAddress].identityContract) == address(0),
-            "address stored already"
+            "ERC-3643: No empty string"
         );
         _identities[_userAddress].identityContract = _identity;
         _identities[_userAddress].investorCountry = _country;
@@ -127,7 +127,7 @@ contract IdentityRegistryStorage is IIdentityRegistryStorage, AccessControl {
         );
         require(
             address(_identities[_userAddress].identityContract) != address(0),
-            "address not stored yet"
+            "ERC-3643: Address not stored"
         );
         IIdentity oldIdentity = _identities[_userAddress].identityContract;
         _identities[_userAddress].identityContract = _identity;
@@ -144,7 +144,7 @@ contract IdentityRegistryStorage is IIdentityRegistryStorage, AccessControl {
         require(_userAddress != address(0), "ERC-3643: Invalid zero address");
         require(
             address(_identities[_userAddress].identityContract) != address(0),
-            "address not stored yet"
+            "ERC-3643: Address not stored"
         );
         _identities[_userAddress].investorCountry = _country;
         emit CountryModified(_userAddress, _country);
@@ -159,7 +159,7 @@ contract IdentityRegistryStorage is IIdentityRegistryStorage, AccessControl {
         require(_userAddress != address(0), "ERC-3643: Invalid zero address");
         require(
             address(_identities[_userAddress].identityContract) != address(0),
-            "address not stored yet"
+            "ERC-3643: Address not stored"
         );
         IIdentity oldIdentity = _identities[_userAddress].identityContract;
         delete _identities[_userAddress];
@@ -178,7 +178,7 @@ contract IdentityRegistryStorage is IIdentityRegistryStorage, AccessControl {
         );
         require(
             _identityRegistries.length < 300,
-            "cannot bind more than 300 IR to 1 IRS"
+            "ERC-3643: Max 300 IR per IRS"
         );
         _grantRole(AGENT_ROLE, _identityRegistry);
         _identityRegistries.push(_identityRegistry);
@@ -197,7 +197,7 @@ contract IdentityRegistryStorage is IIdentityRegistryStorage, AccessControl {
         );
         require(
             _identityRegistries.length > 0,
-            "identity registry is not stored"
+            "ERC-3643: No identity registry"
         );
         uint256 length = _identityRegistries.length;
         for (uint256 i = 0; i < length; i++) {

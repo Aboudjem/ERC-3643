@@ -99,7 +99,7 @@ describe("IdentityRegistryStorage", () => {
                 charlieIdentity.address,
                 42
               )
-          ).to.be.revertedWith("address stored already");
+          ).to.be.revertedWith("ERC-3643: No empty string");
         });
       });
     });
@@ -195,7 +195,7 @@ describe("IdentityRegistryStorage", () => {
                 charlieWallet.address,
                 charlieIdentity.address
               )
-          ).to.be.revertedWith("address not stored yet");
+          ).to.be.revertedWith("ERC-3643: Address not stored");
         });
       });
     });
@@ -256,7 +256,7 @@ describe("IdentityRegistryStorage", () => {
             identityRegistryStorage
               .connect(tokenAgent)
               .modifyStoredInvestorCountry(charlieWallet.address, 42)
-          ).to.be.revertedWith("address not stored yet");
+          ).to.be.revertedWith("ERC-3643: Address not stored");
         });
       });
     });
@@ -317,7 +317,7 @@ describe("IdentityRegistryStorage", () => {
             identityRegistryStorage
               .connect(tokenAgent)
               .removeIdentityFromStorage(charlieWallet.address)
-          ).to.be.revertedWith("address not stored yet");
+          ).to.be.revertedWith("ERC-3643: Address not stored");
         });
       });
     });
@@ -378,7 +378,7 @@ describe("IdentityRegistryStorage", () => {
             identityRegistryStorage
               .connect(deployer)
               .bindIdentityRegistry(charlieIdentity.address)
-          ).to.be.revertedWith("cannot bind more than 300 IR to 1 IRS");
+          ).to.be.revertedWith("ERC-3643: Max 300 IR per IRS");
         });
       });
     });
@@ -434,7 +434,7 @@ describe("IdentityRegistryStorage", () => {
             identityRegistryStorage
               .connect(deployer)
               .unbindIdentityRegistry(identityRegistry.address)
-          ).to.be.revertedWith("identity registry is not stored");
+          ).to.be.revertedWith("ERC-3643: No identity registry");
         });
       });
 

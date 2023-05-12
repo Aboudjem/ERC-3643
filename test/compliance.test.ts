@@ -30,7 +30,7 @@
 
 //         await expect(
 //           compliance.connect(anotherWallet).bindToken(token.address)
-//         ).to.be.revertedWith("only owner or token can call");
+//         ).to.be.revertedWith("ERC-3643: Caller not authorized");
 //       });
 //     });
 
@@ -52,7 +52,7 @@
 
 //           await expect(
 //             compliance.connect(anotherWallet).bindToken(token.address)
-//           ).to.be.revertedWith("only owner or token can call");
+//           ).to.be.revertedWith("ERC-3643: Caller not authorized");
 //         });
 //       });
 
@@ -112,7 +112,7 @@
 
 //         await expect(
 //           compliance.connect(anotherWallet).unbindToken(token.address)
-//         ).to.be.revertedWith("only owner or token can call");
+//         ).to.be.revertedWith("ERC-3643: Caller not authorized");
 //       });
 //     });
 

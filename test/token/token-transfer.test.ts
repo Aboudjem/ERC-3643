@@ -101,7 +101,7 @@ describe("Token - Transfers", () => {
 
         await expect(
           token.connect(aliceWallet).transfer(bobWallet.address, 100)
-        ).to.be.revertedWith("wallet is frozen");
+        ).to.be.revertedWith("ERC-3643: Wallet frozen");
       });
     });
 
@@ -118,7 +118,7 @@ describe("Token - Transfers", () => {
 
         await expect(
           token.connect(aliceWallet).transfer(bobWallet.address, 100)
-        ).to.be.revertedWith("wallet is frozen");
+        ).to.be.revertedWith("ERC-3643: Wallet frozen");
       });
     });
 
@@ -135,7 +135,7 @@ describe("Token - Transfers", () => {
           token
             .connect(aliceWallet)
             .transfer(bobWallet.address, balance.add(1000))
-        ).to.be.revertedWith("Insufficient Balance");
+        ).to.be.revertedWith("ERC-3643: Low balance");
       });
     });
 
@@ -153,7 +153,7 @@ describe("Token - Transfers", () => {
 
         await expect(
           token.connect(aliceWallet).transfer(bobWallet.address, balance)
-        ).to.be.revertedWith("Insufficient Balance");
+        ).to.be.revertedWith("ERC-3643: Low balance");
       });
     });
 
@@ -239,7 +239,7 @@ describe("Token - Transfers", () => {
           token
             .connect(aliceWallet)
             .transferFrom(aliceWallet.address, bobWallet.address, 100)
-        ).to.be.revertedWith("wallet is frozen");
+        ).to.be.revertedWith("ERC-3643: Wallet frozen");
       });
     });
 
@@ -258,7 +258,7 @@ describe("Token - Transfers", () => {
           token
             .connect(aliceWallet)
             .transferFrom(aliceWallet.address, bobWallet.address, 100)
-        ).to.be.revertedWith("wallet is frozen");
+        ).to.be.revertedWith("ERC-3643: Wallet frozen");
       });
     });
 
@@ -279,7 +279,7 @@ describe("Token - Transfers", () => {
               bobWallet.address,
               balance.add(1000)
             )
-        ).to.be.revertedWith("Insufficient Balance");
+        ).to.be.revertedWith("ERC-3643: Low balance");
       });
     });
 
@@ -299,7 +299,7 @@ describe("Token - Transfers", () => {
           token
             .connect(aliceWallet)
             .transferFrom(aliceWallet.address, bobWallet.address, balance)
-        ).to.be.revertedWith("Insufficient Balance");
+        ).to.be.revertedWith("ERC-3643: Low balance");
       });
     });
 
@@ -374,7 +374,7 @@ describe("Token - Transfers", () => {
               bobWallet.address,
               balance.add(1000)
             )
-        ).to.be.revertedWith("sender balance too low");
+        ).to.be.revertedWith("ERC-3643: Sender low balance");
       });
     });
 
@@ -448,7 +448,7 @@ describe("Token - Transfers", () => {
 
         await expect(
           token.connect(tokenAgent).mint(anotherWallet.address, 100)
-        ).to.be.revertedWith("Identity is not verified.");
+        ).to.be.revertedWith("ERC-3643: Unverified identity");
       });
     });
   });
