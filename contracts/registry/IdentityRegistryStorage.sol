@@ -63,18 +63,34 @@
 pragma solidity 0.8.17;
 
 import "@onchain-id/solidity/contracts/interface/IIdentity.sol";
+import "@openzeppelin/contracts/access/AccessControl.sol";
 
-import "../../roles/AgentRoleUpgradeable.sol";
-import "../interface/IIdentityRegistryStorage.sol";
-import "../storage/IRSStorage.sol";
+import "./interface/IIdentityRegistryStorage.sol";
 
-contract IdentityRegistryStorage is
-    IIdentityRegistryStorage,
-    AgentRoleUpgradeable,
-    IRSStorage
-{
-    function init() external initializer {
-        __Ownable_init();
+contract IdentityRegistryStorage is IIdentityRegistryStorage, AccessControl {
+    /// @dev struct containing the identity contract and the country of the user
+    struct Identity {
+        IIdentity identityContract;
+        uint16 investorCountry;
+    }
+
+    // keccak256(AGENT_ROLE)
+    bytes32 public constant AGENT_ROLE =
+        0xcab5a0bfe0b79d2c4b1c2e02599fa044d115b7511f9659307cb4276950967709;
+
+    bytes32 public constant OWNER_ROLE =
+        0xb19546dff01e856fb3f010c267a7b1c60363cf8a4664e21cc89c26224620214e;
+
+    /// @dev mapping between a user address and the corresponding identity
+    mapping(address => Identity) internal _identities;
+
+    /// @dev array of Identity Registries linked to this storage
+    address[] internal _identityRegistries;
+
+    constructor() {
+        _grantRole(bytes32(0), _msgSender());
+        _grantRole(AGENT_ROLE, _msgSender());
+        _grantRole(OWNER_ROLE, _msgSender());
     }
 
     /**
@@ -84,7 +100,7 @@ contract IdentityRegistryStorage is
         address _userAddress,
         IIdentity _identity,
         uint16 _country
-    ) external override onlyAgent {
+    ) external override onlyRole(AGENT_ROLE) {
         require(
             _userAddress != address(0) && address(_identity) != address(0),
             "invalid argument - zero address"
@@ -104,7 +120,7 @@ contract IdentityRegistryStorage is
     function modifyStoredIdentity(
         address _userAddress,
         IIdentity _identity
-    ) external override onlyAgent {
+    ) external override onlyRole(AGENT_ROLE) {
         require(
             _userAddress != address(0) && address(_identity) != address(0),
             "invalid argument - zero address"
@@ -124,7 +140,7 @@ contract IdentityRegistryStorage is
     function modifyStoredInvestorCountry(
         address _userAddress,
         uint16 _country
-    ) external override onlyAgent {
+    ) external override onlyRole(AGENT_ROLE) {
         require(_userAddress != address(0), "invalid argument - zero address");
         require(
             address(_identities[_userAddress].identityContract) != address(0),
@@ -139,7 +155,7 @@ contract IdentityRegistryStorage is
      */
     function removeIdentityFromStorage(
         address _userAddress
-    ) external override onlyAgent {
+    ) external override onlyRole(AGENT_ROLE) {
         require(_userAddress != address(0), "invalid argument - zero address");
         require(
             address(_identities[_userAddress].identityContract) != address(0),
@@ -153,7 +169,7 @@ contract IdentityRegistryStorage is
     /**
      *  @dev See {IIdentityRegistryStorage-bindIdentityRegistry}.
      */
-    function bindIdentityRegistry(address _identityRegistry) external override {
+    function bindIdentityRegistry(address _identityRegistry) external onlyRole(OWNER_ROLE) override {
         require(
             _identityRegistry != address(0),
             "invalid argument - zero address"
@@ -162,7 +178,7 @@ contract IdentityRegistryStorage is
             _identityRegistries.length < 300,
             "cannot bind more than 300 IR to 1 IRS"
         );
-        addAgent(_identityRegistry);
+        _grantRole(AGENT_ROLE, _identityRegistry);
         _identityRegistries.push(_identityRegistry);
         emit IdentityRegistryBound(_identityRegistry);
     }
@@ -172,7 +188,7 @@ contract IdentityRegistryStorage is
      */
     function unbindIdentityRegistry(
         address _identityRegistry
-    ) external override {
+    ) external onlyRole(OWNER_ROLE) override {
         require(
             _identityRegistry != address(0),
             "invalid argument - zero address"
@@ -188,8 +204,9 @@ contract IdentityRegistryStorage is
                 _identityRegistries.pop();
                 break;
             }
-        }
-        removeAgent(_identityRegistry);
+        } // keccak256(AGENT_ROLE)
+
+        _revokeRole(AGENT_ROLE, _identityRegistry);
         emit IdentityRegistryUnbound(_identityRegistry);
     }
 

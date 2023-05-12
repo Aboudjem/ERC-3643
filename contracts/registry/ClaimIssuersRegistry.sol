@@ -64,120 +64,114 @@
 pragma solidity 0.8.17;
 
 import "@onchain-id/solidity/contracts/interface/IClaimIssuer.sol";
-import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
-import "../interface/ITrustedIssuersRegistry.sol";
-import "../storage/TIRStorage.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "./interface/IClaimIssuersRegistry.sol";
 
-contract TrustedIssuersRegistry is
-    ITrustedIssuersRegistry,
-    OwnableUpgradeable,
-    TIRStorage
-{
-    function init() external initializer {
-        __Ownable_init();
-    }
+contract ClaimIssuersRegistry is IClaimIssuersRegistry, Ownable {
+    /// @dev Array containing all ClaimIssuers identity contract address.
+    IClaimIssuer[] internal _claimIssuers;
+
+    /// @dev Mapping between a claim issuer address and its corresponding claimTopics.
+    mapping(address => uint256[]) internal _claimIssuerClaimTopics;
+
+    /// @dev Mapping between a claim topic and the allowed claim issuers for it.
+    mapping(uint256 => IClaimIssuer[]) internal _claimTopicsToClaimIssuers;
 
     /**
-     *  @dev See {ITrustedIssuersRegistry-addTrustedIssuer}.
+     *  @dev See {IClaimIssuersRegistry-addClaimIssuer}.
      */
-    function addTrustedIssuer(
-        IClaimIssuer _trustedIssuer,
+    function addClaimIssuer(
+        IClaimIssuer _claimIssuer,
         uint256[] calldata _claimTopics
     ) external override onlyOwner {
         require(
-            address(_trustedIssuer) != address(0),
+            address(_claimIssuer) != address(0),
             "invalid argument - zero address"
         );
         require(
-            _trustedIssuerClaimTopics[address(_trustedIssuer)].length == 0,
-            "trusted Issuer already exists"
+            _claimIssuerClaimTopics[address(_claimIssuer)].length == 0,
+            "claim Issuer already exists"
         );
-        require(
-            _claimTopics.length > 0,
-            "trusted claim topics cannot be empty"
-        );
+        require(_claimTopics.length > 0, "claim claim topics cannot be empty");
         require(
             _claimTopics.length <= 15,
             "cannot have more than 15 claim topics"
         );
         require(
-            _trustedIssuers.length < 50,
-            "cannot have more than 50 trusted issuers"
+            _claimIssuers.length < 50,
+            "cannot have more than 50 claim issuers"
         );
-        _trustedIssuers.push(_trustedIssuer);
-        _trustedIssuerClaimTopics[address(_trustedIssuer)] = _claimTopics;
+        _claimIssuers.push(_claimIssuer);
+        _claimIssuerClaimTopics[address(_claimIssuer)] = _claimTopics;
         for (uint256 i = 0; i < _claimTopics.length; i++) {
-            _claimTopicsToTrustedIssuers[_claimTopics[i]].push(_trustedIssuer);
+            _claimTopicsToClaimIssuers[_claimTopics[i]].push(_claimIssuer);
         }
-        emit TrustedIssuerAdded(_trustedIssuer, _claimTopics);
+        emit ClaimIssuerAdded(_claimIssuer, _claimTopics);
     }
 
     /**
-     *  @dev See {ITrustedIssuersRegistry-removeTrustedIssuer}.
+     *  @dev See {IClaimIssuersRegistry-removeClaimIssuer}.
      */
-    function removeTrustedIssuer(
-        IClaimIssuer _trustedIssuer
+    function removeClaimIssuer(
+        IClaimIssuer _claimIssuer
     ) external override onlyOwner {
         require(
-            address(_trustedIssuer) != address(0),
+            address(_claimIssuer) != address(0),
             "invalid argument - zero address"
         );
         require(
-            _trustedIssuerClaimTopics[address(_trustedIssuer)].length != 0,
-            "NOT a trusted issuer"
+            _claimIssuerClaimTopics[address(_claimIssuer)].length != 0,
+            "NOT a claim issuer"
         );
-        uint256 length = _trustedIssuers.length;
+        uint256 length = _claimIssuers.length;
         for (uint256 i = 0; i < length; i++) {
-            if (_trustedIssuers[i] == _trustedIssuer) {
-                _trustedIssuers[i] = _trustedIssuers[length - 1];
-                _trustedIssuers.pop();
+            if (_claimIssuers[i] == _claimIssuer) {
+                _claimIssuers[i] = _claimIssuers[length - 1];
+                _claimIssuers.pop();
                 break;
             }
         }
         for (
             uint256 claimTopicIndex = 0;
             claimTopicIndex <
-            _trustedIssuerClaimTopics[address(_trustedIssuer)].length;
+            _claimIssuerClaimTopics[address(_claimIssuer)].length;
             claimTopicIndex++
         ) {
-            uint256 claimTopic = _trustedIssuerClaimTopics[
-                address(_trustedIssuer)
-            ][claimTopicIndex];
-            uint256 topicsLength = _claimTopicsToTrustedIssuers[claimTopic]
+            uint256 claimTopic = _claimIssuerClaimTopics[address(_claimIssuer)][
+                claimTopicIndex
+            ];
+            uint256 topicsLength = _claimTopicsToClaimIssuers[claimTopic]
                 .length;
             for (uint256 i = 0; i < topicsLength; i++) {
-                if (
-                    _claimTopicsToTrustedIssuers[claimTopic][i] ==
-                    _trustedIssuer
-                ) {
-                    _claimTopicsToTrustedIssuers[claimTopic][
+                if (_claimTopicsToClaimIssuers[claimTopic][i] == _claimIssuer) {
+                    _claimTopicsToClaimIssuers[claimTopic][
                         i
-                    ] = _claimTopicsToTrustedIssuers[claimTopic][
+                    ] = _claimTopicsToClaimIssuers[claimTopic][
                         topicsLength - 1
                     ];
-                    _claimTopicsToTrustedIssuers[claimTopic].pop();
+                    _claimTopicsToClaimIssuers[claimTopic].pop();
                     break;
                 }
             }
         }
-        delete _trustedIssuerClaimTopics[address(_trustedIssuer)];
-        emit TrustedIssuerRemoved(_trustedIssuer);
+        delete _claimIssuerClaimTopics[address(_claimIssuer)];
+        emit ClaimIssuerRemoved(_claimIssuer);
     }
 
     /**
-     *  @dev See {ITrustedIssuersRegistry-updateIssuerClaimTopics}.
+     *  @dev See {IClaimIssuersRegistry-updateIssuerClaimTopics}.
      */
     function updateIssuerClaimTopics(
-        IClaimIssuer _trustedIssuer,
+        IClaimIssuer _claimIssuer,
         uint256[] calldata _claimTopics
     ) external override onlyOwner {
         require(
-            address(_trustedIssuer) != address(0),
+            address(_claimIssuer) != address(0),
             "invalid argument - zero address"
         );
         require(
-            _trustedIssuerClaimTopics[address(_trustedIssuer)].length != 0,
-            "NOT a trusted issuer"
+            _claimIssuerClaimTopics[address(_claimIssuer)].length != 0,
+            "NOT a claim issuer"
         );
         require(
             _claimTopics.length <= 15,
@@ -187,91 +181,88 @@ contract TrustedIssuersRegistry is
 
         for (
             uint256 i = 0;
-            i < _trustedIssuerClaimTopics[address(_trustedIssuer)].length;
+            i < _claimIssuerClaimTopics[address(_claimIssuer)].length;
             i++
         ) {
-            uint256 claimTopic = _trustedIssuerClaimTopics[
-                address(_trustedIssuer)
-            ][i];
-            uint256 topicsLength = _claimTopicsToTrustedIssuers[claimTopic]
+            uint256 claimTopic = _claimIssuerClaimTopics[address(_claimIssuer)][
+                i
+            ];
+            uint256 topicsLength = _claimTopicsToClaimIssuers[claimTopic]
                 .length;
             for (uint256 j = 0; j < topicsLength; j++) {
-                if (
-                    _claimTopicsToTrustedIssuers[claimTopic][j] ==
-                    _trustedIssuer
-                ) {
-                    _claimTopicsToTrustedIssuers[claimTopic][
+                if (_claimTopicsToClaimIssuers[claimTopic][j] == _claimIssuer) {
+                    _claimTopicsToClaimIssuers[claimTopic][
                         j
-                    ] = _claimTopicsToTrustedIssuers[claimTopic][
+                    ] = _claimTopicsToClaimIssuers[claimTopic][
                         topicsLength - 1
                     ];
-                    _claimTopicsToTrustedIssuers[claimTopic].pop();
+                    _claimTopicsToClaimIssuers[claimTopic].pop();
                     break;
                 }
             }
         }
-        _trustedIssuerClaimTopics[address(_trustedIssuer)] = _claimTopics;
+        _claimIssuerClaimTopics[address(_claimIssuer)] = _claimTopics;
         for (uint256 i = 0; i < _claimTopics.length; i++) {
-            _claimTopicsToTrustedIssuers[_claimTopics[i]].push(_trustedIssuer);
+            _claimTopicsToClaimIssuers[_claimTopics[i]].push(_claimIssuer);
         }
-        emit ClaimTopicsUpdated(_trustedIssuer, _claimTopics);
+        emit ClaimTopicsUpdated(_claimIssuer, _claimTopics);
     }
 
     /**
-     *  @dev See {ITrustedIssuersRegistry-getTrustedIssuers}.
+     *  @dev See {IClaimIssuersRegistry-getClaimIssuers}.
      */
-    function getTrustedIssuers()
+    function getClaimIssuers()
         external
         view
         override
         returns (IClaimIssuer[] memory)
     {
-        return _trustedIssuers;
+        return _claimIssuers;
     }
 
     /**
-     *  @dev See {ITrustedIssuersRegistry-getTrustedIssuersForClaimTopic}.
+     *  @dev See {IClaimIssuersRegistry-getClaimIssuersForClaimTopic}.
      */
-    function getTrustedIssuersForClaimTopic(
+    function getClaimIssuersForClaimTopic(
         uint256 claimTopic
     ) external view override returns (IClaimIssuer[] memory) {
-        return _claimTopicsToTrustedIssuers[claimTopic];
+        return _claimTopicsToClaimIssuers[claimTopic];
     }
 
     /**
-     *  @dev See {ITrustedIssuersRegistry-isTrustedIssuer}.
+     *  @dev See {IClaimIssuersRegistry-isClaimIssuer}.
      */
-    function isTrustedIssuer(
+    function isClaimIssuer(
         address _issuer
     ) external view override returns (bool) {
-        if (_trustedIssuerClaimTopics[_issuer].length > 0) {
+        if (_claimIssuerClaimTopics[_issuer].length > 0) {
             return true;
         }
         return false;
     }
 
     /**
-     *  @dev See {ITrustedIssuersRegistry-getTrustedIssuerClaimTopics}.
+     *  @dev See {IClaimIssuersRegistry-getClaimIssuerClaimTopics}.
      */
-    function getTrustedIssuerClaimTopics(
-        IClaimIssuer _trustedIssuer
+    function getClaimIssuerClaimTopics(
+        IClaimIssuer _claimIssuer
     ) external view override returns (uint256[] memory) {
         require(
-            _trustedIssuerClaimTopics[address(_trustedIssuer)].length != 0,
-            "trusted Issuer doesn't exist"
+            _claimIssuerClaimTopics[address(_claimIssuer)].length != 0,
+            "claim Issuer doesn't exist"
         );
-        return _trustedIssuerClaimTopics[address(_trustedIssuer)];
+        return _claimIssuerClaimTopics[address(_claimIssuer)];
     }
 
     /**
-     *  @dev See {ITrustedIssuersRegistry-hasClaimTopic}.
+     *  @dev See {IClaimIssuersRegistry-hasClaimTopic}.
      */
     function hasClaimTopic(
         address _issuer,
         uint256 _claimTopic
     ) external view override returns (bool) {
-        uint256 length = _trustedIssuerClaimTopics[_issuer].length;
-        uint256[] memory claimTopics = _trustedIssuerClaimTopics[_issuer];
+        uint256 length = _claimIssuerClaimTopics[_issuer].length;
+        uint256[] memory claimTopics = _claimIssuerClaimTopics[_issuer];
         for (uint256 i = 0; i < length; i++) {
             if (claimTopics[i] == _claimTopic) {
                 return true;

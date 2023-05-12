@@ -62,7 +62,7 @@
 
 pragma solidity 0.8.17;
 
-import "./ITrustedIssuersRegistry.sol";
+import "./IClaimIssuersRegistry.sol";
 import "./IClaimTopicsRegistry.sol";
 import "./IIdentityRegistryStorage.sol";
 
@@ -85,11 +85,11 @@ interface IIdentityRegistry {
     event IdentityStorageSet(address indexed identityStorage);
 
     /**
-     *  this event is emitted when the TrustedIssuersRegistry has been set for the IdentityRegistry
+     *  this event is emitted when the ClaimIssuersRegistry has been set for the IdentityRegistry
      *  the event is emitted by the IdentityRegistry constructor
-     *  `trustedIssuersRegistry` is the address of the Trusted Issuers Registry contract
+     *  `claimIssuersRegistry` is the address of the Claim Issuers Registry contract
      */
-    event TrustedIssuersRegistrySet(address indexed trustedIssuersRegistry);
+    event ClaimIssuersRegistrySet(address indexed claimIssuersRegistry);
 
     /**
      *  this event is emitted when an Identity is registered into the Identity Registry.
@@ -178,14 +178,12 @@ interface IIdentityRegistry {
     function setClaimTopicsRegistry(address _claimTopicsRegistry) external;
 
     /**
-     *  @dev Replace the actual trustedIssuersRegistry contract with a new one.
+     *  @dev Replace the actual claimIssuersRegistry contract with a new one.
      *  This function can only be called by the wallet set as owner of the smart contract
-     *  @param _trustedIssuersRegistry The address of the new Trusted Issuers Registry
-     *  emits `TrustedIssuersRegistrySet` event
+     *  @param _claimIssuersRegistry The address of the new Claim Issuers Registry
+     *  emits `ClaimIssuersRegistrySet` event
      */
-    function setTrustedIssuersRegistry(
-        address _trustedIssuersRegistry
-    ) external;
+    function setClaimIssuersRegistry(address _claimIssuersRegistry) external;
 
     /**
      *  @dev Updates the country corresponding to a user address.
@@ -236,7 +234,7 @@ interface IIdentityRegistry {
     /**
      *  @dev This functions checks whether an identity contract
      *  corresponding to the provided user address has the required claims or not based
-     *  on the data fetched from trusted issuers registry and from the claim topics registry
+     *  on the data fetched from claim issuers registry and from the claim topics registry
      *  @param _userAddress The address of the user to be verified.
      *  @return 'True' if the address is verified, 'false' if not.
      */
@@ -262,9 +260,9 @@ interface IIdentityRegistry {
     function identityStorage() external view returns (IIdentityRegistryStorage);
 
     /**
-     *  @dev Returns the TrustedIssuersRegistry linked to the current IdentityRegistry.
+     *  @dev Returns the ClaimIssuersRegistry linked to the current IdentityRegistry.
      */
-    function issuersRegistry() external view returns (ITrustedIssuersRegistry);
+    function issuersRegistry() external view returns (IClaimIssuersRegistry);
 
     /**
      *  @dev Returns the ClaimTopicsRegistry linked to the current IdentityRegistry.

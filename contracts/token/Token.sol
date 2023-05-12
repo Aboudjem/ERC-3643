@@ -65,23 +65,44 @@ pragma solidity 0.8.17;
 
 import "./IToken.sol";
 import "@onchain-id/solidity/contracts/interface/IIdentity.sol";
-import "./TokenStorage.sol";
-import "../roles/AgentRoleUpgradeable.sol";
 
-contract Token is IToken, AgentRoleUpgradeable, TokenStorage {
-    /// modifiers
+import "@openzeppelin/contracts/security/Pausable.sol";
+import "@openzeppelin/contracts/access/AccessControl.sol";
 
-    /// @dev Modifier to make a function callable only when the contract is not paused.
-    modifier whenNotPaused() {
-        require(!_tokenPaused, "Pausable: paused");
-        _;
-    }
+import "../compliance/interface/ICompliance.sol";
 
-    /// @dev Modifier to make a function callable only when the contract is paused.
-    modifier whenPaused() {
-        require(_tokenPaused, "Pausable: not paused");
-        _;
-    }
+contract Token is IToken, AccessControl, Pausable {
+    /// @dev ERC20 basic variables
+    mapping(address => uint256) internal _balances;
+    mapping(address => mapping(address => uint256)) internal _allowances;
+    uint256 internal _totalSupply;
+
+    /// @dev Token information
+    string internal _tokenName;
+    string internal _tokenSymbol;
+    uint8 internal _tokenDecimals;
+    address internal _tokenOnchainID;
+    string internal constant _TOKEN_VERSION = "4.0.1";
+
+    // keccak256(AGENT_ROLE)
+    bytes32 public constant AGENT_ROLE =
+        0xcab5a0bfe0b79d2c4b1c2e02599fa044d115b7511f9659307cb4276950967709;
+
+    // keccak256(OWNER_ROLE)
+    bytes32 public constant OWNER_ROLE =
+        0xb19546dff01e856fb3f010c267a7b1c60363cf8a4664e21cc89c26224620214e;
+
+    /// @dev Variables of freeze and pause functions
+    mapping(address => bool) internal _frozen;
+    mapping(address => uint256) internal _frozenTokens;
+
+    bool internal _tokenPaused = false;
+
+    /// @dev Identity Registry contract used by the onchain validator system
+    IIdentityRegistry internal _tokenIdentityRegistry;
+
+    /// @dev Compliance contract linked to the onchain validator system
+    ICompliance internal _tokenCompliance;
 
     /**
      *  @dev the constructor initiates the token contract
@@ -96,7 +117,7 @@ contract Token is IToken, AgentRoleUpgradeable, TokenStorage {
      *  emits an `IdentityRegistryAdded` event
      *  emits a `ComplianceAdded` event
      */
-    function init(
+    constructor(
         address _identityRegistry,
         address _compliance,
         string memory _name,
@@ -104,12 +125,11 @@ contract Token is IToken, AgentRoleUpgradeable, TokenStorage {
         uint8 _decimals,
         // _onchainID can be zero address if not set, can be set later by owner
         address _onchainID
-    ) external initializer {
+    ) {
         // that require is protecting legacy versions of TokenProxy contracts
         // as there was a bug with the initializer modifier on these proxies
         // that check is preventing attackers to call the init functions on those
         // legacy contracts.
-        require(owner() == address(0), "already initialized");
         require(
             _identityRegistry != address(0) && _compliance != address(0),
             "invalid argument - zero address"
@@ -120,12 +140,17 @@ contract Token is IToken, AgentRoleUpgradeable, TokenStorage {
             "invalid argument - empty string"
         );
         require(0 <= _decimals && _decimals <= 18, "decimals between 0 and 18");
-        __Ownable_init();
+
         _tokenName = _name;
         _tokenSymbol = _symbol;
         _tokenDecimals = _decimals;
         _tokenOnchainID = _onchainID;
-        _tokenPaused = true;
+
+        _grantRole(bytes32(0), _msgSender());
+        _grantRole(OWNER_ROLE, _msgSender());
+        _grantRole(AGENT_ROLE, _msgSender());
+
+        _pause();
         setIdentityRegistry(_identityRegistry);
         setCompliance(_compliance);
         emit UpdatedTokenInformation(
@@ -179,46 +204,12 @@ contract Token is IToken, AgentRoleUpgradeable, TokenStorage {
     }
 
     /**
-     *  @dev See {IToken-setName}.
-     */
-    function setName(string calldata _name) external override onlyOwner {
-        require(
-            keccak256(abi.encode(_name)) != keccak256(abi.encode("")),
-            "invalid argument - empty string"
-        );
-        _tokenName = _name;
-        emit UpdatedTokenInformation(
-            _tokenName,
-            _tokenSymbol,
-            _tokenDecimals,
-            _TOKEN_VERSION,
-            _tokenOnchainID
-        );
-    }
-
-    /**
-     *  @dev See {IToken-setSymbol}.
-     */
-    function setSymbol(string calldata _symbol) external override onlyOwner {
-        require(
-            keccak256(abi.encode(_symbol)) != keccak256(abi.encode("")),
-            "invalid argument - empty string"
-        );
-        _tokenSymbol = _symbol;
-        emit UpdatedTokenInformation(
-            _tokenName,
-            _tokenSymbol,
-            _tokenDecimals,
-            _TOKEN_VERSION,
-            _tokenOnchainID
-        );
-    }
-
-    /**
      *  @dev See {IToken-setOnchainID}.
      *  if _onchainID is set at zero address it means no ONCHAINID is bound to this token
      */
-    function setOnchainID(address _onchainID) external override onlyOwner {
+    function setOnchainID(
+        address _onchainID
+    ) external override onlyRole(OWNER_ROLE) {
         _tokenOnchainID = _onchainID;
         emit UpdatedTokenInformation(
             _tokenName,
@@ -232,16 +223,16 @@ contract Token is IToken, AgentRoleUpgradeable, TokenStorage {
     /**
      *  @dev See {IToken-pause}.
      */
-    function pause() external override onlyAgent whenNotPaused {
-        _tokenPaused = true;
+    function pause() external override onlyRole(AGENT_ROLE) {
+        _pause();
         emit Paused(msg.sender);
     }
 
     /**
      *  @dev See {IToken-unpause}.
      */
-    function unpause() external override onlyAgent whenPaused {
-        _tokenPaused = false;
+    function unpause() external override onlyRole(AGENT_ROLE) {
+        _unpause();
         emit Unpaused(msg.sender);
     }
 
@@ -373,7 +364,7 @@ contract Token is IToken, AgentRoleUpgradeable, TokenStorage {
         address _lostWallet,
         address _newWallet,
         address _investorOnchainID
-    ) external override onlyAgent returns (bool) {
+    ) external override onlyRole(AGENT_ROLE) returns (bool) {
         require(balanceOf(_lostWallet) != 0, "no tokens to recover");
         IIdentity _onchainID = IIdentity(_investorOnchainID);
         bytes32 _key = keccak256(abi.encode(_newWallet));
@@ -431,15 +422,8 @@ contract Token is IToken, AgentRoleUpgradeable, TokenStorage {
     /**
      *  @dev See {IToken-compliance}.
      */
-    function compliance() external view override returns (IModularCompliance) {
-        return _tokenCompliance;
-    }
-
-    /**
-     *  @dev See {IToken-paused}.
-     */
-    function paused() external view override returns (bool) {
-        return _tokenPaused;
+    function compliance() external view override returns (address) {
+        return address(_tokenCompliance);
     }
 
     /**
@@ -531,7 +515,7 @@ contract Token is IToken, AgentRoleUpgradeable, TokenStorage {
         address _from,
         address _to,
         uint256 _amount
-    ) public override onlyAgent returns (bool) {
+    ) public override onlyRole(AGENT_ROLE) returns (bool) {
         require(balanceOf(_from) >= _amount, "sender balance too low");
         uint256 freeBalance = balanceOf(_from) - (_frozenTokens[_from]);
         if (_amount > freeBalance) {
@@ -550,7 +534,10 @@ contract Token is IToken, AgentRoleUpgradeable, TokenStorage {
     /**
      *  @dev See {IToken-mint}.
      */
-    function mint(address _to, uint256 _amount) public override onlyAgent {
+    function mint(
+        address _to,
+        uint256 _amount
+    ) public onlyRole(AGENT_ROLE) override {
         require(
             _tokenIdentityRegistry.isVerified(_to),
             "Identity is not verified."
@@ -569,7 +556,7 @@ contract Token is IToken, AgentRoleUpgradeable, TokenStorage {
     function burn(
         address _userAddress,
         uint256 _amount
-    ) public override onlyAgent {
+    ) public override onlyRole(AGENT_ROLE) {
         require(
             balanceOf(_userAddress) >= _amount,
             "cannot burn more than balance"
@@ -593,7 +580,7 @@ contract Token is IToken, AgentRoleUpgradeable, TokenStorage {
     function setAddressFrozen(
         address _userAddress,
         bool _freeze
-    ) public override onlyAgent {
+    ) public override onlyRole(AGENT_ROLE) {
         _frozen[_userAddress] = _freeze;
 
         emit AddressFrozen(_userAddress, _freeze, msg.sender);
@@ -605,7 +592,7 @@ contract Token is IToken, AgentRoleUpgradeable, TokenStorage {
     function freezePartialTokens(
         address _userAddress,
         uint256 _amount
-    ) public override onlyAgent {
+    ) public override onlyRole(AGENT_ROLE) {
         uint256 balance = balanceOf(_userAddress);
         require(
             balance >= _frozenTokens[_userAddress] + _amount,
@@ -621,7 +608,7 @@ contract Token is IToken, AgentRoleUpgradeable, TokenStorage {
     function unfreezePartialTokens(
         address _userAddress,
         uint256 _amount
-    ) public override onlyAgent {
+    ) public override onlyRole(AGENT_ROLE) {
         require(
             _frozenTokens[_userAddress] >= _amount,
             "Amount should be less than or equal to frozen tokens"
@@ -635,7 +622,7 @@ contract Token is IToken, AgentRoleUpgradeable, TokenStorage {
      */
     function setIdentityRegistry(
         address _identityRegistry
-    ) public override onlyOwner {
+    ) public override onlyRole(OWNER_ROLE) {
         _tokenIdentityRegistry = IIdentityRegistry(_identityRegistry);
         emit IdentityRegistryAdded(_identityRegistry);
     }
@@ -643,11 +630,13 @@ contract Token is IToken, AgentRoleUpgradeable, TokenStorage {
     /**
      *  @dev See {IToken-setCompliance}.
      */
-    function setCompliance(address _compliance) public override onlyOwner {
+    function setCompliance(
+        address _compliance
+    ) public override onlyRole(OWNER_ROLE) {
         if (address(_tokenCompliance) != address(0)) {
             _tokenCompliance.unbindToken(address(this));
         }
-        _tokenCompliance = IModularCompliance(_compliance);
+        _tokenCompliance = ICompliance(_compliance);
         _tokenCompliance.bindToken(address(this));
         emit ComplianceAdded(_compliance);
     }
@@ -672,8 +661,6 @@ contract Token is IToken, AgentRoleUpgradeable, TokenStorage {
         require(_from != address(0), "ERC20: transfer from the zero address");
         require(_to != address(0), "ERC20: transfer to the zero address");
 
-        _beforeTokenTransfer(_from, _to, _amount);
-
         _balances[_from] = _balances[_from] - _amount;
         _balances[_to] = _balances[_to] + _amount;
         emit Transfer(_from, _to, _amount);
@@ -684,8 +671,6 @@ contract Token is IToken, AgentRoleUpgradeable, TokenStorage {
      */
     function _mint(address _userAddress, uint256 _amount) internal virtual {
         require(_userAddress != address(0), "ERC20: mint to the zero address");
-
-        _beforeTokenTransfer(address(0), _userAddress, _amount);
 
         _totalSupply = _totalSupply + _amount;
         _balances[_userAddress] = _balances[_userAddress] + _amount;
@@ -700,8 +685,6 @@ contract Token is IToken, AgentRoleUpgradeable, TokenStorage {
             _userAddress != address(0),
             "ERC20: burn from the zero address"
         );
-
-        _beforeTokenTransfer(_userAddress, address(0), _amount);
 
         _balances[_userAddress] = _balances[_userAddress] - _amount;
         _totalSupply = _totalSupply - _amount;
@@ -722,14 +705,4 @@ contract Token is IToken, AgentRoleUpgradeable, TokenStorage {
         _allowances[_owner][_spender] = _amount;
         emit Approval(_owner, _spender, _amount);
     }
-
-    /**
-     *  @dev See {ERC20-_beforeTokenTransfer}.
-     */
-    // solhint-disable-next-line no-empty-blocks
-    function _beforeTokenTransfer(
-        address _from,
-        address _to,
-        uint256 _amount
-    ) internal virtual {}
 }

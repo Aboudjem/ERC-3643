@@ -62,50 +62,61 @@
 
 pragma solidity 0.8.17;
 
+import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@onchain-id/solidity/contracts/interface/IClaimIssuer.sol";
 import "@onchain-id/solidity/contracts/interface/IIdentity.sol";
+import "./interface/IClaimTopicsRegistry.sol";
+import "./interface/IClaimIssuersRegistry.sol";
+import "./interface/IIdentityRegistry.sol";
+import "./interface/IIdentityRegistryStorage.sol";
 
-import "../interface/IClaimTopicsRegistry.sol";
-import "../interface/ITrustedIssuersRegistry.sol";
-import "../interface/IIdentityRegistry.sol";
-import "../../roles/AgentRoleUpgradeable.sol";
-import "../interface/IIdentityRegistryStorage.sol";
-import "../storage/IRStorage.sol";
+contract IdentityRegistry is IIdentityRegistry, AccessControl {
+    /// @dev Address of the ClaimTopicsRegistry Contract
+    IClaimTopicsRegistry private _tokenTopicsRegistry;
 
-contract IdentityRegistry is
-    IIdentityRegistry,
-    AgentRoleUpgradeable,
-    IRStorage
-{
+    /// @dev Address of the ClaimIssuersRegistry Contract
+    IClaimIssuersRegistry private _tokenIssuersRegistry;
+
+    /// @dev Address of the IdentityRegistryStorage Contract
+    IIdentityRegistryStorage private _tokenIdentityStorage;
+
+    // keccak256(AGENT_ROLE)
+    bytes32 public constant AGENT_ROLE =
+        0xcab5a0bfe0b79d2c4b1c2e02599fa044d115b7511f9659307cb4276950967709;
+
+    // keccak256(OWNER_ROLE)
+    bytes32 public constant OWNER_ROLE =
+        0xb19546dff01e856fb3f010c267a7b1c60363cf8a4664e21cc89c26224620214e;
+
+
     /**
      *  @dev the constructor initiates the Identity Registry smart contract
-     *  @param _trustedIssuersRegistry the trusted issuers registry linked to the Identity Registry
+     *  @param _claimIssuersRegistry the claim issuers registry linked to the Identity Registry
      *  @param _claimTopicsRegistry the claim topics registry linked to the Identity Registry
      *  @param _identityStorage the identity registry storage linked to the Identity Registry
      *  emits a `ClaimTopicsRegistrySet` event
-     *  emits a `TrustedIssuersRegistrySet` event
+     *  emits a `ClaimIssuersRegistrySet` event
      *  emits an `IdentityStorageSet` event
      */
-    function init(
-        address _trustedIssuersRegistry,
+    constructor(
+        address _claimIssuersRegistry,
         address _claimTopicsRegistry,
         address _identityStorage
-    ) external initializer {
+    ) {
         require(
-            _trustedIssuersRegistry != address(0) &&
+            _claimIssuersRegistry != address(0) &&
                 _claimTopicsRegistry != address(0) &&
                 _identityStorage != address(0),
             "invalid argument - zero address"
         );
+        _grantRole(bytes32(0), _msgSender());
+        _grantRole(OWNER_ROLE, _msgSender());
         _tokenTopicsRegistry = IClaimTopicsRegistry(_claimTopicsRegistry);
-        _tokenIssuersRegistry = ITrustedIssuersRegistry(
-            _trustedIssuersRegistry
-        );
+        _tokenIssuersRegistry = IClaimIssuersRegistry(_claimIssuersRegistry);
         _tokenIdentityStorage = IIdentityRegistryStorage(_identityStorage);
         emit ClaimTopicsRegistrySet(_claimTopicsRegistry);
-        emit TrustedIssuersRegistrySet(_trustedIssuersRegistry);
+        emit ClaimIssuersRegistrySet(_claimIssuersRegistry);
         emit IdentityStorageSet(_identityStorage);
-        __Ownable_init();
     }
 
     /**
@@ -127,7 +138,7 @@ contract IdentityRegistry is
     function updateIdentity(
         address _userAddress,
         IIdentity _identity
-    ) external override onlyAgent {
+    ) external override onlyRole(AGENT_ROLE) {
         IIdentity oldIdentity = identity(_userAddress);
         _tokenIdentityStorage.modifyStoredIdentity(_userAddress, _identity);
         emit IdentityUpdated(oldIdentity, _identity);
@@ -139,7 +150,7 @@ contract IdentityRegistry is
     function updateCountry(
         address _userAddress,
         uint16 _country
-    ) external override onlyAgent {
+    ) external override onlyRole(AGENT_ROLE) {
         _tokenIdentityStorage.modifyStoredInvestorCountry(
             _userAddress,
             _country
@@ -150,7 +161,9 @@ contract IdentityRegistry is
     /**
      *  @dev See {IIdentityRegistry-deleteIdentity}.
      */
-    function deleteIdentity(address _userAddress) external override onlyAgent {
+    function deleteIdentity(
+        address _userAddress
+    ) external override onlyRole(AGENT_ROLE) {
         IIdentity oldIdentity = identity(_userAddress);
         _tokenIdentityStorage.removeIdentityFromStorage(_userAddress);
         emit IdentityRemoved(_userAddress, oldIdentity);
@@ -161,7 +174,7 @@ contract IdentityRegistry is
      */
     function setIdentityRegistryStorage(
         address _identityRegistryStorage
-    ) external override onlyOwner {
+    ) external override onlyRole(OWNER_ROLE) {
         _tokenIdentityStorage = IIdentityRegistryStorage(
             _identityRegistryStorage
         );
@@ -173,21 +186,19 @@ contract IdentityRegistry is
      */
     function setClaimTopicsRegistry(
         address _claimTopicsRegistry
-    ) external override onlyOwner {
+    ) external override onlyRole(OWNER_ROLE) {
         _tokenTopicsRegistry = IClaimTopicsRegistry(_claimTopicsRegistry);
         emit ClaimTopicsRegistrySet(_claimTopicsRegistry);
     }
 
     /**
-     *  @dev See {IIdentityRegistry-setTrustedIssuersRegistry}.
+     *  @dev See {IIdentityRegistry-setClaimIssuersRegistry}.
      */
-    function setTrustedIssuersRegistry(
-        address _trustedIssuersRegistry
-    ) external override onlyOwner {
-        _tokenIssuersRegistry = ITrustedIssuersRegistry(
-            _trustedIssuersRegistry
-        );
-        emit TrustedIssuersRegistrySet(_trustedIssuersRegistry);
+    function setClaimIssuersRegistry(
+        address _claimIssuersRegistry
+    ) external override onlyRole(OWNER_ROLE) {
+        _tokenIssuersRegistry = IClaimIssuersRegistry(_claimIssuersRegistry);
+        emit ClaimIssuersRegistrySet(_claimIssuersRegistry);
     }
 
     /**
@@ -217,22 +228,17 @@ contract IdentityRegistry is
             claimTopic < requiredClaimTopics.length;
             claimTopic++
         ) {
-            IClaimIssuer[] memory trustedIssuers = _tokenIssuersRegistry
-                .getTrustedIssuersForClaimTopic(
-                    requiredClaimTopics[claimTopic]
-                );
+            IClaimIssuer[] memory claimIssuers = _tokenIssuersRegistry
+                .getClaimIssuersForClaimTopic(requiredClaimTopics[claimTopic]);
 
-            if (trustedIssuers.length == 0) {
+            if (claimIssuers.length == 0) {
                 return false;
             }
 
-            bytes32[] memory claimIds = new bytes32[](trustedIssuers.length);
-            for (uint256 i = 0; i < trustedIssuers.length; i++) {
+            bytes32[] memory claimIds = new bytes32[](claimIssuers.length);
+            for (uint256 i = 0; i < claimIssuers.length; i++) {
                 claimIds[i] = keccak256(
-                    abi.encode(
-                        trustedIssuers[i],
-                        requiredClaimTopics[claimTopic]
-                    )
+                    abi.encode(claimIssuers[i], requiredClaimTopics[claimTopic])
                 );
             }
 
@@ -285,7 +291,7 @@ contract IdentityRegistry is
         external
         view
         override
-        returns (ITrustedIssuersRegistry)
+        returns (IClaimIssuersRegistry)
     {
         return _tokenIssuersRegistry;
     }
@@ -333,7 +339,7 @@ contract IdentityRegistry is
         address _userAddress,
         IIdentity _identity,
         uint16 _country
-    ) public override onlyAgent {
+    ) public override onlyRole(AGENT_ROLE) {
         _tokenIdentityStorage.addIdentityToStorage(
             _userAddress,
             _identity,

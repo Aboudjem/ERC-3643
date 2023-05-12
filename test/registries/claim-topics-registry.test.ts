@@ -3,20 +3,6 @@ import { expect } from "chai";
 import { deployFullSuiteFixture } from "../fixtures/deploy-full-suite.fixture";
 
 describe("ClaimTopicsRegistry", () => {
-  describe(".init", () => {
-    describe("when contract was already initialized", () => {
-      it("should revert", async () => {
-        const {
-          suite: { claimTopicsRegistry },
-        } = await loadFixture(deployFullSuiteFixture);
-
-        await expect(claimTopicsRegistry.init()).to.be.revertedWith(
-          "Initializable: contract is already initialized"
-        );
-      });
-    });
-  });
-
   describe(".addClaimTopic", () => {
     describe("when sender is not owner", () => {
       it("should revert", async () => {

@@ -1,119 +1,29 @@
 import { loadFixture } from "@nomicfoundation/hardhat-network-helpers";
 import { expect } from "chai";
 import { ethers } from "hardhat";
-import {
-  deployFullSuiteFixture,
-  deploySuiteWithModularCompliancesFixture,
-} from "../fixtures/deploy-full-suite.fixture";
+import { deployFullSuiteFixture } from "../fixtures/deploy-full-suite.fixture";
+import { AGENT_ROLE, OWNER_ROLE, accessControlRevert } from "../utils";
 
 describe("Token - Information", () => {
-  describe(".setName()", () => {
-    describe("when the caller is not the owner", () => {
-      it("should revert", async () => {
-        const {
-          suite: { token },
-          accounts: { anotherWallet },
-        } = await loadFixture(deployFullSuiteFixture);
-        await expect(
-          token.connect(anotherWallet).setName("My Token")
-        ).to.be.revertedWith("Ownable: caller is not the owner");
-      });
-    });
-
-    describe("when the caller is the owner", () => {
-      describe("when the name is empty", () => {
-        it("should revert", async () => {
-          const {
-            suite: { token },
-          } = await loadFixture(deployFullSuiteFixture);
-          await expect(token.setName("")).to.be.revertedWith(
-            "invalid argument - empty string"
-          );
-        });
-      });
-
-      it("should set the name", async () => {
-        const {
-          suite: { token },
-        } = await loadFixture(deployFullSuiteFixture);
-        const tx = await token.setName("Updated Test Token");
-        await expect(tx)
-          .to.emit(token, "UpdatedTokenInformation")
-          .withArgs(
-            "Updated Test Token",
-            await token.symbol(),
-            await token.decimals(),
-            await token.version(),
-            await token.onchainID()
-          );
-        expect(await token.name()).to.equal("Updated Test Token");
-      });
-    });
-  });
-
-  describe(".setSymbol()", () => {
-    describe("when the caller is not the owner", () => {
-      it("should revert", async () => {
-        const {
-          suite: { token },
-          accounts: { anotherWallet },
-        } = await loadFixture(deployFullSuiteFixture);
-        await expect(
-          token.connect(anotherWallet).setSymbol("UpdtTK")
-        ).to.be.revertedWith("Ownable: caller is not the owner");
-      });
-    });
-
-    describe("when the caller is the owner", () => {
-      describe("when the symbol is empty", () => {
-        it("should revert", async () => {
-          const {
-            suite: { token },
-          } = await loadFixture(deployFullSuiteFixture);
-          await expect(token.setSymbol("")).to.be.revertedWith(
-            "invalid argument - empty string"
-          );
-        });
-      });
-
-      it("should set the symbol", async () => {
-        const {
-          suite: { token },
-        } = await loadFixture(deployFullSuiteFixture);
-        const tx = await token.setSymbol("UpdtTK");
-        await expect(tx)
-          .to.emit(token, "UpdatedTokenInformation")
-          .withArgs(
-            await token.name(),
-            "UpdtTK",
-            await token.decimals(),
-            await token.version(),
-            await token.onchainID()
-          );
-        expect(await token.symbol()).to.equal("UpdtTK");
-      });
-    });
-  });
-
   describe(".setOnchainID()", () => {
     describe("when the caller is not the owner", () => {
       it("should revert", async () => {
         const {
           suite: { token },
-          accounts: { anotherWallet },
+          accounts: { anotherWallet }
         } = await loadFixture(deployFullSuiteFixture);
         await expect(
           token
             .connect(anotherWallet)
             .setOnchainID(ethers.constants.AddressZero)
-        ).to.be.revertedWith("Ownable: caller is not the owner");
+        ).to.be.revertedWith(accessControlRevert(anotherWallet, OWNER_ROLE));
       });
     });
 
     describe("when the caller is the owner", () => {
       it("should set the onchainID", async () => {
         const {
-          suite: { token },
+          suite: { token }
         } = await loadFixture(deployFullSuiteFixture);
         const tx = await token.setOnchainID(ethers.constants.AddressZero);
         await expect(tx)
@@ -135,13 +45,15 @@ describe("Token - Information", () => {
       it("should revert", async () => {
         const {
           suite: { token },
-          accounts: { anotherWallet },
+          accounts: { anotherWallet }
         } = await loadFixture(deployFullSuiteFixture);
         await expect(
           token
             .connect(anotherWallet)
             .setIdentityRegistry(ethers.constants.AddressZero)
-        ).to.be.revertedWith("Ownable: caller is not the owner");
+        ).to.be.revertedWith(
+          "AccessControl: account 0xa0ee7a142d267c1f36714e4a8f75612f20a79720 is missing role 0xb19546dff01e856fb3f010c267a7b1c60363cf8a4664e21cc89c26224620214e"
+        );
       });
     });
   });
@@ -150,7 +62,7 @@ describe("Token - Information", () => {
     it("should return the total supply", async () => {
       const {
         suite: { token },
-        accounts: { aliceWallet, bobWallet },
+        accounts: { aliceWallet, bobWallet }
       } = await loadFixture(deployFullSuiteFixture);
 
       const balance = await token
@@ -165,24 +77,16 @@ describe("Token - Information", () => {
       it("should revert", async () => {
         const {
           suite: { token },
-          accounts: { anotherWallet },
+          accounts: { anotherWallet }
         } = await loadFixture(deployFullSuiteFixture);
         await expect(
           token
             .connect(anotherWallet)
             .setCompliance(ethers.constants.AddressZero)
-        ).to.be.revertedWith("Ownable: caller is not the owner");
+        ).to.be.revertedWith(
+          "AccessControl: account 0xa0ee7a142d267c1f36714e4a8f75612f20a79720 is missing role 0xb19546dff01e856fb3f010c267a7b1c60363cf8a4664e21cc89c26224620214e"
+        );
       });
-    });
-  });
-
-  describe(".compliance()", () => {
-    it("should return the compliance address", async () => {
-      const {
-        suite: { token, compliance },
-      } = await loadFixture(deploySuiteWithModularCompliancesFixture);
-      await token.setCompliance(compliance.address);
-      expect(await token.compliance()).to.equal(compliance.address);
     });
   });
 
@@ -191,10 +95,10 @@ describe("Token - Information", () => {
       it("should revert", async () => {
         const {
           suite: { token },
-          accounts: { anotherWallet },
+          accounts: { anotherWallet }
         } = await loadFixture(deployFullSuiteFixture);
         await expect(token.connect(anotherWallet).pause()).to.be.revertedWith(
-          "AgentRole: caller does not have the Agent role"
+          "AccessControl: account 0xa0ee7a142d267c1f36714e4a8f75612f20a79720 is missing role 0xcab5a0bfe0b79d2c4b1c2e02599fa044d115b7511f9659307cb4276950967709"
         );
       });
     });
@@ -204,7 +108,7 @@ describe("Token - Information", () => {
         it("should pause the token", async () => {
           const {
             suite: { token },
-            accounts: { tokenAgent },
+            accounts: { tokenAgent }
           } = await loadFixture(deployFullSuiteFixture);
           const tx = await token.connect(tokenAgent).pause();
           await expect(tx)
@@ -218,7 +122,7 @@ describe("Token - Information", () => {
         it("should revert", async () => {
           const {
             suite: { token },
-            accounts: { tokenAgent },
+            accounts: { tokenAgent }
           } = await loadFixture(deployFullSuiteFixture);
           await token.connect(tokenAgent).pause();
           await expect(token.connect(tokenAgent).pause()).to.be.revertedWith(
@@ -234,10 +138,10 @@ describe("Token - Information", () => {
       it("should revert", async () => {
         const {
           suite: { token },
-          accounts: { anotherWallet },
+          accounts: { anotherWallet }
         } = await loadFixture(deployFullSuiteFixture);
         await expect(token.connect(anotherWallet).unpause()).to.be.revertedWith(
-          "AgentRole: caller does not have the Agent role"
+          accessControlRevert(anotherWallet, AGENT_ROLE)
         );
       });
     });
@@ -247,7 +151,7 @@ describe("Token - Information", () => {
         it("should unpause the token", async () => {
           const {
             suite: { token },
-            accounts: { tokenAgent },
+            accounts: { tokenAgent }
           } = await loadFixture(deployFullSuiteFixture);
           await token.connect(tokenAgent).pause();
           const tx = await token.connect(tokenAgent).unpause();
@@ -262,7 +166,7 @@ describe("Token - Information", () => {
         it("should revert", async () => {
           const {
             suite: { token },
-            accounts: { tokenAgent },
+            accounts: { tokenAgent }
           } = await loadFixture(deployFullSuiteFixture);
           await expect(token.connect(tokenAgent).unpause()).to.be.revertedWith(
             "Pausable: not paused"
@@ -277,13 +181,15 @@ describe("Token - Information", () => {
       it("should revert", async () => {
         const {
           suite: { token },
-          accounts: { anotherWallet },
+          accounts: { anotherWallet }
         } = await loadFixture(deployFullSuiteFixture);
         await expect(
           token
             .connect(anotherWallet)
             .setAddressFrozen(anotherWallet.address, true)
-        ).to.be.revertedWith("AgentRole: caller does not have the Agent role");
+        ).to.be.revertedWith(
+          "AccessControl: account 0xa0ee7a142d267c1f36714e4a8f75612f20a79720 is missing role 0xcab5a0bfe0b79d2c4b1c2e02599fa044d115b7511f9659307cb4276950967709"
+        );
       });
     });
   });
@@ -293,13 +199,15 @@ describe("Token - Information", () => {
       it("should revert", async () => {
         const {
           suite: { token },
-          accounts: { anotherWallet },
+          accounts: { anotherWallet }
         } = await loadFixture(deployFullSuiteFixture);
         await expect(
           token
             .connect(anotherWallet)
             .freezePartialTokens(anotherWallet.address, 1)
-        ).to.be.revertedWith("AgentRole: caller does not have the Agent role");
+        ).to.be.revertedWith(
+          "AccessControl: account 0xa0ee7a142d267c1f36714e4a8f75612f20a79720 is missing role 0xcab5a0bfe0b79d2c4b1c2e02599fa044d115b7511f9659307cb4276950967709"
+        );
       });
     });
 
@@ -308,7 +216,7 @@ describe("Token - Information", () => {
         it("should revert", async () => {
           const {
             suite: { token },
-            accounts: { tokenAgent, anotherWallet },
+            accounts: { tokenAgent, anotherWallet }
           } = await loadFixture(deployFullSuiteFixture);
           await expect(
             token
@@ -325,13 +233,15 @@ describe("Token - Information", () => {
       it("should revert", async () => {
         const {
           suite: { token },
-          accounts: { anotherWallet },
+          accounts: { anotherWallet }
         } = await loadFixture(deployFullSuiteFixture);
         await expect(
           token
             .connect(anotherWallet)
             .unfreezePartialTokens(anotherWallet.address, 1)
-        ).to.be.revertedWith("AgentRole: caller does not have the Agent role");
+        ).to.be.revertedWith(
+          "AccessControl: account 0xa0ee7a142d267c1f36714e4a8f75612f20a79720 is missing role 0xcab5a0bfe0b79d2c4b1c2e02599fa044d115b7511f9659307cb4276950967709"
+        );
       });
     });
 
@@ -340,7 +250,7 @@ describe("Token - Information", () => {
         it("should revert", async () => {
           const {
             suite: { token },
-            accounts: { tokenAgent, anotherWallet },
+            accounts: { tokenAgent, anotherWallet }
           } = await loadFixture(deployFullSuiteFixture);
           await expect(
             token

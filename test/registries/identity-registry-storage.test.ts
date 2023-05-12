@@ -2,22 +2,9 @@ import { loadFixture } from "@nomicfoundation/hardhat-network-helpers";
 import { expect } from "chai";
 import { ethers } from "hardhat";
 import { deployFullSuiteFixture } from "../fixtures/deploy-full-suite.fixture";
+import { AGENT_ROLE } from "../utils";
 
 describe("IdentityRegistryStorage", () => {
-  describe(".init", () => {
-    describe("when contract was already initialized", () => {
-      it("should revert", async () => {
-        const {
-          suite: { identityRegistryStorage },
-        } = await loadFixture(deployFullSuiteFixture);
-
-        await expect(identityRegistryStorage.init()).to.be.revertedWith(
-          "Initializable: contract is already initialized"
-        );
-      });
-    });
-  });
-
   describe(".addIdentityToStorage()", () => {
     describe("when sender is not agent", () => {
       it("should revert", async () => {
@@ -35,7 +22,9 @@ describe("IdentityRegistryStorage", () => {
               charlieIdentity.address,
               42
             )
-        ).to.be.revertedWith("AgentRole: caller does not have the Agent role");
+        ).to.be.revertedWith(
+          "AccessControl: account 0xa0ee7a142d267c1f36714e4a8f75612f20a79720 is missing role 0xcab5a0bfe0b79d2c4b1c2e02599fa044d115b7511f9659307cb4276950967709"
+        );
       });
     });
 
@@ -47,7 +36,10 @@ describe("IdentityRegistryStorage", () => {
             accounts: { tokenAgent, charlieWallet },
           } = await loadFixture(deployFullSuiteFixture);
 
-          await identityRegistryStorage.addAgent(tokenAgent.address);
+          await identityRegistryStorage.grantRole(
+            AGENT_ROLE,
+            tokenAgent.address
+          );
 
           await expect(
             identityRegistryStorage
@@ -69,7 +61,10 @@ describe("IdentityRegistryStorage", () => {
             identities: { charlieIdentity },
           } = await loadFixture(deployFullSuiteFixture);
 
-          await identityRegistryStorage.addAgent(tokenAgent.address);
+          await identityRegistryStorage.grantRole(
+            AGENT_ROLE,
+            tokenAgent.address
+          );
 
           await expect(
             identityRegistryStorage
@@ -91,7 +86,10 @@ describe("IdentityRegistryStorage", () => {
             identities: { charlieIdentity },
           } = await loadFixture(deployFullSuiteFixture);
 
-          await identityRegistryStorage.addAgent(tokenAgent.address);
+          await identityRegistryStorage.grantRole(
+            AGENT_ROLE,
+            tokenAgent.address
+          );
 
           await expect(
             identityRegistryStorage
@@ -123,7 +121,9 @@ describe("IdentityRegistryStorage", () => {
               charlieWallet.address,
               charlieIdentity.address
             )
-        ).to.be.revertedWith("AgentRole: caller does not have the Agent role");
+        ).to.be.revertedWith(
+          "AccessControl: account 0xa0ee7a142d267c1f36714e4a8f75612f20a79720 is missing role 0xcab5a0bfe0b79d2c4b1c2e02599fa044d115b7511f9659307cb4276950967709"
+        );
       });
     });
 
@@ -135,7 +135,10 @@ describe("IdentityRegistryStorage", () => {
             accounts: { tokenAgent, charlieWallet },
           } = await loadFixture(deployFullSuiteFixture);
 
-          await identityRegistryStorage.addAgent(tokenAgent.address);
+          await identityRegistryStorage.grantRole(
+            AGENT_ROLE,
+            tokenAgent.address
+          );
 
           await expect(
             identityRegistryStorage
@@ -156,7 +159,10 @@ describe("IdentityRegistryStorage", () => {
             identities: { charlieIdentity },
           } = await loadFixture(deployFullSuiteFixture);
 
-          await identityRegistryStorage.addAgent(tokenAgent.address);
+          await identityRegistryStorage.grantRole(
+            AGENT_ROLE,
+            tokenAgent.address
+          );
 
           await expect(
             identityRegistryStorage
@@ -177,7 +183,10 @@ describe("IdentityRegistryStorage", () => {
             identities: { charlieIdentity },
           } = await loadFixture(deployFullSuiteFixture);
 
-          await identityRegistryStorage.addAgent(tokenAgent.address);
+          await identityRegistryStorage.grantRole(
+            AGENT_ROLE,
+            tokenAgent.address
+          );
 
           await expect(
             identityRegistryStorage
@@ -204,7 +213,9 @@ describe("IdentityRegistryStorage", () => {
           identityRegistryStorage
             .connect(anotherWallet)
             .modifyStoredInvestorCountry(charlieWallet.address, 42)
-        ).to.be.revertedWith("AgentRole: caller does not have the Agent role");
+        ).to.be.revertedWith(
+          "AccessControl: account 0xa0ee7a142d267c1f36714e4a8f75612f20a79720 is missing role 0xcab5a0bfe0b79d2c4b1c2e02599fa044d115b7511f9659307cb4276950967709"
+        );
       });
     });
 
@@ -216,7 +227,10 @@ describe("IdentityRegistryStorage", () => {
             accounts: { tokenAgent },
           } = await loadFixture(deployFullSuiteFixture);
 
-          await identityRegistryStorage.addAgent(tokenAgent.address);
+          await identityRegistryStorage.grantRole(
+            AGENT_ROLE,
+            tokenAgent.address
+          );
 
           await expect(
             identityRegistryStorage
@@ -233,7 +247,10 @@ describe("IdentityRegistryStorage", () => {
             accounts: { tokenAgent, charlieWallet },
           } = await loadFixture(deployFullSuiteFixture);
 
-          await identityRegistryStorage.addAgent(tokenAgent.address);
+          await identityRegistryStorage.grantRole(
+            AGENT_ROLE,
+            tokenAgent.address
+          );
 
           await expect(
             identityRegistryStorage
@@ -257,7 +274,9 @@ describe("IdentityRegistryStorage", () => {
           identityRegistryStorage
             .connect(anotherWallet)
             .removeIdentityFromStorage(charlieWallet.address)
-        ).to.be.revertedWith("AgentRole: caller does not have the Agent role");
+        ).to.be.revertedWith(
+          "AccessControl: account 0xa0ee7a142d267c1f36714e4a8f75612f20a79720 is missing role 0xcab5a0bfe0b79d2c4b1c2e02599fa044d115b7511f9659307cb4276950967709"
+        );
       });
     });
 
@@ -269,7 +288,10 @@ describe("IdentityRegistryStorage", () => {
             accounts: { tokenAgent },
           } = await loadFixture(deployFullSuiteFixture);
 
-          await identityRegistryStorage.addAgent(tokenAgent.address);
+          await identityRegistryStorage.grantRole(
+            AGENT_ROLE,
+            tokenAgent.address
+          );
 
           await expect(
             identityRegistryStorage
@@ -286,7 +308,10 @@ describe("IdentityRegistryStorage", () => {
             accounts: { tokenAgent, charlieWallet },
           } = await loadFixture(deployFullSuiteFixture);
 
-          await identityRegistryStorage.addAgent(tokenAgent.address);
+          await identityRegistryStorage.grantRole(
+            AGENT_ROLE,
+            tokenAgent.address
+          );
 
           await expect(
             identityRegistryStorage
@@ -311,7 +336,7 @@ describe("IdentityRegistryStorage", () => {
           identityRegistryStorage
             .connect(anotherWallet)
             .bindIdentityRegistry(charlieIdentity.address)
-        ).to.be.revertedWith("Ownable: caller is not the owner");
+        ).to.be.revertedWith("AccessControl: account 0xa0ee7a142d267c1f36714e4a8f75612f20a79720 is missing role 0xb19546dff01e856fb3f010c267a7b1c60363cf8a4664e21cc89c26224620214e");
       });
     });
 
@@ -370,7 +395,7 @@ describe("IdentityRegistryStorage", () => {
           identityRegistryStorage
             .connect(anotherWallet)
             .unbindIdentityRegistry(charlieIdentity.address)
-        ).to.be.revertedWith("Ownable: caller is not the owner");
+        ).to.be.revertedWith("AccessControl: account 0xa0ee7a142d267c1f36714e4a8f75612f20a79720 is missing role 0xb19546dff01e856fb3f010c267a7b1c60363cf8a4664e21cc89c26224620214e");
       });
     });
 

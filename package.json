@@ -1,7 +1,20 @@
 {
-  "name": "@tokenysolutions/t-rex",
-  "version": "4.0.1-beta2",
-  "description": "A fully compliant environment for the issuance and use of tokenized securities.",
+  "name": "ERC-3643",
+  "version": "0.1.0",
+  "description": "ERC-3643: An accessible, optimized, and light-weight version of the T-REX Standard (ERC-3643) security token standard. Ideal for tokenized securities and smart contracts in the blockchain world. Built with Solidity and leverages Web3 technologies.",
+  "keywords": [
+    "ERC-3643",
+    "ERC3643",
+    "Tokenization",
+    "Security Tokens",
+    "Web3",
+    "Smart Contracts",
+    "Blockchain",
+    "Solidity",
+    "T-REX",
+    "T-Rex Standard",
+    "Tokeny Solutions"
+  ],
   "main": "index.js",
   "directories": {
     "doc": "docs",
@@ -14,8 +27,6 @@
     "index.d.ts",
     "!contract/_testContracts",
     "!artifacts/contracts/_testContracts",
-    "!contract/Migrations.sol",
-    "!artifacts/contracts/Migrations.sol",
     "!artifacts/build-info"
   ],
   "scripts": {
@@ -33,16 +44,20 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/TokenySolutions/T-REX.git"
+    "url": "git+https://github.com/aboudjem/ERC-3643.git"
   },
   "author": "Tokeny Solutions",
+  "contributors": [
+    "Adam BOUDJEMAA (@Aboudjem)"
+  ],
   "license": "SEE LICENSE IN LICENSE.md",
   "bugs": {
-    "url": "https://github.com/TokenySolutions/T-REX/issues"
+    "url": "https://github.com/aboudjem/ERC-3643/issues"
   },
-  "homepage": "https://github.com/TokenySolutions/T-REX#README",
+  "homepage": "https://github.com/aboudjem/ERC-3643#README",
   "dependencies": {
     "@onchain-id/solidity": "^2.0.0",
+    "@openzeppelin/contracts": "^4.8.3",
     "@openzeppelin/contracts-upgradeable": "^4.8.3",
     "hardhat": "^2.14.0"
   },
@@ -62,6 +77,9 @@
   },
   "lint-staged": {
     "*.js": [
+      "eslint"
+    ],
+    "*.ts": [
       "eslint"
     ]
   }

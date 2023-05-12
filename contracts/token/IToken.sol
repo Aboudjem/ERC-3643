@@ -64,7 +64,6 @@
 pragma solidity 0.8.17;
 
 import "../registry/interface/IIdentityRegistry.sol";
-import "../compliance/modular/IModularCompliance.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 /// @dev interface
@@ -145,38 +144,6 @@ interface IToken is IERC20 {
      *  `_amount` is the amount of tokens that are unfrozen
      */
     event TokensUnfrozen(address indexed _userAddress, uint256 _amount);
-
-    /**
-     *  this event is emitted when the token is paused
-     *  the event is emitted by the pause function
-     *  `_userAddress` is the address of the wallet that called the pause function
-     */
-    event Paused(address _userAddress);
-
-    /**
-     *  this event is emitted when the token is unpaused
-     *  the event is emitted by the unpause function
-     *  `_userAddress` is the address of the wallet that called the unpause function
-     */
-    event Unpaused(address _userAddress);
-
-    /// functions
-
-    /**
-     *  @dev sets the token name
-     *  @param _name the name of token to set
-     *  Only the owner of the token smart contract can call this function
-     *  emits a `UpdatedTokenInformation` event
-     */
-    function setName(string calldata _name) external;
-
-    /**
-     *  @dev sets the token symbol
-     *  @param _symbol the token symbol to set
-     *  Only the owner of the token smart contract can call this function
-     *  emits a `UpdatedTokenInformation` event
-     */
-    function setSymbol(string calldata _symbol) external;
 
     /**
      *  @dev sets the onchain ID of the token
@@ -470,12 +437,7 @@ interface IToken is IERC20 {
     /**
      *  @dev Returns the Compliance contract linked to the token
      */
-    function compliance() external view returns (IModularCompliance);
-
-    /**
-     * @dev Returns true if the contract is paused, and false otherwise.
-     */
-    function paused() external view returns (bool);
+    function compliance() external view returns (address);
 
     /**
      *  @dev Returns the freezing status of a wallet

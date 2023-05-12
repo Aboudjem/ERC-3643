@@ -2,6 +2,7 @@ import { loadFixture } from "@nomicfoundation/hardhat-network-helpers";
 import { expect } from "chai";
 import { ethers } from "hardhat";
 import { deployFullSuiteFixture } from "../fixtures/deploy-full-suite.fixture";
+import { AGENT_ROLE, accessControlRevert } from "../utils";
 
 describe("Token - Recovery", () => {
   describe(".recoveryAddress()", () => {
@@ -10,7 +11,7 @@ describe("Token - Recovery", () => {
         const {
           suite: { token },
           accounts: { bobWallet, anotherWallet },
-          identities: { bobIdentity },
+          identities: { bobIdentity }
         } = await loadFixture(deployFullSuiteFixture);
 
         await bobIdentity
@@ -34,7 +35,7 @@ describe("Token - Recovery", () => {
               anotherWallet.address,
               bobIdentity.address
             )
-        ).to.be.revertedWith("AgentRole: caller does not have the Agent role");
+        ).to.be.revertedWith(accessControlRevert(anotherWallet, AGENT_ROLE));
       });
     });
 
@@ -44,7 +45,7 @@ describe("Token - Recovery", () => {
           const {
             suite: { token },
             accounts: { tokenAgent, aliceWallet, bobWallet, anotherWallet },
-            identities: { bobIdentity },
+            identities: { bobIdentity }
           } = await loadFixture(deployFullSuiteFixture);
 
           await token
@@ -71,7 +72,7 @@ describe("Token - Recovery", () => {
           const {
             suite: { token },
             accounts: { tokenAgent, bobWallet, anotherWallet },
-            identities: { bobIdentity },
+            identities: { bobIdentity }
           } = await loadFixture(deployFullSuiteFixture);
 
           await expect(
@@ -91,7 +92,7 @@ describe("Token - Recovery", () => {
           const {
             suite: { token },
             accounts: { tokenAgent, bobWallet, anotherWallet },
-            identities: { bobIdentity },
+            identities: { bobIdentity }
           } = await loadFixture(deployFullSuiteFixture);
 
           await bobIdentity
@@ -138,7 +139,7 @@ describe("Token - Recovery", () => {
           const {
             suite: { token },
             accounts: { tokenAgent, bobWallet, anotherWallet },
-            identities: { bobIdentity },
+            identities: { bobIdentity }
           } = await loadFixture(deployFullSuiteFixture);
 
           await bobIdentity

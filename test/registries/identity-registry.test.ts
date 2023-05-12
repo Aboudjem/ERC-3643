@@ -4,45 +4,34 @@ import { ethers } from "hardhat";
 import { deployFullSuiteFixture } from "../fixtures/deploy-full-suite.fixture";
 
 describe("IdentityRegistry", () => {
-  describe(".init()", () => {
-    it("should prevent re-initialization", async () => {
-      const {
-        suite: { identityRegistry },
-        accounts: { deployer },
-      } = await loadFixture(deployFullSuiteFixture);
-
-      await expect(
-        identityRegistry
-          .connect(deployer)
-          .init(
-            ethers.constants.AddressZero,
-            ethers.constants.AddressZero,
-            ethers.constants.AddressZero
-          )
-      ).to.be.revertedWith("Initializable: contract is already initialized");
-    });
-
+  describe("Deployment", () => {
     it("should reject zero address for Trustes Issuers Registry", async () => {
-      const identityRegistry = await ethers.deployContract("IdentityRegistry");
+      const IdentityRegistry = await ethers.getContractFactory(
+        "IdentityRegistry"
+      );
       const address = ethers.Wallet.createRandom().address;
       await expect(
-        identityRegistry.init(ethers.constants.AddressZero, address, address)
+        IdentityRegistry.deploy(ethers.constants.AddressZero, address, address)
       ).to.be.revertedWith("invalid argument - zero address");
     });
 
     it("should reject zero address for Claim Topics Registry", async () => {
-      const identityRegistry = await ethers.deployContract("IdentityRegistry");
+      const IdentityRegistry = await ethers.getContractFactory(
+        "IdentityRegistry"
+      );
       const address = ethers.Wallet.createRandom().address;
       await expect(
-        identityRegistry.init(address, ethers.constants.AddressZero, address)
+        IdentityRegistry.deploy(address, ethers.constants.AddressZero, address)
       ).to.be.revertedWith("invalid argument - zero address");
     });
 
     it("should reject zero address for Identity Storage", async () => {
-      const identityRegistry = await ethers.deployContract("IdentityRegistry");
+      const IdentityRegistry = await ethers.getContractFactory(
+        "IdentityRegistry"
+      );
       const address = ethers.Wallet.createRandom().address;
       await expect(
-        identityRegistry.init(address, address, ethers.constants.AddressZero)
+        IdentityRegistry.deploy(address, address, ethers.constants.AddressZero)
       ).to.be.revertedWith("invalid argument - zero address");
     });
   });
@@ -53,14 +42,16 @@ describe("IdentityRegistry", () => {
         const {
           suite: { identityRegistry },
           accounts: { anotherWallet },
-          identities: { bobIdentity, charlieIdentity },
+          identities: { bobIdentity, charlieIdentity }
         } = await loadFixture(deployFullSuiteFixture);
 
         await expect(
           identityRegistry
             .connect(anotherWallet)
             .updateIdentity(bobIdentity.address, charlieIdentity.address)
-        ).to.be.revertedWith("AgentRole: caller does not have the Agent role");
+        ).to.be.revertedWith(
+          "AccessControl: account 0xa0ee7a142d267c1f36714e4a8f75612f20a79720 is missing role 0xcab5a0bfe0b79d2c4b1c2e02599fa044d115b7511f9659307cb4276950967709"
+        );
       });
     });
   });
@@ -71,14 +62,16 @@ describe("IdentityRegistry", () => {
         const {
           suite: { identityRegistry },
           accounts: { anotherWallet },
-          identities: { bobIdentity },
+          identities: { bobIdentity }
         } = await loadFixture(deployFullSuiteFixture);
 
         await expect(
           identityRegistry
             .connect(anotherWallet)
             .updateCountry(bobIdentity.address, 100)
-        ).to.be.revertedWith("AgentRole: caller does not have the Agent role");
+        ).to.be.revertedWith(
+          "AccessControl: account 0xa0ee7a142d267c1f36714e4a8f75612f20a79720 is missing role 0xcab5a0bfe0b79d2c4b1c2e02599fa044d115b7511f9659307cb4276950967709"
+        );
       });
     });
   });
@@ -88,14 +81,16 @@ describe("IdentityRegistry", () => {
       it("should revert", async () => {
         const {
           suite: { identityRegistry },
-          accounts: { anotherWallet, bobWallet },
+          accounts: { anotherWallet, bobWallet }
         } = await loadFixture(deployFullSuiteFixture);
 
         await expect(
           identityRegistry
             .connect(anotherWallet)
             .deleteIdentity(bobWallet.address)
-        ).to.be.revertedWith("AgentRole: caller does not have the Agent role");
+        ).to.be.revertedWith(
+          "AccessControl: account 0xa0ee7a142d267c1f36714e4a8f75612f20a79720 is missing role 0xcab5a0bfe0b79d2c4b1c2e02599fa044d115b7511f9659307cb4276950967709"
+        );
       });
     });
   });
@@ -105,7 +100,7 @@ describe("IdentityRegistry", () => {
       it("should revert", async () => {
         const {
           suite: { identityRegistry },
-          accounts: { anotherWallet },
+          accounts: { anotherWallet }
         } = await loadFixture(deployFullSuiteFixture);
 
         await expect(
@@ -116,7 +111,9 @@ describe("IdentityRegistry", () => {
               ethers.constants.AddressZero,
               0
             )
-        ).to.be.revertedWith("AgentRole: caller does not have the Agent role");
+        ).to.be.revertedWith(
+          "AccessControl: account 0xa0ee7a142d267c1f36714e4a8f75612f20a79720 is missing role 0xcab5a0bfe0b79d2c4b1c2e02599fa044d115b7511f9659307cb4276950967709"
+        );
       });
     });
   });
@@ -126,14 +123,16 @@ describe("IdentityRegistry", () => {
       it("should revert", async () => {
         const {
           suite: { identityRegistry },
-          accounts: { anotherWallet },
+          accounts: { anotherWallet }
         } = await loadFixture(deployFullSuiteFixture);
 
         await expect(
           identityRegistry
             .connect(anotherWallet)
             .setIdentityRegistryStorage(ethers.constants.AddressZero)
-        ).to.be.revertedWith("Ownable: caller is not the owner");
+        ).to.be.revertedWith(
+          "AccessControl: account 0xa0ee7a142d267c1f36714e4a8f75612f20a79720 is missing role 0xb19546dff01e856fb3f010c267a7b1c60363cf8a4664e21cc89c26224620214e"
+        );
       });
     });
 
@@ -141,7 +140,7 @@ describe("IdentityRegistry", () => {
       it("should set the identity registry storage", async () => {
         const {
           suite: { identityRegistry },
-          accounts: { deployer },
+          accounts: { deployer }
         } = await loadFixture(deployFullSuiteFixture);
 
         const tx = await identityRegistry
@@ -162,14 +161,16 @@ describe("IdentityRegistry", () => {
       it("should revert", async () => {
         const {
           suite: { identityRegistry },
-          accounts: { anotherWallet },
+          accounts: { anotherWallet }
         } = await loadFixture(deployFullSuiteFixture);
 
         await expect(
           identityRegistry
             .connect(anotherWallet)
             .setClaimTopicsRegistry(ethers.constants.AddressZero)
-        ).to.be.revertedWith("Ownable: caller is not the owner");
+        ).to.be.revertedWith(
+          "AccessControl: account 0xa0ee7a142d267c1f36714e4a8f75612f20a79720 is missing role 0xb19546dff01e856fb3f010c267a7b1c60363cf8a4664e21cc89c26224620214e"
+        );
       });
     });
 
@@ -177,7 +178,7 @@ describe("IdentityRegistry", () => {
       it("should set the claim topics registry", async () => {
         const {
           suite: { identityRegistry },
-          accounts: { deployer },
+          accounts: { deployer }
         } = await loadFixture(deployFullSuiteFixture);
 
         const tx = await identityRegistry
@@ -193,34 +194,36 @@ describe("IdentityRegistry", () => {
     });
   });
 
-  describe(".setTrustedIssuersRegistry()", () => {
+  describe(".setClaimIssuersRegistry()", () => {
     describe("when sender is not the owner", () => {
       it("should revert", async () => {
         const {
           suite: { identityRegistry },
-          accounts: { anotherWallet },
+          accounts: { anotherWallet }
         } = await loadFixture(deployFullSuiteFixture);
 
         await expect(
           identityRegistry
             .connect(anotherWallet)
-            .setTrustedIssuersRegistry(ethers.constants.AddressZero)
-        ).to.be.revertedWith("Ownable: caller is not the owner");
+            .setClaimIssuersRegistry(ethers.constants.AddressZero)
+        ).to.be.revertedWith(
+          "AccessControl: account 0xa0ee7a142d267c1f36714e4a8f75612f20a79720 is missing role 0xb19546dff01e856fb3f010c267a7b1c60363cf8a4664e21cc89c26224620214e"
+        );
       });
     });
 
     describe("when sender is the owner", () => {
-      it("should set the trusted issuers registry", async () => {
+      it("should set the claimssuers registry", async () => {
         const {
           suite: { identityRegistry },
-          accounts: { deployer },
+          accounts: { deployer }
         } = await loadFixture(deployFullSuiteFixture);
 
         const tx = await identityRegistry
           .connect(deployer)
-          .setTrustedIssuersRegistry(ethers.constants.AddressZero);
+          .setClaimIssuersRegistry(ethers.constants.AddressZero);
         await expect(tx)
-          .to.emit(identityRegistry, "TrustedIssuersRegistrySet")
+          .to.emit(identityRegistry, "ClaimIssuersRegistrySet")
           .withArgs(ethers.constants.AddressZero);
         expect(await identityRegistry.issuersRegistry()).to.be.equal(
           ethers.constants.AddressZero
@@ -235,7 +238,7 @@ describe("IdentityRegistry", () => {
         const {
           suite: { identityRegistry, claimTopicsRegistry },
           accounts: { tokenAgent, charlieWallet },
-          identities: { charlieIdentity },
+          identities: { charlieIdentity }
         } = await loadFixture(deployFullSuiteFixture);
 
         await identityRegistry
@@ -255,28 +258,26 @@ describe("IdentityRegistry", () => {
       });
     });
 
-    describe("when claim topics are required but there are not trusted issuers for them", () => {
+    describe("when claim topics are required but there are not claimssuers for them", () => {
       it("should return false", async () => {
         const {
           suite: {
             identityRegistry,
             claimTopicsRegistry,
-            trustedIssuersRegistry,
+            claimIssuersRegistry
           },
-          accounts: { aliceWallet },
+          accounts: { aliceWallet }
         } = await loadFixture(deployFullSuiteFixture);
 
         await expect(identityRegistry.isVerified(aliceWallet.address)).to
           .eventually.be.true;
 
         const topics = await claimTopicsRegistry.getClaimTopics();
-        const trustedIssuers =
-          await trustedIssuersRegistry.getTrustedIssuersForClaimTopic(
-            topics[0]
-          );
+        const claimIssuers =
+          await claimIssuersRegistry.getClaimIssuersForClaimTopic(topics[0]);
         await Promise.all(
-          trustedIssuers.map((issuer) =>
-            trustedIssuersRegistry.removeTrustedIssuer(issuer)
+          claimIssuers.map((issuer) =>
+            claimIssuersRegistry.removeClaimIssuer(issuer)
           )
         );
 
@@ -290,7 +291,7 @@ describe("IdentityRegistry", () => {
         const {
           suite: { identityRegistry, claimTopicsRegistry, claimIssuerContract },
           accounts: { aliceWallet },
-          identities: { aliceIdentity },
+          identities: { aliceIdentity }
         } = await loadFixture(deployFullSuiteFixture);
 
         await expect(identityRegistry.isVerified(aliceWallet.address)).to
@@ -313,25 +314,25 @@ describe("IdentityRegistry", () => {
           suite: {
             identityRegistry,
             claimTopicsRegistry,
-            trustedIssuersRegistry,
-            claimIssuerContract,
+            claimIssuersRegistry,
+            claimIssuerContract
           },
           accounts: { aliceWallet },
-          identities: { aliceIdentity },
+          identities: { aliceIdentity }
         } = await loadFixture(deployFullSuiteFixture);
 
         const trickyClaimIssuer = await ethers.deployContract(
           "ClaimIssuerTrick"
         );
         const claimTopics = await claimTopicsRegistry.getClaimTopics();
-        await trustedIssuersRegistry.removeTrustedIssuer(
+        await claimIssuersRegistry.removeClaimIssuer(
           claimIssuerContract.address
         );
-        await trustedIssuersRegistry.addTrustedIssuer(
+        await claimIssuersRegistry.addClaimIssuer(
           trickyClaimIssuer.address,
           claimTopics
         );
-        await trustedIssuersRegistry.addTrustedIssuer(
+        await claimIssuersRegistry.addClaimIssuer(
           claimIssuerContract.address,
           claimTopics
         );
@@ -368,20 +369,21 @@ describe("IdentityRegistry", () => {
           suite: {
             identityRegistry,
             claimTopicsRegistry,
-            trustedIssuersRegistry,
+            claimIssuersRegistry
           },
           accounts: { aliceWallet },
-          identities: { aliceIdentity },
+          identities: { aliceIdentity }
         } = await loadFixture(deployFullSuiteFixture);
 
         const trickyClaimIssuer = await ethers.deployContract(
           "ClaimIssuerTrick"
         );
         const claimTopics = await claimTopicsRegistry.getClaimTopics();
-        await trustedIssuersRegistry.addTrustedIssuer(
+        await claimIssuersRegistry.addClaimIssuer(
           trickyClaimIssuer.address,
           claimTopics
         );
+
         const claimIds = await aliceIdentity.getClaimIdsByTopic(claimTopics[0]);
         await aliceIdentity.connect(aliceWallet).removeClaim(claimIds[0]);
         await aliceIdentity
