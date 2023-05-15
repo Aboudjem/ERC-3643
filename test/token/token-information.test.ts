@@ -3,6 +3,26 @@ import { expect } from "chai";
 import { ethers } from "hardhat";
 import { deployFullSuiteFixture } from "../fixtures/deploy-full-suite.fixture";
 import { AGENT_ROLE, OWNER_ROLE, accessControlRevert } from "../utils";
+import { constants, utils } from "ethers";
+
+describe("Token - Deployment", () => {
+  describe(".deploy", () => {
+    it("Should revert if one address provided in the constructor is zero", async () => {
+      const Token = await ethers.getContractFactory("Token");
+
+      await expect(
+        Token.deploy(
+          constants.AddressZero,
+          constants.AddressZero,
+          "Test",
+          "TST",
+          6,
+          constants.AddressZero
+        )
+      ).to.be.revertedWith("ERC-3643: Invalid zero address");
+    });
+  });
+});
 
 describe("Token - Information", () => {
   describe(".setOnchainID()", () => {
@@ -27,14 +47,8 @@ describe("Token - Information", () => {
         } = await loadFixture(deployFullSuiteFixture);
         const tx = await token.setOnchainID(ethers.constants.AddressZero);
         await expect(tx)
-          .to.emit(token, "UpdatedTokenInformation")
-          .withArgs(
-            await token.name(),
-            await token.symbol(),
-            await token.decimals(),
-            await token.version(),
-            ethers.constants.AddressZero
-          );
+          .to.emit(token, "UpdatedOnchainID")
+          .withArgs(ethers.constants.AddressZero);
         expect(await token.onchainID()).to.equal(ethers.constants.AddressZero);
       });
     });
@@ -83,9 +97,7 @@ describe("Token - Information", () => {
           token
             .connect(anotherWallet)
             .setCompliance(ethers.constants.AddressZero)
-        ).to.be.revertedWith(
-          "AccessControl: account 0xa0ee7a142d267c1f36714e4a8f75612f20a79720 is missing role 0xb19546dff01e856fb3f010c267a7b1c60363cf8a4664e21cc89c26224620214e"
-        );
+        ).to.be.revertedWith(accessControlRevert(anotherWallet, OWNER_ROLE));
       });
     });
   });

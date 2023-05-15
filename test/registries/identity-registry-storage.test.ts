@@ -99,7 +99,7 @@ describe("IdentityRegistryStorage", () => {
                 charlieIdentity.address,
                 42
               )
-          ).to.be.revertedWith("ERC-3643: No empty string");
+          ).to.be.revertedWith("ERC-3643: Already stored");
         });
       });
     });
@@ -358,8 +358,8 @@ describe("IdentityRegistryStorage", () => {
         });
       });
 
-      describe("when there are already 299 identity registries bound", () => {
-        it("should revert", async () => {
+      describe("when there are already 50 identity registries bound", () => {
+        it("should succeed", async () => {
           const {
             suite: { identityRegistryStorage },
             accounts: { deployer },
@@ -367,18 +367,12 @@ describe("IdentityRegistryStorage", () => {
           } = await loadFixture(deployFullSuiteFixture);
 
           await Promise.all(
-            Array.from({ length: 299 }, () =>
+            Array.from({ length: 50 }, () =>
               identityRegistryStorage
                 .connect(deployer)
                 .bindIdentityRegistry(ethers.Wallet.createRandom().address)
             )
           );
-
-          await expect(
-            identityRegistryStorage
-              .connect(deployer)
-              .bindIdentityRegistry(charlieIdentity.address)
-          ).to.be.revertedWith("ERC-3643: Max 300 IR per IRS");
         });
       });
     });

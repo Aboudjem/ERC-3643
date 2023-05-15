@@ -15,6 +15,16 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - 🚀 The code has been optimized for gas usage.
 - 🔒 Internal state variables are now private for enhanced security.
 
+### Gas Optimization
+
+- Optimized gas usage in the `ClaimIssuersRegistry` contract.
+- Reduced gas consumption in key functions:
+  - `addClaimIssuer`: Gas usage decreased from 139,371 to 126,599 (a reduction of approximately 9.2%).
+  - `removeClaimIssuer`: Gas usage decreased from 58,125 to 47,259 (a reduction of approximately 19%).
+  - `updateIssuerClaimTopics`: Gas usage decreased from 165,093 to 67,181 (a reduction of approximately 59.3%).
+- Improved overall gas efficiency in the contract's deployment.
+  - Gas consumption reduced from 1,176,500 to 969,939 (a reduction of approximately 17.6%).
+
 ### 📝 Documentation
 
 - 📚 Added NatSpec comments for better inline documentation and code readability.
@@ -61,5 +71,3 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - 🗑️ The `_beforeTokenTransfer` function has been removed.
 
 ---
-
-As you continue developing and modifying the ERC-3643 Lite project, remember to update the changelog accordingly. This document serves as a valuable resource for other developers and users, helping them to understand the evolution of your project.
