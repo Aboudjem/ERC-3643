@@ -1,65 +1,4 @@
 // SPDX-License-Identifier: GPL-3.0
-//
-//                                             :+#####%%%%%%%%%%%%%%+
-//                                         .-*@@@%+.:+%@@@@@%%#***%@@%=
-//                                     :=*%@@@#=.      :#@@%       *@@@%=
-//                       .-+*%@%*-.:+%@@@@@@+.     -*+:  .=#.       :%@@@%-
-//                   :=*@@@@%%@@@@@@@@@%@@@-   .=#@@@%@%=             =@@@@#.
-//             -=+#%@@%#*=:.  :%@@@@%.   -*@@#*@@@@@@@#=:-              *@@@@+
-//            =@@%=:.     :=:   *@@@@@%#-   =%*%@@@@#+-.        =+       :%@@@%-
-//           -@@%.     .+@@@     =+=-.         @@#-           +@@@%-       =@@@@%:
-//          :@@@.    .+@@#%:                   :    .=*=-::.-%@@@+*@@=       +@@@@#.
-//          %@@:    +@%%*                         =%@@@@@@@@@@@#.  .*@%-       +@@@@*.
-//         #@@=                                .+@@@@%:=*@@@@@-      :%@%:      .*@@@@+
-//        *@@*                                +@@@#-@@%-:%@@*          +@@#.      :%@@@@-
-//       -@@%           .:-=++*##%%%@@@@@@@@@@@@*. :@+.@@@%:            .#@@+       =@@@@#:
-//      .@@@*-+*#%%%@@@@@@@@@@@@@@@@%%#**@@%@@@.   *@=*@@#                :#@%=      .#@@@@#-
-//      -%@@@@@@@@@@@@@@@*+==-:-@@@=    *@# .#@*-=*@@@@%=                 -%@@@*       =@@@@@%-
-//         -+%@@@#.   %@%%=   -@@:+@: -@@*    *@@*-::                   -%@@%=.         .*@@@@@#
-//            *@@@*  +@* *@@##@@-  #@*@@+    -@@=          .         :+@@@#:           .-+@@@%+-
-//             +@@@%*@@:..=@@@@*   .@@@*   .#@#.       .=+-       .=%@@@*.         :+#@@@@*=:
-//              =@@@@%@@@@@@@@@@@@@@@@@@@@@@%-      :+#*.       :*@@@%=.       .=#@@@@%+:
-//               .%@@=                 .....    .=#@@+.       .#@@@*:       -*%@@@@%+.
-//                 +@@#+===---:::...         .=%@@*-         +@@@+.      -*@@@@@%+.
-//                  -@@@@@@@@@@@@@@@@@@@@@@%@@@@=          -@@@+      -#@@@@@#=.
-//                    ..:::---===+++***###%%%@@@#-       .#@@+     -*@@@@@#=.
-//                                           @@@@@@+.   +@@*.   .+@@@@@%=.
-//                                          -@@@@@=   =@@%:   -#@@@@%+.
-//                                          +@@@@@. =@@@=  .+@@@@@*:
-//                                          #@@@@#:%@@#. :*@@@@#-
-//                                          @@@@@%@@@= :#@@@@+.
-//                                         :@@@@@@@#.:#@@@%-
-//                                         +@@@@@@-.*@@@*:
-//                                         #@@@@#.=@@@+.
-//                                         @@@@+-%@%=
-//                                        :@@@#%@%=
-//                                        +@@@@%-
-//                                        :#%%=
-//
-/**
- *     NOTICE
- *
- *     The T-REX software is licensed under a proprietary license or the GPL v.3.
- *     If you choose to receive it under the GPL v.3 license, the following applies:
- *     T-REX is a suite of smart contracts implementing the ERC-3643 standard and
- *     developed by Tokeny to manage and transfer financial assets on EVM blockchains
- *
- *     Copyright (C) 2023, Tokeny sàrl.
- *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
- *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
- *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
-
 pragma solidity 0.8.17;
 
 import "./interface/ICompliance.sol";
@@ -88,10 +27,9 @@ contract BasicCompliance is ICompliance, AccessControl {
     /**
      *  @dev See {ICompliance-bindToken}.
      */
-    function bindToken(address _token) external override {
+    function bindToken(address _token) external {
         require(
             hasRole(ADMIN_ROLE, _msgSender()) ||
-                hasRole(ADMIN_ROLE, _msgSender()) ||
                 address(tokenBound) == address(0),
             "ERC-3643: Caller not authorized"
         );
@@ -102,7 +40,7 @@ contract BasicCompliance is ICompliance, AccessControl {
     /**
      *  @dev See {ICompliance-unbindToken}.
      */
-    function unbindToken(address _token) external override {
+    function unbindToken(address _token) external {
         require(
             hasRole(ADMIN_ROLE, _msgSender()) ||
                 hasRole(TOKEN_ROLE, _msgSender()),
@@ -116,23 +54,18 @@ contract BasicCompliance is ICompliance, AccessControl {
     /*
      *  @dev See {ICompliance-transferred}.
      */
-    function transferred(
-        address _from,
-        address _to,
-        uint256 _value
-    ) external override {}
+    function transferred(address _from, address _to, uint256 _value) external {}
 
     /**
      *  @dev See {ICompliance-created}.
      */
 
-    function created(address _to, uint256 _value) external override {}
+    function created(address _to, uint256 _value) external {}
 
     /**
      *  @dev See {ICompliance-destroyed}.
      */
-    // solhint-disable-next-line no-empty-blocks
-    function destroyed(address _from, uint256 _value) external override {}
+    function destroyed(address _from, uint256 _value) external {}
 
     /**
      *  @dev See {ICompliance-canTransfer}.
@@ -141,36 +74,14 @@ contract BasicCompliance is ICompliance, AccessControl {
         address /*_from*/,
         address /*_to*/,
         uint256 /*_value*/
-    ) external view override returns (bool) {
+    ) external view returns (bool) {
         return true;
     }
 
     /**
      *  @dev See {ICompliance-isTokenBound}.
      */
-    function isTokenBound(
-        address _token
-    ) external view override returns (bool) {
+    function isTokenBound(address _token) external view returns (bool) {
         return (_token == address(tokenBound));
-    }
-
-    /**
-     *  @dev Returns the ONCHAINID (Identity) of the _userAddress
-     *  @param _userAddress Address of the wallet
-     *  internal function, can be called only from the functions of the Compliance smart contract
-     */
-    function _getIdentity(
-        address _userAddress
-    ) internal view returns (address) {
-        return address(tokenBound.identityRegistry().identity(_userAddress));
-    }
-
-    /**
-     *  @dev Returns the country of residence of the _userAddress
-     *  @param _userAddress Address of the wallet
-     *  internal function, can be called only from the functions of the Compliance smart contract
-     */
-    function _getCountry(address _userAddress) internal view returns (uint16) {
-        return tokenBound.identityRegistry().investorCountry(_userAddress);
     }
 }
