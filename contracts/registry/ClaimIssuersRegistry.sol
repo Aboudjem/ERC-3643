@@ -1,5 +1,4 @@
 // SPDX-License-Identifier: GPL-3.0
-
 pragma solidity 0.8.17;
 
 import "@onchain-id/solidity/contracts/interface/IClaimIssuer.sol";
@@ -99,10 +98,10 @@ contract ClaimIssuersRegistry is IClaimIssuersRegistry, Ownable {
         IClaimIssuer _claimIssuer,
         uint256[] calldata _claimTopics
     ) external onlyOwner {
+        require(_claimTopics.length != 0, "ERC-3643: No claim topics");
         uint claimIssuerTopicsLength = _claimIssuerClaimTopics[_claimIssuer]
             .length;
         require(claimIssuerTopicsLength != 0, "ERC-3643: Not a claim issuer");
-        require(_claimTopics.length != 0, "ERC-3643: No claim topics");
 
         _updateIssuerAcrossAllTopics(_claimIssuer);
 
