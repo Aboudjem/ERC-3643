@@ -1,65 +1,4 @@
 // SPDX-License-Identifier: GPL-3.0
-//
-//                                             :+#####%%%%%%%%%%%%%%+
-//                                         .-*@@@%+.:+%@@@@@%%#***%@@%=
-//                                     :=*%@@@#=.      :#@@%       *@@@%=
-//                       .-+*%@%*-.:+%@@@@@@+.     -*+:  .=#.       :%@@@%-
-//                   :=*@@@@%%@@@@@@@@@%@@@-   .=#@@@%@%=             =@@@@#.
-//             -=+#%@@%#*=:.  :%@@@@%.   -*@@#*@@@@@@@#=:-              *@@@@+
-//            =@@%=:.     :=:   *@@@@@%#-   =%*%@@@@#+-.        =+       :%@@@%-
-//           -@@%.     .+@@@     =+=-.         @@#-           +@@@%-       =@@@@%:
-//          :@@@.    .+@@#%:                   :    .=*=-::.-%@@@+*@@=       +@@@@#.
-//          %@@:    +@%%*                         =%@@@@@@@@@@@#.  .*@%-       +@@@@*.
-//         #@@=                                .+@@@@%:=*@@@@@-      :%@%:      .*@@@@+
-//        *@@*                                +@@@#-@@%-:%@@*          +@@#.      :%@@@@-
-//       -@@%           .:-=++*##%%%@@@@@@@@@@@@*. :@+.@@@%:            .#@@+       =@@@@#:
-//      .@@@*-+*#%%%@@@@@@@@@@@@@@@@%%#**@@%@@@.   *@=*@@#                :#@%=      .#@@@@#-
-//      -%@@@@@@@@@@@@@@@*+==-:-@@@=    *@# .#@*-=*@@@@%=                 -%@@@*       =@@@@@%-
-//         -+%@@@#.   %@%%=   -@@:+@: -@@*    *@@*-::                   -%@@%=.         .*@@@@@#
-//            *@@@*  +@* *@@##@@-  #@*@@+    -@@=          .         :+@@@#:           .-+@@@%+-
-//             +@@@%*@@:..=@@@@*   .@@@*   .#@#.       .=+-       .=%@@@*.         :+#@@@@*=:
-//              =@@@@%@@@@@@@@@@@@@@@@@@@@@@%-      :+#*.       :*@@@%=.       .=#@@@@%+:
-//               .%@@=                 .....    .=#@@+.       .#@@@*:       -*%@@@@%+.
-//                 +@@#+===---:::...         .=%@@*-         +@@@+.      -*@@@@@%+.
-//                  -@@@@@@@@@@@@@@@@@@@@@@%@@@@=          -@@@+      -#@@@@@#=.
-//                    ..:::---===+++***###%%%@@@#-       .#@@+     -*@@@@@#=.
-//                                           @@@@@@+.   +@@*.   .+@@@@@%=.
-//                                          -@@@@@=   =@@%:   -#@@@@%+.
-//                                          +@@@@@. =@@@=  .+@@@@@*:
-//                                          #@@@@#:%@@#. :*@@@@#-
-//                                          @@@@@%@@@= :#@@@@+.
-//                                         :@@@@@@@#.:#@@@%-
-//                                         +@@@@@@-.*@@@*:
-//                                         #@@@@#.=@@@+.
-//                                         @@@@+-%@%=
-//                                        :@@@#%@%=
-//                                        +@@@@%-
-//                                        :#%%=
-//
-/**
- *     NOTICE
- *
- *     The T-REX software is licensed under a proprietary license or the GPL v.3.
- *     If you choose to receive it under the GPL v.3 license, the following applies:
- *     T-REX is a suite of smart contracts implementing the ERC-3643 standard and
- *     developed by Tokeny to manage and transfer financial assets on EVM blockchains
- *
- *     Copyright (C) 2023, Tokeny sàrl.
- *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
- *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
- *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
-
 pragma solidity 0.8.17;
 
 import "@openzeppelin/contracts/access/AccessControl.sol";
@@ -70,14 +9,18 @@ import "./interface/IClaimIssuersRegistry.sol";
 import "./interface/IIdentityRegistry.sol";
 import "./interface/IIdentityRegistryStorage.sol";
 
+/// @title ERC-3643 - IdentityRegistry
+/// @dev This contract is used to manage identities in the ERC-3643 standard.
+/// It allows for the registration, updating and deletion of identities associated with user addresses.
+/// It also supports the management of claim topics and claim issuers.
 contract IdentityRegistry is IIdentityRegistry, AccessControl {
-    /// @dev Address of the ClaimTopicsRegistry Contract
+    /// @notice The address of the ClaimTopicsRegistry contract.
     IClaimTopicsRegistry private _tokenTopicsRegistry;
 
-    /// @dev Address of the ClaimIssuersRegistry Contract
+    /// @notice The address of the ClaimIssuersRegistry contract.
     IClaimIssuersRegistry private _tokenIssuersRegistry;
 
-    /// @dev Address of the IdentityRegistryStorage Contract
+    /// @notice The address of the IdentityRegistryStorage contract.
     IIdentityRegistryStorage private _tokenIdentityStorage;
 
     // keccak256(AGENT_ROLE)
@@ -88,68 +31,87 @@ contract IdentityRegistry is IIdentityRegistry, AccessControl {
     bytes32 public constant OWNER_ROLE =
         0xb19546dff01e856fb3f010c267a7b1c60363cf8a4664e21cc89c26224620214e;
 
-    /**
-     *  @dev the constructor initiates the Identity Registry smart contract
-     *  @param _claimIssuersRegistry the claim issuers registry linked to the Identity Registry
-     *  @param _claimTopicsRegistry the claim topics registry linked to the Identity Registry
-     *  @param _identityStorage the identity registry storage linked to the Identity Registry
-     *  emits a `ClaimTopicsRegistrySet` event
-     *  emits a `ClaimIssuersRegistrySet` event
-     *  emits an `IdentityStorageSet` event
-     */
+    /// @dev Constructor of the IdentityRegistry contract.
+    /// @param _claimIssuersRegistry The address of the claim issuers registry contract.
+    /// @param _claimTopicsRegistry The address of the claim topics registry contract.
+    /// @param _identityStorage The address of the identity registry storage contract.
+    /// @notice This constructor sets the initial state of the IdentityRegistry contract.
     constructor(
-        address _claimIssuersRegistry,
-        address _claimTopicsRegistry,
-        address _identityStorage
+        IClaimIssuersRegistry _claimIssuersRegistry,
+        IClaimTopicsRegistry _claimTopicsRegistry,
+        IIdentityRegistryStorage _identityStorage
     ) {
         require(
-            _claimIssuersRegistry != address(0) &&
-                _claimTopicsRegistry != address(0) &&
-                _identityStorage != address(0),
+            address(_claimIssuersRegistry) != address(0) &&
+                address(_claimTopicsRegistry) != address(0) &&
+                address(_identityStorage) != address(0),
             "ERC-3643: Invalid zero address"
         );
         _grantRole(bytes32(0), _msgSender());
         _grantRole(OWNER_ROLE, _msgSender());
-        _tokenTopicsRegistry = IClaimTopicsRegistry(_claimTopicsRegistry);
-        _tokenIssuersRegistry = IClaimIssuersRegistry(_claimIssuersRegistry);
-        _tokenIdentityStorage = IIdentityRegistryStorage(_identityStorage);
+        _tokenTopicsRegistry = _claimTopicsRegistry;
+        _tokenIssuersRegistry = _claimIssuersRegistry;
+        _tokenIdentityStorage = _identityStorage;
         emit ClaimTopicsRegistrySet(_claimTopicsRegistry);
         emit ClaimIssuersRegistrySet(_claimIssuersRegistry);
         emit IdentityStorageSet(_identityStorage);
     }
 
-    /**
-     *  @dev See {IIdentityRegistry-batchRegisterIdentity}.
-     */
+    /// @notice Register an identity associated with a user address.
+    /// @param _userAddress The address of the user.
+    /// @param _identity The identity of the user.
+    /// @param _country The country code of the user.
+    /// @dev Only an agent can register an identity.
+    function registerIdentity(
+        address _userAddress,
+        IIdentity _identity,
+        uint16 _country
+    ) external onlyRole(AGENT_ROLE) {
+        _registerIdentity(_userAddress, _identity, _country);
+    }
+
+    /// @notice Register multiple identities associated with multiple user addresses.
+    /// @param _userAddresses The array of user addresses.
+    /// @param _identities The array of identities.
+    /// @param _countries The array of country codes.
+    /// @dev Only an agent can register identities in batch.
     function batchRegisterIdentity(
         address[] calldata _userAddresses,
         IIdentity[] calldata _identities,
         uint16[] calldata _countries
-    ) external override {
-        for (uint256 i = 0; i < _userAddresses.length; i++) {
-            registerIdentity(_userAddresses[i], _identities[i], _countries[i]);
+    ) external onlyRole(AGENT_ROLE) {
+        uint length = _userAddresses.length;
+        require(length == _identities.length, "ERC-3643: Array size mismatch");
+        require(length == _countries.length, "ERC-3643: Array size mismatch");
+        for (uint256 i = 0; i < length; ) {
+            _registerIdentity(_userAddresses[i], _identities[i], _countries[i]);
+            unchecked {
+                ++i;
+            }
         }
     }
 
-    /**
-     *  @dev See {IIdentityRegistry-updateIdentity}.
-     */
+    /// @notice Update the identity associated with a user address.
+    /// @param _userAddress The address of the user.
+    /// @param _identity The new identity of the user.
+    /// @dev Only an agent can update an identity.
     function updateIdentity(
         address _userAddress,
         IIdentity _identity
-    ) external override onlyRole(AGENT_ROLE) {
-        IIdentity oldIdentity = identity(_userAddress);
+    ) external onlyRole(AGENT_ROLE) {
+        IIdentity oldIdentity = _getIdentity(_userAddress);
         _tokenIdentityStorage.modifyStoredIdentity(_userAddress, _identity);
         emit IdentityUpdated(oldIdentity, _identity);
     }
 
-    /**
-     *  @dev See {IIdentityRegistry-updateCountry}.
-     */
+    /// @notice Update the country code associated with a user address.
+    /// @param _userAddress The address of the user.
+    /// @param _country The new country code of the user.
+    /// @dev Only an agent can update a country code.
     function updateCountry(
         address _userAddress,
         uint16 _country
-    ) external override onlyRole(AGENT_ROLE) {
+    ) external onlyRole(AGENT_ROLE) {
         _tokenIdentityStorage.modifyStoredInvestorCountry(
             _userAddress,
             _country
@@ -157,188 +119,128 @@ contract IdentityRegistry is IIdentityRegistry, AccessControl {
         emit CountryUpdated(_userAddress, _country);
     }
 
-    /**
-     *  @dev See {IIdentityRegistry-deleteIdentity}.
-     */
+    /// @notice Delete the identity associated with a user address.
+    /// @param _userAddress The address of the user.
+    /// @dev Only an agent can delete an identity.
     function deleteIdentity(
         address _userAddress
-    ) external override onlyRole(AGENT_ROLE) {
-        IIdentity oldIdentity = identity(_userAddress);
+    ) external onlyRole(AGENT_ROLE) {
+        IIdentity oldIdentity = _getIdentity(_userAddress);
         _tokenIdentityStorage.removeIdentityFromStorage(_userAddress);
         emit IdentityRemoved(_userAddress, oldIdentity);
     }
 
-    /**
-     *  @dev See {IIdentityRegistry-setIdentityRegistryStorage}.
-     */
+    /// @notice Set the IdentityRegistryStorage contract.
+    /// @param _identityRegistryStorage The address of the new IdentityRegistryStorage contract.
+    /// @dev Only the owner can set the IdentityRegistryStorage contract.
     function setIdentityRegistryStorage(
-        address _identityRegistryStorage
-    ) external override onlyRole(OWNER_ROLE) {
-        _tokenIdentityStorage = IIdentityRegistryStorage(
-            _identityRegistryStorage
-        );
+        IIdentityRegistryStorage _identityRegistryStorage
+    ) external onlyRole(OWNER_ROLE) {
+        _tokenIdentityStorage = _identityRegistryStorage;
         emit IdentityStorageSet(_identityRegistryStorage);
     }
 
-    /**
-     *  @dev See {IIdentityRegistry-setClaimTopicsRegistry}.
-     */
+    /// @notice Set the ClaimTopicsRegistry contract.
+    /// @param _claimTopicsRegistry The address of the new ClaimTopicsRegistry contract.
+    /// @dev Only the owner can set the ClaimTopicsRegistry contract.
     function setClaimTopicsRegistry(
-        address _claimTopicsRegistry
-    ) external override onlyRole(OWNER_ROLE) {
-        _tokenTopicsRegistry = IClaimTopicsRegistry(_claimTopicsRegistry);
+        IClaimTopicsRegistry _claimTopicsRegistry
+    ) external onlyRole(OWNER_ROLE) {
+        _tokenTopicsRegistry = _claimTopicsRegistry;
         emit ClaimTopicsRegistrySet(_claimTopicsRegistry);
     }
 
-    /**
-     *  @dev See {IIdentityRegistry-setClaimIssuersRegistry}.
-     */
+    /// @notice Set the ClaimIssuersRegistry contract.
+    /// @param _claimIssuersRegistry The address of the new ClaimIssuersRegistry contract.
+    /// @dev Only the owner can set the ClaimIssuersRegistry contract.
     function setClaimIssuersRegistry(
-        address _claimIssuersRegistry
-    ) external override onlyRole(OWNER_ROLE) {
-        _tokenIssuersRegistry = IClaimIssuersRegistry(_claimIssuersRegistry);
+        IClaimIssuersRegistry _claimIssuersRegistry
+    ) external onlyRole(OWNER_ROLE) {
+        _tokenIssuersRegistry = _claimIssuersRegistry;
         emit ClaimIssuersRegistrySet(_claimIssuersRegistry);
     }
 
-    /**
-     *  @dev See {IIdentityRegistry-isVerified}.
-     */
-    // solhint-disable-next-line code-complexity
-    function isVerified(
-        address _userAddress
-    ) external view override returns (bool) {
-        if (address(identity(_userAddress)) == address(0)) {
-            return false;
-        }
-        uint256[] memory requiredClaimTopics = _tokenTopicsRegistry
-            .getClaimTopics();
-        if (requiredClaimTopics.length == 0) {
-            return true;
-        }
+    /// @notice Checks if a user is verified based on their identity, claim topics, and claim issuers.
+    /// @param _userAddress The address of the user to check.
+    /// @return A boolean indicating if the user is verified.
+    function isVerified(address _userAddress) external view returns (bool) {
+        // Get the identity of the user from the given address
+        IIdentity userIdentity = _getIdentity(_userAddress);
 
-        uint256 foundClaimTopic;
-        uint256 scheme;
-        address issuer;
-        bytes memory sig;
-        bytes memory data;
-        uint256 claimTopic;
-        for (
-            claimTopic = 0;
-            claimTopic < requiredClaimTopics.length;
-            claimTopic++
-        ) {
-            IClaimIssuer[] memory claimIssuers = _tokenIssuersRegistry
-                .getClaimIssuersForClaimTopic(requiredClaimTopics[claimTopic]);
+        // If the user identity is not set (address is 0), return false
+        if (address(userIdentity) == address(0)) return false;
 
-            if (claimIssuers.length == 0) {
+        // Get the required claim topics for the token
+        uint256[] memory claimTopics = _tokenTopicsRegistry.getClaimTopics();
+        uint claimTopicsLength = claimTopics.length;
+
+        // If there are no required claim topics, return true
+        if (claimTopicsLength == 0) return true;
+
+        // Loop over all required claim topics
+        for (uint256 i = 0; i < claimTopicsLength; i++) {
+            if (!_isClaimValid(userIdentity, claimTopics[i])) {
                 return false;
             }
-
-            bytes32[] memory claimIds = new bytes32[](claimIssuers.length);
-            for (uint256 i = 0; i < claimIssuers.length; i++) {
-                claimIds[i] = keccak256(
-                    abi.encode(claimIssuers[i], requiredClaimTopics[claimTopic])
-                );
-            }
-
-            for (uint256 j = 0; j < claimIds.length; j++) {
-                (foundClaimTopic, scheme, issuer, sig, data, ) = identity(
-                    _userAddress
-                ).getClaim(claimIds[j]);
-
-                if (foundClaimTopic == requiredClaimTopics[claimTopic]) {
-                    try
-                        IClaimIssuer(issuer).isClaimValid(
-                            identity(_userAddress),
-                            requiredClaimTopics[claimTopic],
-                            sig,
-                            data
-                        )
-                    returns (bool _validity) {
-                        if (_validity) {
-                            j = claimIds.length;
-                        }
-                        if (!_validity && j == (claimIds.length - 1)) {
-                            return false;
-                        }
-                    } catch {
-                        if (j == (claimIds.length - 1)) {
-                            return false;
-                        }
-                    }
-                } else if (j == (claimIds.length - 1)) {
-                    return false;
-                }
-            }
         }
+        // If all checks pass, return true
         return true;
     }
 
-    /**
-     *  @dev See {IIdentityRegistry-investorCountry}.
-     */
+    /// @notice Get the country of an investor.
+    /// @param _userAddress The address of the investor.
+    /// @return The country of the investor.
     function investorCountry(
         address _userAddress
-    ) external view override returns (uint16) {
+    ) external view returns (uint16) {
         return _tokenIdentityStorage.storedInvestorCountry(_userAddress);
     }
 
-    /**
-     *  @dev See {IIdentityRegistry-issuersRegistry}.
-     */
-    function issuersRegistry()
-        external
-        view
-        override
-        returns (IClaimIssuersRegistry)
-    {
+    /// @notice Get the issuers registry.
+    /// @return The current issuers registry.
+    function issuersRegistry() external view returns (IClaimIssuersRegistry) {
         return _tokenIssuersRegistry;
     }
 
-    /**
-     *  @dev See {IIdentityRegistry-topicsRegistry}.
-     */
-    function topicsRegistry()
-        external
-        view
-        override
-        returns (IClaimTopicsRegistry)
-    {
+    /// @notice Get the topics registry.
+    /// @return The current topics registry.
+    function topicsRegistry() external view returns (IClaimTopicsRegistry) {
         return _tokenTopicsRegistry;
     }
 
-    /**
-     *  @dev See {IIdentityRegistry-identityStorage}.
-     */
+    /// @notice Get the identity storage.
+    /// @return The current identity storage.
     function identityStorage()
         external
         view
-        override
         returns (IIdentityRegistryStorage)
     {
         return _tokenIdentityStorage;
     }
 
-    /**
-     *  @dev See {IIdentityRegistry-contains}.
-     */
-    function contains(
-        address _userAddress
-    ) external view override returns (bool) {
-        if (address(identity(_userAddress)) == address(0)) {
-            return false;
-        }
-        return true;
+    /// @notice Check if an address is contained in the registry.
+    /// @param _userAddress The address to check.
+    /// @return A boolean indicating if the address is in the registry.
+    function contains(address _userAddress) external view returns (bool) {
+        return address(identity(_userAddress)) == address(0) ? false : true;
     }
 
-    /**
-     *  @dev See {IIdentityRegistry-registerIdentity}.
-     */
-    function registerIdentity(
+    /// @notice Get the identity of a user.
+    /// @param _userAddress The address of the user.
+    /// @return The identity of the user.
+    function identity(address _userAddress) public view returns (IIdentity) {
+        return _tokenIdentityStorage.storedIdentity(_userAddress);
+    }
+
+    /// @notice Register a new identity.
+    /// @param _userAddress The address of the user.
+    /// @param _identity The identity of the user.
+    /// @param _country The country of the user.
+    function _registerIdentity(
         address _userAddress,
         IIdentity _identity,
         uint16 _country
-    ) public override onlyRole(AGENT_ROLE) {
+    ) private {
         _tokenIdentityStorage.addIdentityToStorage(
             _userAddress,
             _identity,
@@ -347,12 +249,87 @@ contract IdentityRegistry is IIdentityRegistry, AccessControl {
         emit IdentityRegistered(_userAddress, _identity);
     }
 
-    /**
-     *  @dev See {IIdentityRegistry-identity}.
-     */
-    function identity(
+    /// @notice Get the identity of a user.
+    /// @param _userAddress The address of the user.
+    /// @return The identity of the user.
+    function _getIdentity(
         address _userAddress
-    ) public view override returns (IIdentity) {
+    ) private view returns (IIdentity) {
         return _tokenIdentityStorage.storedIdentity(_userAddress);
+    }
+
+    function _isClaimValid(
+        IIdentity userIdentity,
+        uint256 claimTopic
+    ) private view returns (bool) {
+        IClaimIssuer[] memory claimIssuers = _tokenIssuersRegistry
+            .getClaimIssuersForClaimTopic(claimTopic);
+        uint claimIssuersLength = claimIssuers.length;
+
+        if (claimIssuersLength == 0) {
+            return false;
+        }
+
+        bytes32[] memory claimIds = new bytes32[](claimIssuersLength);
+
+        for (uint256 i = 0; i < claimIssuersLength; i++) {
+            claimIds[i] = keccak256(abi.encode(claimIssuers[i], claimTopic));
+        }
+
+        for (uint256 j = 0; j < claimIds.length; j++) {
+            (
+                uint256 foundClaimTopic,
+                ,
+                address issuer,
+                bytes memory sig,
+                bytes memory data,
+
+            ) = userIdentity.getClaim(claimIds[j]);
+
+            if (foundClaimTopic == claimTopic) {
+                if (
+                    _isIssuerClaimValid(
+                        userIdentity,
+                        issuer,
+                        claimTopic,
+                        sig,
+                        data
+                    )
+                ) {
+                    return true;
+                }
+            } else if (j == claimIds.length - 1) {
+                return false;
+            }
+        }
+
+        return false;
+    }
+
+    /// @param userIdentity The identity contract related to the claim.
+    /// @param issuer The address of the claim issuer.
+    /// @param claimTopic The claim topic of the claim.
+    /// @param sig The signature of the claim.
+    /// @param data The data field of the claim.
+    /// @return claimValid True if the claim is valid, false otherwise.
+    function _isIssuerClaimValid(
+        IIdentity userIdentity,
+        address issuer,
+        uint claimTopic,
+        bytes memory sig,
+        bytes memory data
+    ) private view returns (bool) {
+        try
+            IClaimIssuer(issuer).isClaimValid(
+                userIdentity,
+                claimTopic,
+                sig,
+                data
+            )
+        returns (bool _validity) {
+            return _validity;
+        } catch {
+            return false;
+        }
     }
 }
