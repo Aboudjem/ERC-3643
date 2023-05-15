@@ -6,7 +6,7 @@
 
 ## Introduction
 
-Welcome to **ERC-3643** Raptor version! This project is a fork of the T-Rex (ERC-3643) standard, originally developed by @TokenySolutions. Raptor isn't trying to compete with T-Rex, rather it's a simplified, optimized, and more accessible version, aiming to make security tokens easier to understand and work with.
+Welcome to **ERC-3643 Raptor Version** 🦖! This project is a fork of the [**T-Rex (ERC-3643) standard**](https://github.com/TokenySolutions/T-REX/), which was originally developed by @TokenySolutions. As one of the authors of the ERC-3643, I have worked on this fork independently with the goal of creating a simplified, optimized, and more accessible version. The Raptor aims to make working with security tokens easier to understand and more user-friendly, without attempting to compete with the original T-Rex implementation.
 
 ## Why Raptor?
 
