@@ -1,65 +1,4 @@
 // SPDX-License-Identifier: GPL-3.0
-//
-//                                             :+#####%%%%%%%%%%%%%%+
-//                                         .-*@@@%+.:+%@@@@@%%#***%@@%=
-//                                     :=*%@@@#=.      :#@@%       *@@@%=
-//                       .-+*%@%*-.:+%@@@@@@+.     -*+:  .=#.       :%@@@%-
-//                   :=*@@@@%%@@@@@@@@@%@@@-   .=#@@@%@%=             =@@@@#.
-//             -=+#%@@%#*=:.  :%@@@@%.   -*@@#*@@@@@@@#=:-              *@@@@+
-//            =@@%=:.     :=:   *@@@@@%#-   =%*%@@@@#+-.        =+       :%@@@%-
-//           -@@%.     .+@@@     =+=-.         @@#-           +@@@%-       =@@@@%:
-//          :@@@.    .+@@#%:                   :    .=*=-::.-%@@@+*@@=       +@@@@#.
-//          %@@:    +@%%*                         =%@@@@@@@@@@@#.  .*@%-       +@@@@*.
-//         #@@=                                .+@@@@%:=*@@@@@-      :%@%:      .*@@@@+
-//        *@@*                                +@@@#-@@%-:%@@*          +@@#.      :%@@@@-
-//       -@@%           .:-=++*##%%%@@@@@@@@@@@@*. :@+.@@@%:            .#@@+       =@@@@#:
-//      .@@@*-+*#%%%@@@@@@@@@@@@@@@@%%#**@@%@@@.   *@=*@@#                :#@%=      .#@@@@#-
-//      -%@@@@@@@@@@@@@@@*+==-:-@@@=    *@# .#@*-=*@@@@%=                 -%@@@*       =@@@@@%-
-//         -+%@@@#.   %@%%=   -@@:+@: -@@*    *@@*-::                   -%@@%=.         .*@@@@@#
-//            *@@@*  +@* *@@##@@-  #@*@@+    -@@=          .         :+@@@#:           .-+@@@%+-
-//             +@@@%*@@:..=@@@@*   .@@@*   .#@#.       .=+-       .=%@@@*.         :+#@@@@*=:
-//              =@@@@%@@@@@@@@@@@@@@@@@@@@@@%-      :+#*.       :*@@@%=.       .=#@@@@%+:
-//               .%@@=                 .....    .=#@@+.       .#@@@*:       -*%@@@@%+.
-//                 +@@#+===---:::...         .=%@@*-         +@@@+.      -*@@@@@%+.
-//                  -@@@@@@@@@@@@@@@@@@@@@@%@@@@=          -@@@+      -#@@@@@#=.
-//                    ..:::---===+++***###%%%@@@#-       .#@@+     -*@@@@@#=.
-//                                           @@@@@@+.   +@@*.   .+@@@@@%=.
-//                                          -@@@@@=   =@@%:   -#@@@@%+.
-//                                          +@@@@@. =@@@=  .+@@@@@*:
-//                                          #@@@@#:%@@#. :*@@@@#-
-//                                          @@@@@%@@@= :#@@@@+.
-//                                         :@@@@@@@#.:#@@@%-
-//                                         +@@@@@@-.*@@@*:
-//                                         #@@@@#.=@@@+.
-//                                         @@@@+-%@%=
-//                                        :@@@#%@%=
-//                                        +@@@@%-
-//                                        :#%%=
-//
-/**
- *     NOTICE
- *
- *     The T-REX software is licensed under a proprietary license or the GPL v.3.
- *     If you choose to receive it under the GPL v.3 license, the following applies:
- *     T-REX is a suite of smart contracts implementing the ERC-3643 standard and
- *     developed by Tokeny to manage and transfer financial assets on EVM blockchains
- *
- *     Copyright (C) 2023, Tokeny sàrl.
- *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
- *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
- *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
-
 pragma solidity 0.8.17;
 
 import "./IClaimIssuersRegistry.sol";
@@ -75,21 +14,25 @@ interface IIdentityRegistry {
      *  the event is emitted by the IdentityRegistry constructor
      *  `claimTopicsRegistry` is the address of the Claim Topics Registry contract
      */
-    event ClaimTopicsRegistrySet(address indexed claimTopicsRegistry);
+    event ClaimTopicsRegistrySet(
+        IClaimTopicsRegistry indexed claimTopicsRegistry
+    );
 
     /**
      *  this event is emitted when the IdentityRegistryStorage has been set for the IdentityRegistry
      *  the event is emitted by the IdentityRegistry constructor
      *  `identityStorage` is the address of the Identity Registry Storage contract
      */
-    event IdentityStorageSet(address indexed identityStorage);
+    event IdentityStorageSet(IIdentityRegistryStorage indexed identityStorage);
 
     /**
      *  this event is emitted when the ClaimIssuersRegistry has been set for the IdentityRegistry
      *  the event is emitted by the IdentityRegistry constructor
      *  `claimIssuersRegistry` is the address of the Claim Issuers Registry contract
      */
-    event ClaimIssuersRegistrySet(address indexed claimIssuersRegistry);
+    event ClaimIssuersRegistrySet(
+        IClaimIssuersRegistry indexed claimIssuersRegistry
+    );
 
     /**
      *  this event is emitted when an Identity is registered into the Identity Registry.
@@ -166,7 +109,7 @@ interface IIdentityRegistry {
      *  emits `IdentityStorageSet` event
      */
     function setIdentityRegistryStorage(
-        address _identityRegistryStorage
+        IIdentityRegistryStorage _identityRegistryStorage
     ) external;
 
     /**
@@ -175,7 +118,9 @@ interface IIdentityRegistry {
      *  @param _claimTopicsRegistry The address of the new claim Topics Registry
      *  emits `ClaimTopicsRegistrySet` event
      */
-    function setClaimTopicsRegistry(address _claimTopicsRegistry) external;
+    function setClaimTopicsRegistry(
+        IClaimTopicsRegistry _claimTopicsRegistry
+    ) external;
 
     /**
      *  @dev Replace the actual claimIssuersRegistry contract with a new one.
@@ -183,7 +128,9 @@ interface IIdentityRegistry {
      *  @param _claimIssuersRegistry The address of the new Claim Issuers Registry
      *  emits `ClaimIssuersRegistrySet` event
      */
-    function setClaimIssuersRegistry(address _claimIssuersRegistry) external;
+    function setClaimIssuersRegistry(
+        IClaimIssuersRegistry _claimIssuersRegistry
+    ) external;
 
     /**
      *  @dev Updates the country corresponding to a user address.

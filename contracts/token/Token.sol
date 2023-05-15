@@ -1,66 +1,4 @@
 // SPDX-License-Identifier: GPL-3.0
-//
-//                                             :+#####%%%%%%%%%%%%%%+
-//                                         .-*@@@%+.:+%@@@@@%%#***%@@%=
-//                                     :=*%@@@#=.      :#@@%       *@@@%=
-//                       .-+*%@%*-.:+%@@@@@@+.     -*+:  .=#.       :%@@@%-
-//                   :=*@@@@%%@@@@@@@@@%@@@-   .=#@@@%@%=             =@@@@#.
-//             -=+#%@@%#*=:.  :%@@@@%.   -*@@#*@@@@@@@#=:-              *@@@@+
-//            =@@%=:.     :=:   *@@@@@%#-   =%*%@@@@#+-.        =+       :%@@@%-
-//           -@@%.     .+@@@     =+=-.         @@#-           +@@@%-       =@@@@%:
-//          :@@@.    .+@@#%:                   :    .=*=-::.-%@@@+*@@=       +@@@@#.
-//          %@@:    +@%%*                         =%@@@@@@@@@@@#.  .*@%-       +@@@@*.
-//         #@@=                                .+@@@@%:=*@@@@@-      :%@%:      .*@@@@+
-//        *@@*                                +@@@#-@@%-:%@@*          +@@#.      :%@@@@-
-//       -@@%           .:-=++*##%%%@@@@@@@@@@@@*. :@+.@@@%:            .#@@+       =@@@@#:
-//      .@@@*-+*#%%%@@@@@@@@@@@@@@@@%%#**@@%@@@.   *@=*@@#                :#@%=      .#@@@@#-
-//      -%@@@@@@@@@@@@@@@*+==-:-@@@=    *@# .#@*-=*@@@@%=                 -%@@@*       =@@@@@%-
-//         -+%@@@#.   %@%%=   -@@:+@: -@@*    *@@*-::                   -%@@%=.         .*@@@@@#
-//            *@@@*  +@* *@@##@@-  #@*@@+    -@@=          .         :+@@@#:           .-+@@@%+-
-//             +@@@%*@@:..=@@@@*   .@@@*   .#@#.       .=+-       .=%@@@*.         :+#@@@@*=:
-//              =@@@@%@@@@@@@@@@@@@@@@@@@@@@%-      :+#*.       :*@@@%=.       .=#@@@@%+:
-//               .%@@=                 .....    .=#@@+.       .#@@@*:       -*%@@@@%+.
-//                 +@@#+===---:::...         .=%@@*-         +@@@+.      -*@@@@@%+.
-//                  -@@@@@@@@@@@@@@@@@@@@@@%@@@@=          -@@@+      -#@@@@@#=.
-//                    ..:::---===+++***###%%%@@@#-       .#@@+     -*@@@@@#=.
-//                                           @@@@@@+.   +@@*.   .+@@@@@%=.
-//                                          -@@@@@=   =@@%:   -#@@@@%+.
-//                                          +@@@@@. =@@@=  .+@@@@@*:
-//                                          #@@@@#:%@@#. :*@@@@#-
-//                                          @@@@@%@@@= :#@@@@+.
-//                                         :@@@@@@@#.:#@@@%-
-//                                         +@@@@@@-.*@@@*:
-//                                         #@@@@#.=@@@+.
-//                                         @@@@+-%@%=
-//                                        :@@@#%@%=
-//                                        +@@@@%-
-//                                        :#%%=
-//
-
-/**
- *     NOTICE
- *
- *     The T-REX software is licensed under a proprietary license or the GPL v.3.
- *     If you choose to receive it under the GPL v.3 license, the following applies:
- *     T-REX is a suite of smart contracts implementing the ERC-3643 standard and
- *     developed by Tokeny to manage and transfer financial assets on EVM blockchains
- *
- *     Copyright (C) 2023, Tokeny sàrl.
- *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
- *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
- *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
-
 pragma solidity 0.8.17;
 
 import "./IToken.sol";
@@ -71,18 +9,25 @@ import "@openzeppelin/contracts/access/AccessControl.sol";
 
 import "../compliance/interface/ICompliance.sol";
 
+/// @title ERC-3643 - T-Rex Token (Version RAPTOR-5.0.0)
+/// @notice An ERC-3643 compliant token with onchain validators and compliance checks.
 contract Token is IToken, AccessControl, Pausable {
     /// @dev ERC20 basic variables
-    mapping(address => uint256) internal _balances;
-    mapping(address => mapping(address => uint256)) internal _allowances;
-    uint256 internal _totalSupply;
+    mapping(address => uint256) private _balances;
+    mapping(address => mapping(address => uint256)) private _allowances;
+
+    /// @dev Variables of freeze and pause functions
+    mapping(address => bool) private _frozen;
+    mapping(address => uint256) private _frozenAmounts;
+
+    uint256 private _totalSupply;
 
     /// @dev Token information
-    string internal _tokenName;
-    string internal _tokenSymbol;
-    uint8 internal _tokenDecimals;
-    address internal _tokenOnchainID;
-    string internal constant _TOKEN_VERSION = "4.0.1";
+    string private _name;
+    string private _symbol;
+    uint8 private immutable _decimals;
+    address private _onchainID;
+    string private constant _TOKEN_VERSION = "RAPTOR-5.0.0";
 
     // keccak256(AGENT_ROLE)
     bytes32 public constant AGENT_ROLE =
@@ -92,620 +37,677 @@ contract Token is IToken, AccessControl, Pausable {
     bytes32 public constant OWNER_ROLE =
         0xb19546dff01e856fb3f010c267a7b1c60363cf8a4664e21cc89c26224620214e;
 
-    /// @dev Variables of freeze and pause functions
-    mapping(address => bool) internal _frozen;
-    mapping(address => uint256) internal _frozenTokens;
-
-    bool internal _tokenPaused = false;
-
     /// @dev Identity Registry contract used by the onchain validator system
-    IIdentityRegistry internal _tokenIdentityRegistry;
+    IIdentityRegistry private _identityRegistry;
 
     /// @dev Compliance contract linked to the onchain validator system
-    ICompliance internal _tokenCompliance;
+    ICompliance private _compliance;
 
-    /**
-     *  @dev the constructor initiates the token contract
-     *  msg.sender is set automatically as the owner of the smart contract
-     *  @param _identityRegistry the address of the Identity registry linked to the token
-     *  @param _compliance the address of the compliance contract linked to the token
-     *  @param _name the name of the token
-     *  @param _symbol the symbol of the token
-     *  @param _decimals the decimals of the token
-     *  @param _onchainID the address of the onchainID of the token
-     *  emits an `UpdatedTokenInformation` event
-     *  emits an `IdentityRegistryAdded` event
-     *  emits a `ComplianceAdded` event
-     */
+    /// @dev the constructor initiates the token contract
+    /// _msgSender() is set automatically as the owner of the smart contract
+    /// @param identityRegistry_ the address of the Identity registry linked to the token
+    /// @param compliance_ the address of the compliance contract linked to the token
+    /// @param name_ the name of the token
+    /// @param symbol_ the symbol of the token
+    /// @param decimals_ the decimals of the token
+    /// @param onchainID_ the address of the onchainID of the token
+    /// emits an `UpdatedTokenInformation` event
+    /// emits an `IdentityRegistryAdded` event
+    /// emits a `ComplianceAdded` event
     constructor(
-        address _identityRegistry,
-        address _compliance,
-        string memory _name,
-        string memory _symbol,
-        uint8 _decimals,
-        // _onchainID can be zero address if not set, can be set later by owner
-        address _onchainID
+        address identityRegistry_,
+        address compliance_,
+        string memory name_,
+        string memory symbol_,
+        uint8 decimals_,
+        address onchainID_
     ) {
-        // that require is protecting legacy versions of TokenProxy contracts
-        // as there was a bug with the initializer modifier on these proxies
-        // that check is preventing attackers to call the init functions on those
-        // legacy contracts.
         require(
-            _identityRegistry != address(0) && _compliance != address(0),
+            identityRegistry_ != address(0) && compliance_ != address(0),
             "ERC-3643: Invalid zero address"
         );
-        require(
-            keccak256(abi.encode(_name)) != keccak256(abi.encode("")) &&
-                keccak256(abi.encode(_symbol)) != keccak256(abi.encode("")),
-            "ERC-3643: No empty string"
-        );
-        require(0 <= _decimals && _decimals <= 18, "ERC-3643: Decimals 0-18");
 
-        _tokenName = _name;
-        _tokenSymbol = _symbol;
-        _tokenDecimals = _decimals;
-        _tokenOnchainID = _onchainID;
+        _name = name_;
+        _symbol = symbol_;
+        _decimals = decimals_;
+        _onchainID = onchainID_;
 
         _grantRole(bytes32(0), _msgSender());
         _grantRole(OWNER_ROLE, _msgSender());
         _grantRole(AGENT_ROLE, _msgSender());
 
-        _pause();
-        setIdentityRegistry(_identityRegistry);
-        setCompliance(_compliance);
-        emit UpdatedTokenInformation(
-            _tokenName,
-            _tokenSymbol,
-            _tokenDecimals,
-            _TOKEN_VERSION,
-            _tokenOnchainID
-        );
+        _identityRegistry = IIdentityRegistry(identityRegistry_);
+        _compliance = ICompliance(compliance_);
+        _compliance.bindToken(address(this));
+
+        emit IdentityRegistryAdded(identityRegistry_);
+        emit ComplianceAdded(compliance_);
+        emit UpdatedOnchainID(_onchainID);
     }
 
-    /**
-     *  @dev See {IERC20-approve}.
-     */
-    function approve(
-        address _spender,
-        uint256 _amount
-    ) external virtual override returns (bool) {
-        _approve(msg.sender, _spender, _amount);
+    /// @notice Approve `amount` tokens to be spent by `spender`
+    /// @param spender The address of the account allowed to spend the tokens
+    /// @param amount The number of tokens to be spent
+    /// @return A boolean that indicates if the operation was successful.
+    function approve(address spender, uint256 amount) external returns (bool) {
+        _approve(_msgSender(), spender, amount);
         return true;
     }
 
-    /**
-     *  @dev See {ERC20-increaseAllowance}.
-     */
-    function increaseAllowance(
-        address _spender,
-        uint256 _addedValue
-    ) external virtual returns (bool) {
-        _approve(
-            msg.sender,
-            _spender,
-            _allowances[msg.sender][_spender] + (_addedValue)
-        );
+    /// @notice ERC-20 overridden function that include logic to check for trade validity.
+    /// @dev Transfer tokens to another address. Requires that the _msgSender()
+    /// and to addresses are not frozen and that the value should not exceed available balance.
+    /// @param to The address of the receiver.
+    /// @param amount The number of tokens to transfer.
+    /// @return true if the transfer is successful.
+    function transfer(
+        address to,
+        uint256 amount
+    ) external whenNotPaused returns (bool) {
+        _transfer(_msgSender(), to, amount);
         return true;
     }
 
-    /**
-     *  @dev See {ERC20-decreaseAllowance}.
-     */
-    function decreaseAllowance(
-        address _spender,
-        uint256 _subtractedValue
-    ) external virtual returns (bool) {
-        _approve(
-            msg.sender,
-            _spender,
-            _allowances[msg.sender][_spender] - _subtractedValue
-        );
-        return true;
-    }
-
-    /**
-     *  @dev See {IToken-setOnchainID}.
-     *  if _onchainID is set at zero address it means no ONCHAINID is bound to this token
-     */
-    function setOnchainID(
-        address _onchainID
-    ) external override onlyRole(OWNER_ROLE) {
-        _tokenOnchainID = _onchainID;
-        emit UpdatedTokenInformation(
-            _tokenName,
-            _tokenSymbol,
-            _tokenDecimals,
-            _TOKEN_VERSION,
-            _tokenOnchainID
-        );
-    }
-
-    /**
-     *  @dev See {IToken-pause}.
-     */
-    function pause() external override onlyRole(AGENT_ROLE) {
-        _pause();
-        emit Paused(msg.sender);
-    }
-
-    /**
-     *  @dev See {IToken-unpause}.
-     */
-    function unpause() external override onlyRole(AGENT_ROLE) {
-        _unpause();
-        emit Unpaused(msg.sender);
-    }
-
-    /**
-     *  @dev See {IToken-batchTransfer}.
-     */
-    function batchTransfer(
-        address[] calldata _toList,
-        uint256[] calldata _amounts
-    ) external override {
-        for (uint256 i = 0; i < _toList.length; i++) {
-            transfer(_toList[i], _amounts[i]);
-        }
-    }
-
-    /**
-     *  @notice ERC-20 overridden function that include logic to check for trade validity.
-     *  Require that the from and to addresses are not frozen.
-     *  Require that the value should not exceed available balance .
-     *  Require that the to address is a verified address
-     *  @param _from The address of the sender
-     *  @param _to The address of the receiver
-     *  @param _amount The number of tokens to transfer
-     *  @return `true` if successful and revert if unsuccessful
-     */
+    /// @dev ERC-20 overridden function that include logic to check for trade validity
+    /// @dev Transfer tokens from one address to another. Requires that the `from` and `to` addresses are not frozen
+    /// and that the value should not exceed available balance.
+    /// @param from The address of the sender.
+    /// @param to The address of the receiver.
+    /// @param amount The number of tokens to transfer.
+    /// @return true if the transfer is successful.
     function transferFrom(
-        address _from,
-        address _to,
-        uint256 _amount
-    ) external override whenNotPaused returns (bool) {
-        require(!_frozen[_to] && !_frozen[_from], "ERC-3643: Wallet frozen");
-        require(
-            _amount <= balanceOf(_from) - (_frozenTokens[_from]),
-            "ERC-3643: Low balance"
+        address from,
+        address to,
+        uint256 amount
+    ) external whenNotPaused returns (bool) {
+        _spendAllowance(from, _msgSender(), amount);
+        _transfer(from, to, amount);
+
+        return true;
+    }
+
+    /// @notice Increase the allowance provided to `spender` by the caller
+    /// @param spender The address of the account allowed to spend the tokens
+    /// @param _addedValue The increase in allowance
+    /// @return A boolean that indicates if the operation was successful.
+    function increaseAllowance(
+        address spender,
+        uint256 _addedValue
+    ) external returns (bool) {
+        _approve(
+            _msgSender(),
+            spender,
+            _allowances[_msgSender()][spender] + (_addedValue)
         );
-        if (
-            _tokenIdentityRegistry.isVerified(_to) &&
-            _tokenCompliance.canTransfer(_from, _to, _amount)
-        ) {
-            _approve(
-                _from,
-                msg.sender,
-                _allowances[_from][msg.sender] - (_amount)
-            );
-            _transfer(_from, _to, _amount);
-            _tokenCompliance.transferred(_from, _to, _amount);
-            return true;
-        }
-        revert("Transfer not possible");
+        return true;
     }
 
-    /**
-     *  @dev See {IToken-batchForcedTransfer}.
-     */
+    /// @notice Decrease the allowance provided to `spender` by the caller
+    /// @param spender The address of the account allowed to spend the tokens
+    /// @param _subtractedValue The decrease in allowance
+    /// @return A boolean that indicates if the operation was successful.
+    function decreaseAllowance(
+        address spender,
+        uint256 _subtractedValue
+    ) external returns (bool) {
+        _approve(
+            _msgSender(),
+            spender,
+            _allowances[_msgSender()][spender] - _subtractedValue
+        );
+        return true;
+    }
+
+    /// @dev Set the onchainID of a token. Can only be called by an owner of the contract.
+    /// @param onchainID_ The address of the onchainID.
+    /// @notice Emits an UpdatedOnchainID event.
+    function setOnchainID(address onchainID_) external onlyRole(OWNER_ROLE) {
+        _onchainID = onchainID_;
+        emit UpdatedOnchainID(onchainID_);
+    }
+
+    /// @notice Pause all token operations
+    /// @dev Can only be called by an agent of the contract
+    function pause() external onlyRole(AGENT_ROLE) {
+        _pause();
+    }
+
+    /// @notice Unpause all token operations
+    /// @dev Can only be called by an agent of the contract
+    function unpause() external onlyRole(AGENT_ROLE) {
+        _unpause();
+    }
+
+    // @dev Perform a batch transfer of tokens.
+    /// @param toList An array of receiver addresses.
+    /// @param amounts An array of amounts to transfer.
+    function batchTransfer(
+        address[] calldata toList,
+        uint256[] calldata amounts
+    ) external whenNotPaused {
+        uint length = toList.length;
+        require(length == amounts.length, "ERC-3643: Array size mismatch");
+
+        for (uint256 i = 0; i < length; ) {
+            _transfer(_msgSender(), toList[i], amounts[i]);
+            unchecked {
+                ++i;
+            }
+        }
+    }
+
+    /// @dev Perform a batch forced transfer of tokens.
+    /// @param fromList An array of sender addresses.
+    /// @param toList An array of receiver addresses.
+    /// @param amounts An array of amounts to transfer.
+    function batchTransferFrom(
+        address[] calldata fromList,
+        address[] calldata toList,
+        uint256[] calldata amounts
+    ) external whenNotPaused {
+        uint length = fromList.length;
+        require(length == toList.length, "ERC-3643: Array size mismatch");
+        require(length == amounts.length, "ERC-3643: Array size mismatch");
+
+        for (uint256 i = 0; i < length; ) {
+            _spendAllowance(fromList[i], _msgSender(), amounts[i]);
+            _transfer(fromList[i], toList[i], amounts[i]);
+            unchecked {
+                ++i;
+            }
+        }
+    }
+
+    /// @dev Perform a batch forced transfer of tokens.
+    /// @param fromList An array of sender addresses.
+    /// @param toList An array of receiver addresses.
+    /// @param amounts An array of amounts to transfer.
     function batchForcedTransfer(
-        address[] calldata _fromList,
-        address[] calldata _toList,
-        uint256[] calldata _amounts
-    ) external override {
-        for (uint256 i = 0; i < _fromList.length; i++) {
-            forcedTransfer(_fromList[i], _toList[i], _amounts[i]);
+        address[] calldata fromList,
+        address[] calldata toList,
+        uint256[] calldata amounts
+    ) external onlyRole(AGENT_ROLE) {
+        uint length = fromList.length;
+        require(length == toList.length, "ERC-3643: Array size mismatch");
+        require(length == amounts.length, "ERC-3643: Array size mismatch");
+
+        for (uint256 i = 0; i < length; ) {
+            _forcedTransfer(fromList[i], toList[i], amounts[i]);
+            unchecked {
+                ++i;
+            }
         }
     }
 
-    /**
-     *  @dev See {IToken-batchMint}.
-     */
+    /// @dev Perform a batch minting of tokens.
+    /// @param toList An array of receiver addresses.
+    /// @param amounts An array of amounts to mint.
     function batchMint(
-        address[] calldata _toList,
-        uint256[] calldata _amounts
-    ) external override {
-        for (uint256 i = 0; i < _toList.length; i++) {
-            mint(_toList[i], _amounts[i]);
+        address[] calldata toList,
+        uint256[] calldata amounts
+    ) external onlyRole(AGENT_ROLE) {
+        uint length = toList.length;
+        require(length == amounts.length, "ERC-3643: Array size mismatch");
+
+        for (uint256 i = 0; i < length; ) {
+            _mint(toList[i], amounts[i]);
+            unchecked {
+                ++i;
+            }
         }
     }
 
-    /**
-     *  @dev See {IToken-batchBurn}.
-     */
+    /// @dev Perform a batch burn of tokens.
+    /// @param accounts An array of addresses from which to burn tokens.
+    /// @param amounts An array of amounts to burn.
     function batchBurn(
-        address[] calldata _userAddresses,
-        uint256[] calldata _amounts
-    ) external override {
-        for (uint256 i = 0; i < _userAddresses.length; i++) {
-            burn(_userAddresses[i], _amounts[i]);
+        address[] calldata accounts,
+        uint256[] calldata amounts
+    ) external onlyRole(AGENT_ROLE) {
+        uint length = accounts.length;
+        require(length == amounts.length, "ERC-3643: Array size mismatch");
+
+        for (uint256 i = 0; i < length; ) {
+            _burn(accounts[i], amounts[i]);
+            unchecked {
+                ++i;
+            }
         }
     }
 
-    /**
-     *  @dev See {IToken-batchSetAddressFrozen}.
-     */
+    /// @dev Perform a batch freezing / unfreezing of addresses.
+    /// @param accounts An array of addresses to freeze.
+    /// @param freeze An array of boolean values indicating whether to freeze the corresponding address.
     function batchSetAddressFrozen(
-        address[] calldata _userAddresses,
-        bool[] calldata _freeze
-    ) external override {
-        for (uint256 i = 0; i < _userAddresses.length; i++) {
-            setAddressFrozen(_userAddresses[i], _freeze[i]);
+        address[] calldata accounts,
+        bool[] calldata freeze
+    ) external onlyRole(AGENT_ROLE) {
+        uint length = accounts.length;
+        require(length == freeze.length, "ERC-3643: Array size mismatch");
+
+        for (uint256 i = 0; i < length; ) {
+            _setAddressFrozen(accounts[i], freeze[i]);
+            unchecked {
+                ++i;
+            }
         }
     }
 
-    /**
-     *  @dev See {IToken-batchFreezePartialTokens}.
-     */
+    /// @dev Perform a batch freezing of partial tokens from multiple addresses.
+    /// @param accounts An array of addresses from which to freeze tokens.
+    /// @param amounts An array of amounts to freeze.
     function batchFreezePartialTokens(
-        address[] calldata _userAddresses,
-        uint256[] calldata _amounts
-    ) external override {
-        for (uint256 i = 0; i < _userAddresses.length; i++) {
-            freezePartialTokens(_userAddresses[i], _amounts[i]);
+        address[] calldata accounts,
+        uint256[] calldata amounts
+    ) external onlyRole(AGENT_ROLE) {
+        uint length = accounts.length;
+        require(length == amounts.length, "ERC-3643: Array size mismatch");
+
+        for (uint256 i = 0; i < length; ) {
+            _freezePartialTokens(accounts[i], amounts[i]);
+            unchecked {
+                ++i;
+            }
         }
     }
 
-    /**
-     *  @dev See {IToken-batchUnfreezePartialTokens}.
-     */
+    /// @dev Perform a batch unfreezing of partial tokens from multiple addresses.
+    /// @param accounts An array of addresses from which to unfreeze tokens.
+    /// @param amounts An array of amounts to unfreeze.
     function batchUnfreezePartialTokens(
-        address[] calldata _userAddresses,
-        uint256[] calldata _amounts
-    ) external override {
-        for (uint256 i = 0; i < _userAddresses.length; i++) {
-            unfreezePartialTokens(_userAddresses[i], _amounts[i]);
+        address[] calldata accounts,
+        uint256[] calldata amounts
+    ) external onlyRole(AGENT_ROLE) {
+        uint length = accounts.length;
+        require(length == amounts.length, "ERC-3643: Array size mismatch");
+
+        for (uint256 i = 0; i < length; ) {
+            _unfreezePartialTokens(accounts[i], amounts[i]);
+            unchecked {
+                ++i;
+            }
         }
     }
 
-    /**
-     *  @dev See {IToken-recoveryAddress}.
-     */
+    /// @dev Recover tokens from a lost wallet and transfer them to a new wallet. Can only be called by an agent of the contract.
+    /// @param lostWallet The address of the lost wallet.
+    /// @param newWallet The address of the new wallet.
+    /// @param investorOnchainID The onchainID of the investor.
+    /// @return true if the recovery is successful.
     function recoveryAddress(
-        address _lostWallet,
-        address _newWallet,
-        address _investorOnchainID
-    ) external override onlyRole(AGENT_ROLE) returns (bool) {
-        require(balanceOf(_lostWallet) != 0, "no tokens to recover");
-        IIdentity _onchainID = IIdentity(_investorOnchainID);
-        bytes32 _key = keccak256(abi.encode(_newWallet));
-        if (_onchainID.keyHasPurpose(_key, 1)) {
-            uint256 investorTokens = balanceOf(_lostWallet);
-            uint256 frozenTokens = _frozenTokens[_lostWallet];
-            _tokenIdentityRegistry.registerIdentity(
-                _newWallet,
-                _onchainID,
-                _tokenIdentityRegistry.investorCountry(_lostWallet)
-            );
-            forcedTransfer(_lostWallet, _newWallet, investorTokens);
-            if (frozenTokens > 0) {
-                freezePartialTokens(_newWallet, frozenTokens);
-            }
-            if (_frozen[_lostWallet] == true) {
-                setAddressFrozen(_newWallet, true);
-            }
-            _tokenIdentityRegistry.deleteIdentity(_lostWallet);
-            emit RecoverySuccess(_lostWallet, _newWallet, _investorOnchainID);
-            return true;
+        address lostWallet,
+        address newWallet,
+        address investorOnchainID
+    ) external onlyRole(AGENT_ROLE) returns (bool) {
+        uint256 investorBalance = _balances[lostWallet];
+        require(investorBalance != 0, "ERC-3643: No tokens to recover");
+
+        IIdentity identity = IIdentity(investorOnchainID);
+
+        bool isLostWalletFrozen = _frozen[lostWallet];
+        bytes32 _key = keccak256(abi.encode(newWallet));
+        require(
+            identity.keyHasPurpose(_key, 1),
+            "ERC-3643: Recovery not possible"
+        );
+        uint256 frozenTokens = _frozenAmounts[lostWallet];
+
+        _identityRegistry.registerIdentity(
+            newWallet,
+            identity,
+            _identityRegistry.investorCountry(lostWallet)
+        );
+
+        if (isLostWalletFrozen) _frozen[lostWallet] = false;
+
+        _forcedTransfer(lostWallet, newWallet, investorBalance);
+
+        if (frozenTokens > 0) {
+            _freezePartialTokens(newWallet, frozenTokens);
         }
-        revert("Recovery not possible");
+        if (isLostWalletFrozen == true) {
+            _setAddressFrozen(newWallet, true);
+        }
+        _identityRegistry.deleteIdentity(lostWallet);
+
+        emit RecoverySuccess(lostWallet, newWallet, investorOnchainID);
+
+        return true;
     }
 
-    /**
-     *  @dev See {IERC20-totalSupply}.
-     */
-    function totalSupply() external view override returns (uint256) {
+    /// @notice Executes a forced transfer of tokens from one address to another
+    /// @param from The address from which the tokens will be transferred
+    /// @param to The address to which the tokens will be transferred
+    /// @param amount The number of tokens to be transferred
+    /// @return Returns true if the transfer was successful, otherwise false
+    function forcedTransfer(
+        address from,
+        address to,
+        uint256 amount
+    ) external onlyRole(AGENT_ROLE) returns (bool) {
+        return _forcedTransfer(from, to, amount);
+    }
+
+    /// @notice Mints new tokens and assigns them to a specified address
+    /// @param _to The address that will receive the minted tokens
+    /// @param amount The number of tokens to be minted
+    function mint(address _to, uint256 amount) external onlyRole(AGENT_ROLE) {
+        _mint(_to, amount);
+    }
+
+    /// @notice Burns tokens from a specified address
+    /// @param account The address from which the tokens will be burned
+    /// @param amount The number of tokens to be burned
+    function burn(
+        address account,
+        uint256 amount
+    ) external onlyRole(AGENT_ROLE) {
+        _burn(account, amount);
+    }
+
+    /// @notice Freezes or unfreezes a specified address
+    /// @param account The address to be frozen or unfrozen
+    /// @param freeze The boolean value indicating whether to freeze (true) or unfreeze (false) the account
+    function setAddressFrozen(
+        address account,
+        bool freeze
+    ) external onlyRole(AGENT_ROLE) {
+        _frozen[account] = freeze;
+
+        emit AddressFrozen(account, freeze, _msgSender());
+    }
+
+    /// @notice Freezes a specified amount of tokens in a specified account
+    /// @param account The account in which the tokens will be frozen
+    /// @param amount The amount of tokens to be frozen
+    function freezePartialTokens(
+        address account,
+        uint256 amount
+    ) external onlyRole(AGENT_ROLE) {
+        _freezePartialTokens(account, amount);
+    }
+
+    /// @notice Unfreezes a specified amount of tokens in a specified account
+    /// @param account The account from which the tokens will be unfrozen
+    /// @param amount The amount of tokens to be unfrozen
+    function unfreezePartialTokens(
+        address account,
+        uint256 amount
+    ) external onlyRole(AGENT_ROLE) {
+        _unfreezePartialTokens(account, amount);
+    }
+
+    /// @notice Sets the Identity Registry contract address
+    /// @param newIdentityRegistry The address of the new Identity Registry contract
+    function setIdentityRegistry(
+        address newIdentityRegistry
+    ) external onlyRole(OWNER_ROLE) {
+        _identityRegistry = IIdentityRegistry(newIdentityRegistry);
+        emit IdentityRegistryAdded(newIdentityRegistry);
+    }
+
+    /// @notice Sets the Compliance contract address
+    /// @param newCompliance The address of the new Compliance contract
+    function setCompliance(
+        address newCompliance
+    ) external onlyRole(OWNER_ROLE) {
+        require(newCompliance != address(0), "ERC-3643: Invalid zero address");
+
+        _compliance.unbindToken(address(this));
+        _compliance = ICompliance(newCompliance);
+        _compliance.bindToken(address(this));
+        emit ComplianceAdded(newCompliance);
+    }
+
+    /// @dev Returns the name of the token.
+    function name() external view returns (string memory) {
+        return _name;
+    }
+
+    /// @dev Returns the symbol of the token.
+    function symbol() external view returns (string memory) {
+        return _symbol;
+    }
+
+    /// @dev Returns the number of decimals the token uses.
+    function decimals() external view returns (uint8) {
+        return _decimals;
+    }
+
+    /// @dev Returns the onchainID of the token.
+    function onchainID() external view returns (address) {
+        return _onchainID;
+    }
+
+    /// @notice Get the balance of a specified account.
+    /// @param account The address of the account.
+    /// @return uint256 The balance of the specified account.
+    function balanceOf(address account) external view returns (uint256) {
+        return _balances[account];
+    }
+
+    /// @dev Returns the total supply of the token.
+    function totalSupply() external view returns (uint256) {
         return _totalSupply;
     }
 
-    /**
-     *  @dev See {IERC20-allowance}.
-     */
+    /// @dev Returns the allowance of tokens that an owner has allowed a spender to spend.
+    /// @param owner The address of the owner.
+    /// @param spender The address of the spender.
     function allowance(
-        address _owner,
-        address _spender
-    ) external view virtual override returns (uint256) {
-        return _allowances[_owner][_spender];
+        address owner,
+        address spender
+    ) external view returns (uint256) {
+        return _allowances[owner][spender];
     }
 
-    /**
-     *  @dev See {IToken-identityRegistry}.
-     */
-    function identityRegistry()
-        external
-        view
-        override
-        returns (IIdentityRegistry)
-    {
-        return _tokenIdentityRegistry;
+    /// @dev Returns whether an address is frozen.
+    /// @param account The address to check.
+    function isFrozen(address account) external view returns (bool) {
+        return _frozen[account];
     }
 
-    /**
-     *  @dev See {IToken-compliance}.
-     */
-    function compliance() external view override returns (address) {
-        return address(_tokenCompliance);
+    /// @dev Returns the number of frozen tokens of an address.
+    /// @param account The address to check.
+    function getFrozenTokens(address account) external view returns (uint256) {
+        return _frozenAmounts[account];
     }
 
-    /**
-     *  @dev See {IToken-isFrozen}.
-     */
-    function isFrozen(
-        address _userAddress
-    ) external view override returns (bool) {
-        return _frozen[_userAddress];
+    /// @dev Returns the current Compliance contract linked to the token.
+    function compliance() external view returns (address) {
+        return address(_compliance);
     }
 
-    /**
-     *  @dev See {IToken-getFrozenTokens}.
-     */
-    function getFrozenTokens(
-        address _userAddress
-    ) external view override returns (uint256) {
-        return _frozenTokens[_userAddress];
+    /// @dev Returns the current Identity Registry contract linked to the token.
+    function identityRegistry() external view returns (IIdentityRegistry) {
+        return _identityRegistry;
     }
 
-    /**
-     *  @dev See {IToken-decimals}.
-     */
-    function decimals() external view override returns (uint8) {
-        return _tokenDecimals;
-    }
-
-    /**
-     *  @dev See {IToken-name}.
-     */
-    function name() external view override returns (string memory) {
-        return _tokenName;
-    }
-
-    /**
-     *  @dev See {IToken-onchainID}.
-     */
-    function onchainID() external view override returns (address) {
-        return _tokenOnchainID;
-    }
-
-    /**
-     *  @dev See {IToken-symbol}.
-     */
-    function symbol() external view override returns (string memory) {
-        return _tokenSymbol;
-    }
-
-    /**
-     *  @dev See {IToken-version}.
-     */
-    function version() external pure override returns (string memory) {
+    /// @dev Returns the version of the token.
+    function version() external pure returns (string memory) {
         return _TOKEN_VERSION;
     }
 
-    /**
-     *  @notice ERC-20 overridden function that include logic to check for trade validity.
-     *  Require that the msg.sender and to addresses are not frozen.
-     *  Require that the value should not exceed available balance .
-     *  Require that the to address is a verified address
-     *  @param _to The address of the receiver
-     *  @param _amount The number of tokens to transfer
-     *  @return `true` if successful and revert if unsuccessful
-     */
-    function transfer(
-        address _to,
-        uint256 _amount
-    ) public override whenNotPaused returns (bool) {
-        require(
-            !_frozen[_to] && !_frozen[msg.sender],
-            "ERC-3643: Wallet frozen"
-        );
-        require(
-            _amount <= balanceOf(msg.sender) - (_frozenTokens[msg.sender]),
-            "ERC-3643: Low balance"
-        );
-        if (
-            _tokenIdentityRegistry.isVerified(_to) &&
-            _tokenCompliance.canTransfer(msg.sender, _to, _amount)
-        ) {
-            _transfer(msg.sender, _to, _amount);
-            _tokenCompliance.transferred(msg.sender, _to, _amount);
-            return true;
-        }
-        revert("Transfer not possible");
-    }
+    /// @notice ERC-20 overridden function that include logic to check for trade validity.
+    /// Require that the `from` and `to` addresses are not frozen.
+    /// Require that the `amount` should not exceed available balance .
+    /// Require that the `to` address is a verified address
+    /// @param from The address of the sender
+    /// @param to The address of the receiver
+    /// @param amount The number of tokens to transfer
+    function _transfer(address from, address to, uint256 amount) private {
+        require(from != address(0), "ERC-3643: transfer from zero address");
+        require(to != address(0), "ERC-3643: transfer to zero address");
 
-    /**
-     *  @dev See {IToken-forcedTransfer}.
-     */
-    function forcedTransfer(
-        address _from,
-        address _to,
-        uint256 _amount
-    ) public override onlyRole(AGENT_ROLE) returns (bool) {
-        require(balanceOf(_from) >= _amount, "ERC-3643: Sender low balance");
-        uint256 freeBalance = balanceOf(_from) - (_frozenTokens[_from]);
-        if (_amount > freeBalance) {
-            uint256 tokensToUnfreeze = _amount - (freeBalance);
-            _frozenTokens[_from] = _frozenTokens[_from] - (tokensToUnfreeze);
-            emit TokensUnfrozen(_from, tokensToUnfreeze);
-        }
-        if (_tokenIdentityRegistry.isVerified(_to)) {
-            _transfer(_from, _to, _amount);
-            _tokenCompliance.transferred(_from, _to, _amount);
-            return true;
-        }
-        revert("Transfer not possible");
-    }
+        require(!_frozen[to] && !_frozen[from], "ERC-3643: Wallet frozen");
+        uint256 fromBalance = _balances[from];
 
-    /**
-     *  @dev See {IToken-mint}.
-     */
-    function mint(
-        address _to,
-        uint256 _amount
-    ) public override onlyRole(AGENT_ROLE) {
+        require(fromBalance >= amount, "ERC-3643: amount exceeds balance");
         require(
-            _tokenIdentityRegistry.isVerified(_to),
+            amount <= fromBalance - (_frozenAmounts[from]),
+            "ERC-3643: Freezed balance"
+        );
+
+        require(
+            _identityRegistry.isVerified(to),
             "ERC-3643: Unverified identity"
         );
         require(
-            _tokenCompliance.canTransfer(address(0), _to, _amount),
+            _compliance.canTransfer(from, to, amount),
             "ERC-3643: Compliance failure"
         );
-        _mint(_to, _amount);
-        _tokenCompliance.created(_to, _amount);
-    }
 
-    /**
-     *  @dev See {IToken-burn}.
-     */
-    function burn(
-        address _userAddress,
-        uint256 _amount
-    ) public override onlyRole(AGENT_ROLE) {
-        require(
-            balanceOf(_userAddress) >= _amount,
-            "cannot burn more than balance"
-        );
-        uint256 freeBalance = balanceOf(_userAddress) -
-            _frozenTokens[_userAddress];
-        if (_amount > freeBalance) {
-            uint256 tokensToUnfreeze = _amount - (freeBalance);
-            _frozenTokens[_userAddress] =
-                _frozenTokens[_userAddress] -
-                (tokensToUnfreeze);
-            emit TokensUnfrozen(_userAddress, tokensToUnfreeze);
+        unchecked {
+            _balances[from] = fromBalance - amount;
+            // Overflow not possible: the sum of all balances is capped by totalSupply, and the sum is preserved by
+            // decrementing then incrementing.
+            _balances[to] += amount;
         }
-        _burn(_userAddress, _amount);
-        _tokenCompliance.destroyed(_userAddress, _amount);
+
+        emit Transfer(from, to, amount);
+        _compliance.transferred(_msgSender(), to, amount);
     }
 
-    /**
-     *  @dev See {IToken-setAddressFrozen}.
-     */
-    function setAddressFrozen(
-        address _userAddress,
-        bool _freeze
-    ) public override onlyRole(AGENT_ROLE) {
-        _frozen[_userAddress] = _freeze;
-
-        emit AddressFrozen(_userAddress, _freeze, msg.sender);
-    }
-
-    /**
-     *  @dev See {IToken-freezePartialTokens}.
-     */
-    function freezePartialTokens(
-        address _userAddress,
-        uint256 _amount
-    ) public override onlyRole(AGENT_ROLE) {
-        uint256 balance = balanceOf(_userAddress);
+    /// @dev Mints the amount of tokens to the `account`
+    /// @param account The address of the receiver
+    /// @param amount The number of tokens to mint
+    function _mint(address account, uint256 amount) private {
+        require(account != address(0), "ERC-3643: mint to zero address");
         require(
-            balance >= _frozenTokens[_userAddress] + _amount,
+            _identityRegistry.isVerified(account),
+            "ERC-3643: Unverified identity"
+        );
+        require(
+            _compliance.canTransfer(address(0), account, amount),
+            "ERC-3643: Compliance failure"
+        );
+
+        _totalSupply += amount;
+        _balances[account] += amount;
+
+        emit Transfer(address(0), account, amount);
+        _compliance.created(account, amount);
+    }
+
+    /// @dev Burns the amount of tokens from the sender's account
+    /// @param account The address of the sender
+    /// @param amount The number of tokens to burn
+    function _burn(address account, uint256 amount) private {
+        require(account != address(0), "ERC-3643: burn from the zero address");
+
+        uint256 accountBalance = _balances[account];
+        require(accountBalance >= amount, "ERC-3643: burn exceeds balance");
+
+        uint256 freeBalance = accountBalance - _frozenAmounts[account];
+        if (amount > freeBalance) {
+            uint256 tokensToUnfreeze = amount - (freeBalance);
+            _frozenAmounts[account] =
+                _frozenAmounts[account] -
+                (tokensToUnfreeze);
+            emit TokensUnfrozen(account, tokensToUnfreeze);
+        }
+        unchecked {
+            _balances[account] = accountBalance - amount;
+            // Overflow not possible: amount <= accountBalance <= totalSupply.
+            _totalSupply -= amount;
+        }
+
+        emit Transfer(account, address(0), amount);
+        _compliance.destroyed(account, amount);
+    }
+
+    /// @notice Approve a specified amount for a spender.
+    /// @dev private function that approves a specified amount for a spender.
+    /// Emits an Approval event.
+    /// @param owner The address of the owner.
+    /// @param spender The address of the spender.
+    /// @param amount The amount to approve.
+    function _approve(address owner, address spender, uint256 amount) private {
+        require(owner != address(0), "ERC-3643: approve from zero address");
+        require(spender != address(0), "ERC-3643: approve to zero address");
+
+        _allowances[owner][spender] = amount;
+        emit Approval(owner, spender, amount);
+    }
+
+    /// @notice Forced transfer of a specified amount from one address to another.
+    /// @dev Private function to transfer tokens from one address to another.
+    /// Requires that the `from` address has enough balance. Adjusts frozen tokens if necessary.
+    /// @param from The address to transfer from.
+    /// @param to The address to transfer to.
+    /// @param amount The amount to transfer.
+    /// @return true if the forced transfer is successful.
+    function _forcedTransfer(
+        address from,
+        address to,
+        uint256 amount
+    ) private returns (bool) {
+        uint fromBalance = _balances[from];
+
+        require(fromBalance >= amount, "ERC-3643: Sender low balance");
+        uint256 freeBalance = fromBalance - (_frozenAmounts[from]);
+        if (amount > freeBalance) {
+            uint256 tokensToUnfreeze = amount - (freeBalance);
+            _frozenAmounts[from] = _frozenAmounts[from] - (tokensToUnfreeze);
+            emit TokensUnfrozen(from, tokensToUnfreeze);
+        }
+        _transfer(from, to, amount);
+        return true;
+    }
+
+    /// @dev Decreases the allowance of the spender for the sender's tokens
+    /// @param owner The address of the sender
+    /// @param spender The address of the spender
+    /// @param amount The number of tokens to decrease the allowance by
+    function _spendAllowance(
+        address owner,
+        address spender,
+        uint256 amount
+    ) private {
+        uint256 currentAllowance = _allowances[owner][spender];
+
+        if (currentAllowance != type(uint256).max) {
+            require(
+                currentAllowance >= amount,
+                "ERC3643: Insufficient allowance"
+            );
+            unchecked {
+                _approve(owner, spender, currentAllowance - amount);
+            }
+        }
+    }
+
+    /// @dev Freezes or unfreezes the account
+    /// @param account The address of the account
+    /// @param freeze The boolean value of whether to freeze or unfreeze the account
+    function _setAddressFrozen(address account, bool freeze) private {
+        _frozen[account] = freeze;
+
+        emit AddressFrozen(account, freeze, _msgSender());
+    }
+
+    /// @dev Freezes the amount of tokens in the account
+    /// @param account The address of the account
+    /// @param amount The number of tokens to freeze
+    function _freezePartialTokens(address account, uint256 amount) private {
+        uint256 balance = _balances[account];
+        require(
+            balance >= _frozenAmounts[account] + amount,
             "Amount exceeds available balance"
         );
-        _frozenTokens[_userAddress] = _frozenTokens[_userAddress] + (_amount);
-        emit TokensFrozen(_userAddress, _amount);
+        _frozenAmounts[account] = _frozenAmounts[account] + (amount);
+        emit TokensFrozen(account, amount);
     }
 
-    /**
-     *  @dev See {IToken-unfreezePartialTokens}.
-     */
-    function unfreezePartialTokens(
-        address _userAddress,
-        uint256 _amount
-    ) public override onlyRole(AGENT_ROLE) {
+    /// @dev Unfreezes the amount of tokens in the account
+    /// @param account The address of the account
+    /// @param amount The number of tokens to unfreeze
+    function _unfreezePartialTokens(address account, uint256 amount) private {
         require(
-            _frozenTokens[_userAddress] >= _amount,
+            _frozenAmounts[account] >= amount,
             "Amount should be less than or equal to frozen tokens"
         );
-        _frozenTokens[_userAddress] = _frozenTokens[_userAddress] - (_amount);
-        emit TokensUnfrozen(_userAddress, _amount);
-    }
-
-    /**
-     *  @dev See {IToken-setIdentityRegistry}.
-     */
-    function setIdentityRegistry(
-        address _identityRegistry
-    ) public override onlyRole(OWNER_ROLE) {
-        _tokenIdentityRegistry = IIdentityRegistry(_identityRegistry);
-        emit IdentityRegistryAdded(_identityRegistry);
-    }
-
-    /**
-     *  @dev See {IToken-setCompliance}.
-     */
-    function setCompliance(
-        address _compliance
-    ) public override onlyRole(OWNER_ROLE) {
-        if (address(_tokenCompliance) != address(0)) {
-            _tokenCompliance.unbindToken(address(this));
-        }
-        _tokenCompliance = ICompliance(_compliance);
-        _tokenCompliance.bindToken(address(this));
-        emit ComplianceAdded(_compliance);
-    }
-
-    /**
-     *  @dev See {IERC20-balanceOf}.
-     */
-    function balanceOf(
-        address _userAddress
-    ) public view override returns (uint256) {
-        return _balances[_userAddress];
-    }
-
-    /**
-     *  @dev See {ERC20-_transfer}.
-     */
-    function _transfer(
-        address _from,
-        address _to,
-        uint256 _amount
-    ) internal virtual {
-        require(_from != address(0), "ERC20: transfer from the zero address");
-        require(_to != address(0), "ERC20: transfer to the zero address");
-
-        _balances[_from] = _balances[_from] - _amount;
-        _balances[_to] = _balances[_to] + _amount;
-        emit Transfer(_from, _to, _amount);
-    }
-
-    /**
-     *  @dev See {ERC20-_mint}.
-     */
-    function _mint(address _userAddress, uint256 _amount) internal virtual {
-        require(_userAddress != address(0), "ERC20: mint to the zero address");
-
-        _totalSupply = _totalSupply + _amount;
-        _balances[_userAddress] = _balances[_userAddress] + _amount;
-        emit Transfer(address(0), _userAddress, _amount);
-    }
-
-    /**
-     *  @dev See {ERC20-_burn}.
-     */
-    function _burn(address _userAddress, uint256 _amount) internal virtual {
-        require(
-            _userAddress != address(0),
-            "ERC20: burn from the zero address"
-        );
-
-        _balances[_userAddress] = _balances[_userAddress] - _amount;
-        _totalSupply = _totalSupply - _amount;
-        emit Transfer(_userAddress, address(0), _amount);
-    }
-
-    /**
-     *  @dev See {ERC20-_approve}.
-     */
-    function _approve(
-        address _owner,
-        address _spender,
-        uint256 _amount
-    ) internal virtual {
-        require(_owner != address(0), "ERC20: approve from the zero address");
-        require(_spender != address(0), "ERC20: approve to the zero address");
-
-        _allowances[_owner][_spender] = _amount;
-        emit Approval(_owner, _spender, _amount);
+        _frozenAmounts[account] = _frozenAmounts[account] - (amount);
+        emit TokensUnfrozen(account, amount);
     }
 }

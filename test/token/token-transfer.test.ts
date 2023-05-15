@@ -1,11 +1,9 @@
 import { loadFixture } from "@nomicfoundation/hardhat-network-helpers";
 import { expect } from "chai";
 import { ethers } from "hardhat";
-import {
-  deployFullSuiteFixture,
-  deploySuiteWithModularCompliancesFixture,
-} from "../fixtures/deploy-full-suite.fixture";
+import { deployFullSuiteFixture } from "../fixtures/deploy-full-suite.fixture";
 import { AGENT_ROLE, accessControlRevert } from "../utils";
+import { constants } from "ethers";
 
 describe("Token - Transfers", () => {
   describe(".approve()", () => {
@@ -135,7 +133,7 @@ describe("Token - Transfers", () => {
           token
             .connect(aliceWallet)
             .transfer(bobWallet.address, balance.add(1000))
-        ).to.be.revertedWith("ERC-3643: Low balance");
+        ).to.be.revertedWith("ERC-3643: amount exceeds balance");
       });
     });
 
@@ -153,7 +151,7 @@ describe("Token - Transfers", () => {
 
         await expect(
           token.connect(aliceWallet).transfer(bobWallet.address, balance)
-        ).to.be.revertedWith("ERC-3643: Low balance");
+        ).to.be.revertedWith("ERC-3643: Freezed balance");
       });
     });
 
@@ -166,7 +164,7 @@ describe("Token - Transfers", () => {
 
         await expect(
           token.connect(aliceWallet).transfer(anotherWallet.address, 100)
-        ).to.be.revertedWith("Transfer not possible");
+        ).to.be.revertedWith("ERC-3643: Unverified identity");
       });
     });
 
@@ -204,6 +202,19 @@ describe("Token - Transfers", () => {
         .to.emit(token, "Transfer")
         .withArgs(aliceWallet.address, bobWallet.address, 200);
     });
+
+    it("should failed if array size mismatches", async () => {
+      const {
+        suite: { token },
+        accounts: { aliceWallet, bobWallet },
+      } = await loadFixture(deployFullSuiteFixture);
+
+      await expect(
+        token
+          .connect(aliceWallet)
+          .batchTransfer([bobWallet.address], [200, 100, 100])
+      ).to.be.revertedWith("ERC-3643: Array size mismatch");
+    });
   });
 
   describe(".transferFrom()", () => {
@@ -235,11 +246,51 @@ describe("Token - Transfers", () => {
           .connect(tokenAgent)
           .setAddressFrozen(aliceWallet.address, true);
 
+        await token.connect(aliceWallet).approve(bobWallet.address, 1000);
+
         await expect(
           token
-            .connect(aliceWallet)
+            .connect(bobWallet)
             .transferFrom(aliceWallet.address, bobWallet.address, 100)
         ).to.be.revertedWith("ERC-3643: Wallet frozen");
+      });
+    });
+
+    describe("when transfer more than allowance", () => {
+      it("should revert", async () => {
+        const {
+          suite: { token },
+          accounts: { aliceWallet, bobWallet, tokenAgent },
+        } = await loadFixture(deployFullSuiteFixture);
+
+        await token
+          .connect(tokenAgent)
+          .setAddressFrozen(aliceWallet.address, true);
+
+        await token.connect(aliceWallet).approve(bobWallet.address, 1);
+
+        await expect(
+          token
+            .connect(bobWallet)
+            .transferFrom(aliceWallet.address, bobWallet.address, 100)
+        ).to.be.revertedWith("ERC3643: Insufficient allowance");
+      });
+    });
+
+    describe("when allowance is uint max", () => {
+      it("should transfer with max allowance", async () => {
+        const {
+          suite: { token },
+          accounts: { aliceWallet, bobWallet, tokenAgent },
+        } = await loadFixture(deployFullSuiteFixture);
+
+        await token
+          .connect(aliceWallet)
+          .approve(bobWallet.address, constants.MaxUint256);
+
+        await token
+          .connect(bobWallet)
+          .transferFrom(aliceWallet.address, bobWallet.address, 10);
       });
     });
 
@@ -254,9 +305,11 @@ describe("Token - Transfers", () => {
           .connect(tokenAgent)
           .setAddressFrozen(bobWallet.address, true);
 
+        await token.connect(aliceWallet).approve(bobWallet.address, 100);
+
         await expect(
           token
-            .connect(aliceWallet)
+            .connect(bobWallet)
             .transferFrom(aliceWallet.address, bobWallet.address, 100)
         ).to.be.revertedWith("ERC-3643: Wallet frozen");
       });
@@ -266,20 +319,22 @@ describe("Token - Transfers", () => {
       it("should revert", async () => {
         const {
           suite: { token },
-          accounts: { aliceWallet, bobWallet },
+          accounts: { aliceWallet, charlieWallet },
         } = await loadFixture(deployFullSuiteFixture);
 
         const balance = await token.balanceOf(aliceWallet.address);
 
+        await token.connect(aliceWallet).approve(charlieWallet.address, 10000);
+
         await expect(
           token
-            .connect(aliceWallet)
+            .connect(charlieWallet)
             .transferFrom(
               aliceWallet.address,
-              bobWallet.address,
+              charlieWallet.address,
               balance.add(1000)
             )
-        ).to.be.revertedWith("ERC-3643: Low balance");
+        ).to.be.revertedWith("ERC-3643: amount exceeds balance");
       });
     });
 
@@ -295,11 +350,13 @@ describe("Token - Transfers", () => {
           .connect(tokenAgent)
           .freezePartialTokens(aliceWallet.address, balance.sub(100));
 
+        token.connect(aliceWallet).approve(tokenAgent.address, 10000000000);
+
         await expect(
           token
-            .connect(aliceWallet)
+            .connect(tokenAgent)
             .transferFrom(aliceWallet.address, bobWallet.address, balance)
-        ).to.be.revertedWith("ERC-3643: Low balance");
+        ).to.be.revertedWith("ERC-3643: Freezed balance");
       });
     });
 
@@ -310,11 +367,13 @@ describe("Token - Transfers", () => {
           accounts: { aliceWallet, anotherWallet },
         } = await loadFixture(deployFullSuiteFixture);
 
+        await token.connect(aliceWallet).approve(anotherWallet.address, 100);
+
         await expect(
           token
-            .connect(aliceWallet)
+            .connect(anotherWallet)
             .transferFrom(aliceWallet.address, anotherWallet.address, 100)
-        ).to.be.revertedWith("Transfer not possible");
+        ).to.be.revertedWith("ERC-3643: Unverified identity");
       });
     });
 
@@ -389,7 +448,7 @@ describe("Token - Transfers", () => {
           token
             .connect(tokenAgent)
             .forcedTransfer(aliceWallet.address, anotherWallet.address, 100)
-        ).to.be.revertedWith("Transfer not possible");
+        ).to.be.revertedWith("ERC-3643: Unverified identity");
       });
     });
 
@@ -426,6 +485,48 @@ describe("Token - Transfers", () => {
   });
 
   describe(".mint", () => {
+    describe("when compliance return false", () => {
+      it("should revert", async () => {
+        const {
+          suite: { token },
+          accounts: { aliceWallet },
+        } = await loadFixture(deployFullSuiteFixture);
+
+        const FalseCompliance = await ethers.getContractFactory(
+          "FalseCompliance"
+        );
+
+        const falseCompliance = await FalseCompliance.deploy();
+
+        await token.setCompliance(falseCompliance.address);
+
+        await expect(token.mint(aliceWallet.address, 100)).to.be.revertedWith(
+          "ERC-3643: Compliance failure"
+        );
+      });
+    });
+
+    describe("when compliance return false", () => {
+      it("should revert", async () => {
+        const {
+          suite: { token },
+          accounts: { aliceWallet, bobWallet },
+        } = await loadFixture(deployFullSuiteFixture);
+
+        const FalseCompliance = await ethers.getContractFactory(
+          "FalseCompliance"
+        );
+
+        const falseCompliance = await FalseCompliance.deploy();
+
+        await token.setCompliance(falseCompliance.address);
+
+        await expect(
+          token.connect(bobWallet).transfer(aliceWallet.address, 100)
+        ).to.be.revertedWith("ERC-3643: Compliance failure");
+      });
+    });
+
     describe("when sender is not an agent", () => {
       it("should revert", async () => {
         const {
@@ -436,6 +537,19 @@ describe("Token - Transfers", () => {
         await expect(
           token.connect(aliceWallet).mint(aliceWallet.address, 100)
         ).to.be.revertedWith(accessControlRevert(aliceWallet, AGENT_ROLE));
+      });
+    });
+
+    describe("when receiver is zero address", () => {
+      it("should revert", async () => {
+        const {
+          suite: { token },
+          accounts: { aliceWallet },
+        } = await loadFixture(deployFullSuiteFixture);
+
+        await expect(token.mint(constants.AddressZero, 100)).to.be.revertedWith(
+          "ERC-3643: mint to zero address"
+        );
       });
     });
 
@@ -467,6 +581,21 @@ describe("Token - Transfers", () => {
       });
     });
 
+    describe("where the balance is more than the frozen amount", () => {
+      it("should succeed", async () => {
+        const {
+          suite: { token },
+          accounts: { tokenAgent, bobWallet },
+        } = await loadFixture(deployFullSuiteFixture);
+
+        await token
+          .connect(tokenAgent)
+          .freezePartialTokens(bobWallet.address, 70);
+
+        await token.burn(bobWallet.address, 80);
+      });
+    });
+
     describe("when source wallet has not enough balance", () => {
       it("should revert", async () => {
         const {
@@ -478,7 +607,7 @@ describe("Token - Transfers", () => {
 
         await expect(
           token.connect(tokenAgent).burn(aliceWallet.address, balance.add(1000))
-        ).to.be.revertedWith("cannot burn more than balance");
+        ).to.be.revertedWith("ERC-3643: burn exceeds balance");
       });
     });
 

@@ -18,3 +18,4 @@ docgen/
 gas-report
 /bin/
 .env
+.DS_Store

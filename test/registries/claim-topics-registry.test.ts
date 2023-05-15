@@ -19,7 +19,7 @@ describe("ClaimTopicsRegistry", () => {
 
     describe("when sender is owner", () => {
       describe("when topic array contains more than 14 elements", () => {
-        it("should revert", async () => {
+        it("should succeed", async () => {
           const {
             suite: { claimTopicsRegistry },
             accounts: { deployer },
@@ -31,9 +31,7 @@ describe("ClaimTopicsRegistry", () => {
             )
           );
 
-          await expect(
-            claimTopicsRegistry.connect(deployer).addClaimTopic(14)
-          ).to.be.revertedWith("ERC-3643: Max 15 topics");
+          await claimTopicsRegistry.connect(deployer).addClaimTopic(14);
         });
       });
 
