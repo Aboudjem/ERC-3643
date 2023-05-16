@@ -2,12 +2,16 @@
 
 ## RAPTOR: Simplified and Optimized T-REX Implementation
 
-![Philosoraptor](./docs/img/philosoraptor.png)
-
 ## Introduction
 
+<p align="center">
+<img alt="T-Rex Raptor" src="./docs/img/raptor.png" height=150px>
+</p>
 Welcome to **ERC-3643 Raptor Version** 🦖! This project is a fork of the [**T-Rex (ERC-3643) standard**](https://github.com/TokenySolutions/T-REX/), which was originally developed by @TokenySolutions. As one of the authors of the ERC-3643, I have worked on this fork independently with the goal of creating a simplified, optimized, and more accessible version. The Raptor aims to make working with security tokens easier to understand and more user-friendly, without attempting to compete with the original T-Rex implementation.
 
+<p align="center">
+<img alt="T-Rex Raptor" src="./docs/img/philosoraptor.png" height=350px>
+</p>
 ## Why Raptor?
 
 ![Why?](https://media0.giphy.com/media/3o7btPCcdNniyf0ArS/giphy.gif)
@@ -69,4 +73,4 @@ ERC3643, ERC-3643, Security tokens, regulated tokens, T-Rex Standard, Raptor
 
 ## Conclusion
 
-Raptor, as a lighter and more optimized version of T-Rex (ERC-3643), is designed to bring the power of security tokens to the
+Raptor, as a lighter and more optimized version of T-Rex (ERC-3643), is designed to bring the power of security tokens to the community in an accessible and understandable format. Dive
