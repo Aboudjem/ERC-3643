@@ -242,8 +242,6 @@ export async function deployFullSuiteFixture() {
 
   await identityRegistry.grantRole(AGENT_ROLE, tokenAgent.address);
 
-  await token.unpause();
-
   return {
     accounts: {
       deployer,

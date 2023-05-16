@@ -1,94 +1,31 @@
 // SPDX-License-Identifier: GPL-3.0
-//
-//                                             :+#####%%%%%%%%%%%%%%+
-//                                         .-*@@@%+.:+%@@@@@%%#***%@@%=
-//                                     :=*%@@@#=.      :#@@%       *@@@%=
-//                       .-+*%@%*-.:+%@@@@@@+.     -*+:  .=#.       :%@@@%-
-//                   :=*@@@@%%@@@@@@@@@%@@@-   .=#@@@%@%=             =@@@@#.
-//             -=+#%@@%#*=:.  :%@@@@%.   -*@@#*@@@@@@@#=:-              *@@@@+
-//            =@@%=:.     :=:   *@@@@@%#-   =%*%@@@@#+-.        =+       :%@@@%-
-//           -@@%.     .+@@@     =+=-.         @@#-           +@@@%-       =@@@@%:
-//          :@@@.    .+@@#%:                   :    .=*=-::.-%@@@+*@@=       +@@@@#.
-//          %@@:    +@%%*                         =%@@@@@@@@@@@#.  .*@%-       +@@@@*.
-//         #@@=                                .+@@@@%:=*@@@@@-      :%@%:      .*@@@@+
-//        *@@*                                +@@@#-@@%-:%@@*          +@@#.      :%@@@@-
-//       -@@%           .:-=++*##%%%@@@@@@@@@@@@*. :@+.@@@%:            .#@@+       =@@@@#:
-//      .@@@*-+*#%%%@@@@@@@@@@@@@@@@%%#**@@%@@@.   *@=*@@#                :#@%=      .#@@@@#-
-//      -%@@@@@@@@@@@@@@@*+==-:-@@@=    *@# .#@*-=*@@@@%=                 -%@@@*       =@@@@@%-
-//         -+%@@@#.   %@%%=   -@@:+@: -@@*    *@@*-::                   -%@@%=.         .*@@@@@#
-//            *@@@*  +@* *@@##@@-  #@*@@+    -@@=          .         :+@@@#:           .-+@@@%+-
-//             +@@@%*@@:..=@@@@*   .@@@*   .#@#.       .=+-       .=%@@@*.         :+#@@@@*=:
-//              =@@@@%@@@@@@@@@@@@@@@@@@@@@@%-      :+#*.       :*@@@%=.       .=#@@@@%+:
-//               .%@@=                 .....    .=#@@+.       .#@@@*:       -*%@@@@%+.
-//                 +@@#+===---:::...         .=%@@*-         +@@@+.      -*@@@@@%+.
-//                  -@@@@@@@@@@@@@@@@@@@@@@%@@@@=          -@@@+      -#@@@@@#=.
-//                    ..:::---===+++***###%%%@@@#-       .#@@+     -*@@@@@#=.
-//                                           @@@@@@+.   +@@*.   .+@@@@@%=.
-//                                          -@@@@@=   =@@%:   -#@@@@%+.
-//                                          +@@@@@. =@@@=  .+@@@@@*:
-//                                          #@@@@#:%@@#. :*@@@@#-
-//                                          @@@@@%@@@= :#@@@@+.
-//                                         :@@@@@@@#.:#@@@%-
-//                                         +@@@@@@-.*@@@*:
-//                                         #@@@@#.=@@@+.
-//                                         @@@@+-%@%=
-//                                        :@@@#%@%=
-//                                        +@@@@%-
-//                                        :#%%=
-//
-/**
- *     NOTICE
- *
- *     The T-REX software is licensed under a proprietary license or the GPL v.3.
- *     If you choose to receive it under the GPL v.3 license, the following applies:
- *     T-REX is a suite of smart contracts implementing the ERC-3643 standard and
- *     developed by Tokeny to manage and transfer financial assets on EVM blockchains
- *
- *     Copyright (C) 2023, Tokeny sàrl.
- *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
- *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
- *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
-
 pragma solidity 0.8.17;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./interface/IClaimTopicsRegistry.sol";
 
+/// @title ERC-3643 - ClaimTopicsRegistry
+/// @dev A registry for managing claim topics.
 contract ClaimTopicsRegistry is IClaimTopicsRegistry, Ownable {
-    /// @dev All required Claim Topics
+    /// @dev An array to hold all required claim topics.
     uint256[] private _claimTopics;
 
-    /**
-     *  @dev See {IClaimTopicsRegistry-addClaimTopic}.
-     */
-    function addClaimTopic(uint256 _claimTopic) external override onlyOwner {
-        uint256 length = _claimTopics.length;
-        require(length < 15, "cannot require more than 15 topics");
-        for (uint256 i = 0; i < length; i++) {
-            require(
-                _claimTopics[i] != _claimTopic,
-                "claimTopic already exists"
-            );
-        }
+    /// @notice Adds a claim topic to the registry.
+    /// @dev Can only be called by the owner of the contract.
+    /// Emits a ClaimTopicAdded event.
+    /// @param _claimTopic The claim topic to add.
+    function addClaimTopic(uint256 _claimTopic) external onlyOwner {
+        require(_isClaimTopicUnique(_claimTopic), "ERC-3643: Topic exists");
+
         _claimTopics.push(_claimTopic);
         emit ClaimTopicAdded(_claimTopic);
     }
 
-    /**
-     *  @dev See {IClaimTopicsRegistry-removeClaimTopic}.
-     */
-    function removeClaimTopic(uint256 _claimTopic) external override onlyOwner {
+    /// @notice Removes a claim topic from the registry.
+    /// @dev Can only be called by the owner of the contract.
+    /// Emits a ClaimTopicRemoved event.
+    /// @param _claimTopic The claim topic to remove.
+    function removeClaimTopic(uint256 _claimTopic) external onlyOwner {
         uint256 length = _claimTopics.length;
         for (uint256 i = 0; i < length; i++) {
             if (_claimTopics[i] == _claimTopic) {
@@ -100,15 +37,29 @@ contract ClaimTopicsRegistry is IClaimTopicsRegistry, Ownable {
         }
     }
 
-    /**
-     *  @dev See {IClaimTopicsRegistry-getClaimTopics}.
-     */
-    function getClaimTopics()
-        external
-        view
-        override
-        returns (uint256[] memory)
-    {
+    /// @notice Retrieves all claim topics from the registry.
+    /// @return uint256[] An array of claim topics.
+    function getClaimTopics() external view returns (uint256[] memory) {
         return _claimTopics;
+    }
+
+    /// @notice Checks if a claim topic is unique in the registry.
+    /// @dev Private function to check the uniqueness of a claim topic.
+    /// @param claimTopic The claim topic to check.
+    /// @return bool True if the claim topic is unique, false otherwise.
+    function _isClaimTopicUnique(
+        uint256 claimTopic
+    ) private view returns (bool) {
+        uint256[] memory claimTopics = _claimTopics;
+        uint256 length = _claimTopics.length;
+        for (uint256 i = 0; i < length; ) {
+            if (claimTopics[i] == claimTopic) {
+                return false;
+            }
+            unchecked {
+                ++i;
+            }
+        }
+        return true;
     }
 }

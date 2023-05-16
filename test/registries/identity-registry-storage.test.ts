@@ -49,7 +49,7 @@ describe("IdentityRegistryStorage", () => {
                 ethers.constants.AddressZero,
                 42
               )
-          ).to.be.revertedWith("invalid argument - zero address");
+          ).to.be.revertedWith("ERC-3643: Invalid zero address");
         });
       });
 
@@ -74,7 +74,7 @@ describe("IdentityRegistryStorage", () => {
                 charlieIdentity.address,
                 42
               )
-          ).to.be.revertedWith("invalid argument - zero address");
+          ).to.be.revertedWith("ERC-3643: Invalid zero address");
         });
       });
 
@@ -99,7 +99,7 @@ describe("IdentityRegistryStorage", () => {
                 charlieIdentity.address,
                 42
               )
-          ).to.be.revertedWith("address stored already");
+          ).to.be.revertedWith("ERC-3643: Already stored");
         });
       });
     });
@@ -147,7 +147,7 @@ describe("IdentityRegistryStorage", () => {
                 charlieWallet.address,
                 ethers.constants.AddressZero
               )
-          ).to.be.revertedWith("invalid argument - zero address");
+          ).to.be.revertedWith("ERC-3643: Invalid zero address");
         });
       });
 
@@ -171,7 +171,7 @@ describe("IdentityRegistryStorage", () => {
                 ethers.constants.AddressZero,
                 charlieIdentity.address
               )
-          ).to.be.revertedWith("invalid argument - zero address");
+          ).to.be.revertedWith("ERC-3643: Invalid zero address");
         });
       });
 
@@ -195,7 +195,7 @@ describe("IdentityRegistryStorage", () => {
                 charlieWallet.address,
                 charlieIdentity.address
               )
-          ).to.be.revertedWith("address not stored yet");
+          ).to.be.revertedWith("ERC-3643: Address not stored");
         });
       });
     });
@@ -236,7 +236,7 @@ describe("IdentityRegistryStorage", () => {
             identityRegistryStorage
               .connect(tokenAgent)
               .modifyStoredInvestorCountry(ethers.constants.AddressZero, 42)
-          ).to.be.revertedWith("invalid argument - zero address");
+          ).to.be.revertedWith("ERC-3643: Invalid zero address");
         });
       });
 
@@ -256,7 +256,7 @@ describe("IdentityRegistryStorage", () => {
             identityRegistryStorage
               .connect(tokenAgent)
               .modifyStoredInvestorCountry(charlieWallet.address, 42)
-          ).to.be.revertedWith("address not stored yet");
+          ).to.be.revertedWith("ERC-3643: Address not stored");
         });
       });
     });
@@ -297,7 +297,7 @@ describe("IdentityRegistryStorage", () => {
             identityRegistryStorage
               .connect(tokenAgent)
               .removeIdentityFromStorage(ethers.constants.AddressZero)
-          ).to.be.revertedWith("invalid argument - zero address");
+          ).to.be.revertedWith("ERC-3643: Invalid zero address");
         });
       });
 
@@ -317,7 +317,7 @@ describe("IdentityRegistryStorage", () => {
             identityRegistryStorage
               .connect(tokenAgent)
               .removeIdentityFromStorage(charlieWallet.address)
-          ).to.be.revertedWith("address not stored yet");
+          ).to.be.revertedWith("ERC-3643: Address not stored");
         });
       });
     });
@@ -354,12 +354,12 @@ describe("IdentityRegistryStorage", () => {
             identityRegistryStorage
               .connect(deployer)
               .bindIdentityRegistry(ethers.constants.AddressZero)
-          ).to.be.revertedWith("invalid argument - zero address");
+          ).to.be.revertedWith("ERC-3643: Invalid zero address");
         });
       });
 
-      describe("when there are already 299 identity registries bound", () => {
-        it("should revert", async () => {
+      describe("when there are already 50 identity registries bound", () => {
+        it("should succeed", async () => {
           const {
             suite: { identityRegistryStorage },
             accounts: { deployer },
@@ -367,18 +367,12 @@ describe("IdentityRegistryStorage", () => {
           } = await loadFixture(deployFullSuiteFixture);
 
           await Promise.all(
-            Array.from({ length: 299 }, () =>
+            Array.from({ length: 50 }, () =>
               identityRegistryStorage
                 .connect(deployer)
                 .bindIdentityRegistry(ethers.Wallet.createRandom().address)
             )
           );
-
-          await expect(
-            identityRegistryStorage
-              .connect(deployer)
-              .bindIdentityRegistry(charlieIdentity.address)
-          ).to.be.revertedWith("cannot bind more than 300 IR to 1 IRS");
         });
       });
     });
@@ -415,7 +409,7 @@ describe("IdentityRegistryStorage", () => {
             identityRegistryStorage
               .connect(deployer)
               .unbindIdentityRegistry(ethers.constants.AddressZero)
-          ).to.be.revertedWith("invalid argument - zero address");
+          ).to.be.revertedWith("ERC-3643: Invalid zero address");
         });
       });
 
@@ -434,7 +428,7 @@ describe("IdentityRegistryStorage", () => {
             identityRegistryStorage
               .connect(deployer)
               .unbindIdentityRegistry(identityRegistry.address)
-          ).to.be.revertedWith("identity registry is not stored");
+          ).to.be.revertedWith("ERC-3643: No identity registry");
         });
       });
 

@@ -19,7 +19,7 @@ describe("ClaimTopicsRegistry", () => {
 
     describe("when sender is owner", () => {
       describe("when topic array contains more than 14 elements", () => {
-        it("should revert", async () => {
+        it("should succeed", async () => {
           const {
             suite: { claimTopicsRegistry },
             accounts: { deployer },
@@ -31,9 +31,7 @@ describe("ClaimTopicsRegistry", () => {
             )
           );
 
-          await expect(
-            claimTopicsRegistry.connect(deployer).addClaimTopic(14)
-          ).to.be.revertedWith("cannot require more than 15 topics");
+          await claimTopicsRegistry.connect(deployer).addClaimTopic(14);
         });
       });
 
@@ -48,7 +46,7 @@ describe("ClaimTopicsRegistry", () => {
 
           await expect(
             claimTopicsRegistry.connect(deployer).addClaimTopic(1)
-          ).to.be.revertedWith("claimTopic already exists");
+          ).to.be.revertedWith("ERC-3643: Topic exists");
         });
       });
     });

@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity 0.8.17;
 
-import "./interface/ICompliance.sol";
+import "../compliance/interface/ICompliance.sol";
 import "../token/IToken.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
 
-contract BasicCompliance is ICompliance, AccessControl {
+contract FalseCompliance is ICompliance, AccessControl {
     /// Mapping between agents and their statuses
     mapping(address => bool) private _tokenAgentsList;
     /// Mapping of tokens linked to the compliance contract
@@ -30,6 +30,7 @@ contract BasicCompliance is ICompliance, AccessControl {
     function bindToken(address _token) external {
         require(
             hasRole(ADMIN_ROLE, _msgSender()) ||
+                hasRole(ADMIN_ROLE, _msgSender()) ||
                 address(tokenBound) == address(0),
             "ERC-3643: Caller not authorized"
         );
@@ -75,7 +76,7 @@ contract BasicCompliance is ICompliance, AccessControl {
         address /*_to*/,
         uint256 /*_value*/
     ) external view returns (bool) {
-        return true;
+        return false;
     }
 
     /**
@@ -83,5 +84,25 @@ contract BasicCompliance is ICompliance, AccessControl {
      */
     function isTokenBound(address _token) external view returns (bool) {
         return (_token == address(tokenBound));
+    }
+
+    /**
+     *  @dev Returns the ONCHAINID (Identity) of the _userAddress
+     *  @param _userAddress Address of the wallet
+     *  internal function, can be called only from the functions of the Compliance smart contract
+     */
+    function _getIdentity(
+        address _userAddress
+    ) internal view returns (address) {
+        return address(tokenBound.identityRegistry().identity(_userAddress));
+    }
+
+    /**
+     *  @dev Returns the country of residence of the _userAddress
+     *  @param _userAddress Address of the wallet
+     *  internal function, can be called only from the functions of the Compliance smart contract
+     */
+    function _getCountry(address _userAddress) internal view returns (uint16) {
+        return tokenBound.identityRegistry().investorCountry(_userAddress);
     }
 }

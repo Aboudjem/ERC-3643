@@ -63,7 +63,7 @@ describe("Token - Recovery", () => {
                 anotherWallet.address,
                 bobIdentity.address
               )
-          ).to.be.revertedWith("no tokens to recover");
+          ).to.be.revertedWith("ERC-3643: No tokens to recover");
         });
       });
 
@@ -83,7 +83,7 @@ describe("Token - Recovery", () => {
                 anotherWallet.address,
                 bobIdentity.address
               )
-          ).to.be.revertedWith("Recovery not possible");
+          ).to.be.revertedWith("ERC-3643: Recovery not possible");
         });
       });
 

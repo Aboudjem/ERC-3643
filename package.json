@@ -58,7 +58,6 @@
   "dependencies": {
     "@onchain-id/solidity": "^2.0.0",
     "@openzeppelin/contracts": "^4.8.3",
-    "@openzeppelin/contracts-upgradeable": "^4.8.3",
     "hardhat": "^2.14.0"
   },
   "devDependencies": {
@@ -71,6 +70,7 @@
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^4.2.1",
+    "hardhat-gas-reporter": "^1.0.9",
     "husky": "^8.0.3",
     "prettier": "^2.8.8",
     "solhint-plugin-prettier": "^0.0.5"

@@ -2,6 +2,7 @@ import { loadFixture } from "@nomicfoundation/hardhat-network-helpers";
 import { expect } from "chai";
 import { ethers } from "hardhat";
 import { deployFullSuiteFixture } from "../fixtures/deploy-full-suite.fixture";
+import { AGENT_ROLE, accessControlRevert } from "../utils";
 
 describe("IdentityRegistry", () => {
   describe("Deployment", () => {
@@ -12,7 +13,7 @@ describe("IdentityRegistry", () => {
       const address = ethers.Wallet.createRandom().address;
       await expect(
         IdentityRegistry.deploy(ethers.constants.AddressZero, address, address)
-      ).to.be.revertedWith("invalid argument - zero address");
+      ).to.be.revertedWith("ERC-3643: Invalid zero address");
     });
 
     it("should reject zero address for Claim Topics Registry", async () => {
@@ -22,7 +23,7 @@ describe("IdentityRegistry", () => {
       const address = ethers.Wallet.createRandom().address;
       await expect(
         IdentityRegistry.deploy(address, ethers.constants.AddressZero, address)
-      ).to.be.revertedWith("invalid argument - zero address");
+      ).to.be.revertedWith("ERC-3643: Invalid zero address");
     });
 
     it("should reject zero address for Identity Storage", async () => {
@@ -32,7 +33,7 @@ describe("IdentityRegistry", () => {
       const address = ethers.Wallet.createRandom().address;
       await expect(
         IdentityRegistry.deploy(address, address, ethers.constants.AddressZero)
-      ).to.be.revertedWith("invalid argument - zero address");
+      ).to.be.revertedWith("ERC-3643: Invalid zero address");
     });
   });
 
@@ -152,6 +153,145 @@ describe("IdentityRegistry", () => {
         expect(await identityRegistry.identityStorage()).to.be.equal(
           ethers.constants.AddressZero
         );
+      });
+    });
+  });
+
+  describe(".batchRegisterIdentity()", () => {
+    describe("when sender is not agent ", () => {
+      it("Should revert", async () => {
+        const {
+          suite: { identityRegistry },
+          accounts: { tokenAgent, anotherWallet, aliceWallet, bobWallet },
+          identities: { aliceIdentity, bobIdentity },
+        } = await loadFixture(deployFullSuiteFixture);
+        await expect(
+          identityRegistry
+            .connect(anotherWallet)
+            .batchRegisterIdentity(
+              [aliceWallet.address, bobWallet.address],
+              [aliceIdentity.address, bobIdentity.address],
+              [42, 666]
+            )
+        ).to.be.rejectedWith(accessControlRevert(anotherWallet, AGENT_ROLE));
+      });
+    });
+
+    describe("when arrays mismatches for countries ID", () => {
+      it("Should revert", async () => {
+        const {
+          suite: { identityRegistry },
+          accounts: { tokenAgent, aliceWallet, bobWallet },
+          identities: { aliceIdentity, bobIdentity },
+        } = await loadFixture(deployFullSuiteFixture);
+        await identityRegistry
+          .connect(tokenAgent)
+          .deleteIdentity(aliceWallet.address);
+        await identityRegistry
+          .connect(tokenAgent)
+          .deleteIdentity(bobWallet.address);
+
+        await expect(
+          identityRegistry
+            .connect(tokenAgent)
+            .batchRegisterIdentity(
+              [aliceWallet.address, bobWallet.address],
+              [aliceIdentity.address, bobIdentity.address],
+              [666]
+            )
+        ).to.be.rejectedWith("ERC-3643: Array size mismatch");
+      });
+    });
+
+    describe("when arrays mismatches for Identities", () => {
+      it("Should revert", async () => {
+        const {
+          suite: { identityRegistry },
+          accounts: { tokenAgent, aliceWallet, bobWallet },
+          identities: { aliceIdentity, bobIdentity },
+        } = await loadFixture(deployFullSuiteFixture);
+        await identityRegistry
+          .connect(tokenAgent)
+          .deleteIdentity(aliceWallet.address);
+        await identityRegistry
+          .connect(tokenAgent)
+          .deleteIdentity(bobWallet.address);
+
+        await expect(
+          identityRegistry
+            .connect(tokenAgent)
+            .batchRegisterIdentity(
+              [aliceWallet.address, bobWallet.address],
+              [bobIdentity.address],
+              [333, 666]
+            )
+        ).to.be.rejectedWith("ERC-3643: Array size mismatch");
+      });
+    });
+  });
+
+  describe(".updateIdentity()", () => {
+    describe("when sender is not agent ", () => {
+      it("Should revert", async () => {
+        const {
+          suite: { identityRegistry },
+          accounts: { anotherWallet, aliceWallet, bobWallet },
+          identities: { aliceIdentity, bobIdentity },
+        } = await loadFixture(deployFullSuiteFixture);
+
+        await expect(
+          identityRegistry
+            .connect(anotherWallet)
+            .updateIdentity(aliceWallet.address, bobIdentity.address)
+        ).to.be.rejectedWith(accessControlRevert(anotherWallet, AGENT_ROLE));
+      });
+    });
+
+    describe("When sender is the Agent", () => {
+      it("Should update identity", async () => {
+        const {
+          suite: { identityRegistry },
+          accounts: { tokenAgent, anotherWallet, aliceWallet, bobWallet },
+          identities: { bobIdentity },
+        } = await loadFixture(deployFullSuiteFixture);
+
+        expect(await identityRegistry.contains(bobWallet.address)).to.be.equal(
+          true
+        );
+
+        await identityRegistry
+          .connect(tokenAgent)
+          .deleteIdentity(bobWallet.address);
+
+        expect(
+          await identityRegistry.connect(tokenAgent).contains(bobWallet.address)
+        ).to.be.equal(false);
+
+        await identityRegistry
+          .connect(tokenAgent)
+          .updateIdentity(aliceWallet.address, bobIdentity.address);
+        expect(
+          await identityRegistry
+            .connect(tokenAgent)
+            .identity(aliceWallet.address)
+        ).to.be.equal(bobIdentity.address);
+      });
+    });
+
+    describe("When sender is the Agent", () => {
+      it("Should update countries", async () => {
+        const {
+          suite: { identityRegistry },
+          accounts: { tokenAgent, anotherWallet, aliceWallet, bobWallet },
+          identities: { aliceIdentity, bobIdentity },
+        } = await loadFixture(deployFullSuiteFixture);
+
+        await identityRegistry
+          .connect(tokenAgent)
+          .updateCountry(aliceWallet.address, 1);
+        expect(
+          await identityRegistry.investorCountry(aliceWallet.address)
+        ).to.be.equal(1);
       });
     });
   });
