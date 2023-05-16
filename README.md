@@ -5,7 +5,7 @@
 ## Introduction
 
 <p align="center">
-<img alt="T-Rex Raptor" src="./docs/img/raptor.png" height=150px>
+<img alt="T-Rex Raptor" src="./docs/img/Raptor.png" height=150px>
 </p>
 Welcome to **ERC-3643 Raptor Version** 🦖! This project is a fork of the [**T-Rex (ERC-3643) standard**](https://github.com/TokenySolutions/T-REX/), which was originally developed by @TokenySolutions. As one of the authors of the ERC-3643, I have worked on this fork independently with the goal of creating a simplified, optimized, and more accessible version. The Raptor aims to make working with security tokens easier to understand and more user-friendly, without attempting to compete with the original T-Rex implementation.
 
