@@ -362,7 +362,7 @@ contract Token is IToken, AccessControl, Pausable {
 
         _forcedTransfer(lostWallet, newWallet, investorBalance);
 
-        if (frozenTokens > 0) {
+        if (frozenTokens != 0) {
             _freezePartialTokens(newWallet, frozenTokens);
         }
         if (isLostWalletFrozen == true) {
