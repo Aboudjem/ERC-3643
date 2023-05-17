@@ -6,12 +6,11 @@
 
 Welcome to the **Raptor Version of ERC-3643** 🦖! This project is a respectful nod to the [**T-Rex (ERC-3643) standard**](https://github.com/TokenySolutions/T-REX/), developed by [@TokenySolutions](https://github.com/TokenySolutions).
 
-I had the privilege of contributing to the original ERC-3643. Inspired by that work, I've created a simpler version. This isn't about competition with T-Rex, it's about sharing knowledge and making it easier for everyone to understand this great piece of technology. 🧩 
+I had the privilege of contributing to the original ERC-3643. Inspired by that work, I've created a simpler version. This isn't about competition with T-Rex, it's about sharing knowledge and making it easier for everyone to understand this great piece of technology. 🧩
 
+It's my personal take on the ERC-3643 (T-Rex) and it's _made for learning purposes_.
 
-It's my personal take on the ERC-3643 (T-Rex) and it's _made for learning purposes_. 
-
->⚠️ 🛑 This ERC-3643-Raptor project is **not audited** and **not meant for production use**. **If you want to implement ERC-3643 in real-world, I strongly recommend getting in touch with [@TokenySolutions](https://github.com/TokenySolutions).**
+> ⚠️ 🛑 This ERC-3643-Raptor project is **not audited** and **not meant for production use**. **If you want to implement ERC-3643 in real-world, I strongly recommend getting in touch with [@TokenySolutions](https://github.com/TokenySolutions).**
 
 <p align="center">
 <img alt="T-Rex Raptor" src="./docs/img/raptor-philo.png" height=350px>
