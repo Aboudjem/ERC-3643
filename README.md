@@ -4,11 +4,14 @@
 
 ## Introduction
 
-Welcome to the **Raptor Version of ERC-3643** 🦖! This project is a respectful nod to the [**T-Rex (ERC-3643) standard**](https://github.com/TokenySolutions/T-REX/), developed by @TokenySolutions.
+Welcome to the **Raptor Version of ERC-3643** 🦖! This project is a respectful nod to the [**T-Rex (ERC-3643) standard**](https://github.com/TokenySolutions/T-REX/), developed by [@TokenySolutions](https://github.com/TokenySolutions).
 
-I had the privilege of contributing to the original ERC-3643 standard. Inspired by that work, I've created a simpler version. This isn't about competition with T-Rex, it's about sharing knowledge and making it easier for everyone to understand this great piece of technology.
+I had the privilege of contributing to the original ERC-3643. Inspired by that work, I've created a simpler version. This isn't about competition with T-Rex, it's about sharing knowledge and making it easier for everyone to understand this great piece of technology. 🧩 
 
-This ERC-3643-Raptor project is **not audited** and **not meant for production use**. It's my personal take on the T-Rex standard and it's made for learning purposes. If you want to implement the ERC-3643 in a real-world scenario, I strongly recommend getting in touch with [@TokenySolutions](https://github.com/TokenySolutions/T-REX).
+
+It's my personal take on the ERC-3643 (T-Rex) and it's _made for learning purposes_. 
+
+>⚠️ 🛑 This ERC-3643-Raptor project is **not audited** and **not meant for production use**. **If you want to implement ERC-3643 in real-world, I strongly recommend getting in touch with [@TokenySolutions](https://github.com/TokenySolutions).**
 
 <p align="center">
 <img alt="T-Rex Raptor" src="./docs/img/raptor-philo.png" height=350px>
@@ -17,6 +20,7 @@ This ERC-3643-Raptor project is **not audited** and **not meant for production u
 ## Why Raptor?
 
 A Raptor is a smaller dinosaur, like this project. I've tried to make this version of the T-Rex standard lighter and easier to understand.
+RAPTOR stands for **R**egulated **A**sset **P**latform for **T**okenized **O**perations & **R**esources
 
 ## What's Different?
 
@@ -25,6 +29,8 @@ A Raptor is a smaller dinosaur, like this project. I've tried to make this versi
 Raptor is a simplified take on the T-Rex standard. It's stripped back to make it easier to understand. Some functions have been removed or optimized to make things clearer.
 
 - No Proxy Implementation: The proxy contract included in the original T-Rex standard has been removed in Raptor. The proxy contract is typically used for upgradability, but it can add complexity, especially for those new to smart contract development.
+
+- No DVD (Delivery Versus Delivery)
 
 - Reduced Compliance Features: While T-REX includes a detailed compliance layer for regulated tokens, Raptor has simplified these mechanisms. This change was made to focus on core functionalities and improve understandability.
 
