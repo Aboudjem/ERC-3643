@@ -1,71 +1,50 @@
 # ERC-3643:
 
-## RAPTOR: Simplified and Optimized T-REX Implementation
+## RAPTOR: An Educational Approach to the T-REX Standard
 
 ## Introduction
 
-<p align="center">
-<img alt="T-Rex Raptor" src="./docs/img/raptor.png" height=150px>
-</p>
-Welcome to **ERC-3643 Raptor Version** 🦖! This project is a fork of the [**T-Rex (ERC-3643) standard**](https://github.com/TokenySolutions/T-REX/), which was originally developed by @TokenySolutions. As one of the authors of the ERC-3643, I have worked on this fork independently with the goal of creating a simplified, optimized, and more accessible version. The Raptor aims to make working with security tokens easier to understand and more user-friendly, without attempting to compete with the original T-Rex implementation.
+Welcome to the **Raptor Version of ERC-3643** 🦖! This project is a respectful nod to the [**T-Rex (ERC-3643) standard**](https://github.com/TokenySolutions/T-REX/), developed by @TokenySolutions.
+
+I had the privilege of contributing to the original ERC-3643 standard. Inspired by that work, I've created a simpler version. This isn't about competition with T-Rex, it's about sharing knowledge and making it easier for everyone to understand this great piece of technology.
+
+This ERC-3643-Raptor project is **not audited** and **not meant for production use**. It's my personal take on the T-Rex standard and it's made for learning purposes. If you want to implement the ERC-3643 in a real-world scenario, I strongly recommend getting in touch with [@TokenySolutions](https://github.com/TokenySolutions/T-REX).
 
 <p align="center">
-<img alt="T-Rex Raptor" src="./docs/img/philosoraptor.png" height=350px>
+<img alt="T-Rex Raptor" src="./docs/img/raptor-philo.png" height=350px>
 </p>
+
 ## Why Raptor?
 
-![Why?](https://media0.giphy.com/media/3o7btPCcdNniyf0ArS/giphy.gif)
+A Raptor is a smaller dinosaur, like this project. I've tried to make this version of the T-Rex standard lighter and easier to understand.
 
-A Raptor is a smaller, lighter dinosaur — just like this project. Raptor is a leaner, more efficient take on the T-Rex standard. By streamlining the original, we've made it more accessible and easier to grasp for everyone.
-
-## Changes & Updates
+## What's Different?
 
 ![Instagram Influencer GIF by Social Nomads](https://media2.giphy.com/media/irIRA0HQCQiTiIMMNm/giphy.gif?cid=ecf05e47qqzltc3e4038f3cguk4d2n8bo2fso7jpequhj6o9&ep=v1_gifs_search&rid=giphy.gif&ct=g)
 
-Compared to the original T-Rex standard, Raptor has undergone several major changes:
+Raptor is a simplified take on the T-Rex standard. It's stripped back to make it easier to understand. Some functions have been removed or optimized to make things clearer.
 
-### 🎛️ Optimized
+- No Proxy Implementation: The proxy contract included in the original T-Rex standard has been removed in Raptor. The proxy contract is typically used for upgradability, but it can add complexity, especially for those new to smart contract development.
 
-- `isVerified` function is now more streamlined and efficient.
-- Type casting instances have been minimized by directly changing the types of function parameters.
-- Unnecessary checks and logic have been removed to save gas.
-- `_msgSender()` function from OpenZeppelin's `Context` contract is used for consistent message sender's address retrieval in meta-transactions.
+- Reduced Compliance Features: While T-REX includes a detailed compliance layer for regulated tokens, Raptor has simplified these mechanisms. This change was made to focus on core functionalities and improve understandability.
 
-### ❌ Removed
+- Streamlined Functionality: Some features from the original T-Rex, such as setName, setSymbol, and setDecimals functions, have been removed in Raptor to align more closely with the standard ERC20 token where these properties are typically immutable.
 
-- Proxies have been removed from the project, simplifying the structure and reducing gas cost.
-- Removed `UpdatedTokenInformation` event
-- Removed `setName`, `setSymbol`, and `setDecimals` functions for closer adherence to the ERC20 standard.
-- Redundant checks for empty strings in the `_name` and `_symbol` parameters have been removed.
+- Role Management Update: Role management in Raptor now uses OpenZeppelin's AccessControl instead of AgentRole, making it easier to manage access rights.
 
-### ➕ Added
+- Simplified Pausable Mechanism: The custom Pausable mechanism in the T-Rex has been replaced with OpenZeppelin's Pausable in Raptor. This update provides better compatibility with other contracts and libraries.
 
-- `UpdatedOnchainID` event has been introduced.
-- Several internal and private functions have been added to optimize gas cost and enhance code clarity.
+- Batch Transfer Feature: Raptor includes a batchTransferFrom function, making it possible to make multiple transfers in a single transaction, potentially saving on gas costs.
 
-### ⚙️ Updated
+- Updated Documentation: The inline documentation has been expanded and updated in Raptor, making it easier for developers to understand the contract's functionalities.
 
-- Role management now utilizes OpenZeppelin's `AccessControl` instead of `AgentRole`.
-- Custom `Pausable` mechanism has been replaced with OpenZeppelin's `Pausable` for better flexibility and compatibility.
-- Event parameters have been updated with respective interface types.
-- A check for array mismatches has been added for improved robustness.
-- The `batchTransferFrom` function is added for efficient multiple transfers.
+These changes are not an attempt to improve or critique the T-Rex standard. They were made to provide a simplified, more accessible version of the ERC-3643 standard for **educational purposes**. If you're interested in a comprehensive and production-ready implementation, I recommend exploring the original T-Rex standard by [@TokenySolutions](https://github.com/TokenySolutions/T-REX).
 
-### 📝 Documentation
+For a detailed look at the changes, check out the project's [Change Log](./CHANGELOG.md)
 
-- Inline documentation has been substantially improved and expanded.
+## Thanks
 
-### 🧪 Tests
-
-- Tests have been updated to reflect the changes in contract logic.
-
-For a detailed list of changes, refer to the project's [Change Log](#).
-
-## Credits
-
-![Credits](https://media2.giphy.com/media/dzaUX7CAG0Ihi/giphy.gif)
-
-A huge shoutout to @TokenySolutions for the original T-Rex standard. Raptor is a humble effort to present their work in a more accessible, streamlined format.
+Many thanks to my former colleagues at @TokenySolutions for their exceptional work in developing the original T-Rex standard. My Raptor project is a personal endeavor, a way for me to revisit this impressive work, simplify it, and make it more accessible for everyone
 
 ## Keywords
 
@@ -73,4 +52,4 @@ ERC3643, ERC-3643, Security tokens, regulated tokens, T-Rex Standard, Raptor
 
 ## Conclusion
 
-Raptor, as a lighter and more optimized version of T-Rex (ERC-3643), is designed to bring the power of security tokens to the community in an accessible and understandable format. Dive
+Raptor is my personal, educational take on the T-Rex (ERC-3643) standard. It's here to help make the world of security tokens more accessible. Take a look, learn something, and remember to get in touch with @TokenySolutions if you want to use the ERC-3643 in production.
