@@ -50,7 +50,7 @@ For a detailed look at the changes, check out the project's [Change Log](./CHANG
 
 ## Thanks
 
-Many thanks to my former colleagues at @TokenySolutions for their exceptional work in developing the original T-Rex standard. My Raptor project is a personal endeavor, a way for me to revisit this impressive work, simplify it, and make it more accessible for everyone
+Many thanks to my former colleagues at @TokenySolutions for their exceptional work in developing the original T-Rex standard. My Raptor project is a personal endeavor, a way for me to revisit this impressive work, simplify it, and make it easier to understand.
 
 ## Keywords
 
