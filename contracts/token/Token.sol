@@ -362,7 +362,7 @@ contract Token is IToken, AccessControl, Pausable {
 
         _forcedTransfer(lostWallet, newWallet, investorBalance);
 
-        if (frozenTokens > 0) {
+        if (frozenTokens != 0) {
             _freezePartialTokens(newWallet, frozenTokens);
         }
         if (isLostWalletFrozen == true) {
@@ -707,7 +707,9 @@ contract Token is IToken, AccessControl, Pausable {
             _frozenAmounts[account] >= amount,
             "Amount should be less than or equal to frozen tokens"
         );
-        _frozenAmounts[account] = _frozenAmounts[account] - (amount);
+        unchecked {
+            _frozenAmounts[account] = _frozenAmounts[account] - (amount);
+        }
         emit TokensUnfrozen(account, amount);
     }
 }
