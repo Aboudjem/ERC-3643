@@ -1,7 +1,7 @@
 # ERC-3643:
 
 ## RAPTOR: An Educational Approach to the T-REX Standard
-
+![T-REX](https://repository-images.githubusercontent.com/639089118/95a268d6-0902-40e8-9e61-f46133e6d9ee)
 ## Introduction
 
 Welcome to the **Raptor Version of ERC-3643** 🦖! This project is a respectful nod to the [**T-Rex (ERC-3643) standard**](https://github.com/TokenySolutions/T-REX/), developed by [@TokenySolutions](https://github.com/TokenySolutions).
