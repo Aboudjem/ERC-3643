@@ -6,12 +6,18 @@
     "ERC-3643",
     "ERC3643",
     "Tokenization",
+    "Real World Assets",
+    "RWA",
     "Security Tokens",
     "Web3",
     "Smart Contracts",
     "Blockchain",
     "Solidity",
     "T-REX",
+    "Raptor",
+    "EIP3643",
+    "EIP-3643",
+    "Real World Asset",
     "T-Rex Standard",
     "Tokeny Solutions"
   ],
@@ -46,10 +52,7 @@
     "type": "git",
     "url": "git+https://github.com/aboudjem/ERC-3643.git"
   },
-  "author": "Tokeny Solutions",
-  "contributors": [
-    "Adam BOUDJEMAA (@Aboudjem)"
-  ],
+  "author": "Adam BOUDJEMAA (@aboudjem)",
   "license": "SEE LICENSE IN LICENSE.md",
   "bugs": {
     "url": "https://github.com/aboudjem/ERC-3643/issues"

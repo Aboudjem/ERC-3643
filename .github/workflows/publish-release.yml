@@ -6,7 +6,7 @@ on:
 
 jobs:
   build:
-    if: '!github.event.release.prerelease'
+    if: "!github.event.release.prerelease"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -49,7 +49,7 @@ jobs:
         with:
           node-version: 16
           registry-url: https://npm.pkg.github.com/
-          scope: '@tokenysolutions'
+          scope: "@tokenysolutions"
       - run: npm ci
       - run: npm run build
       - run: npm publish

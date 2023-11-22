@@ -1,7 +1,9 @@
 # ERC-3643:
 
 ## RAPTOR: An Educational Approach to the T-REX Standard
+
 ![T-REX](https://repository-images.githubusercontent.com/639089118/95a268d6-0902-40e8-9e61-f46133e6d9ee)
+
 ## Introduction
 
 Welcome to the **Raptor Version of ERC-3643** 🦖! This project is a respectful nod to the [**T-Rex (ERC-3643) standard**](https://github.com/TokenySolutions/T-REX/), developed by [@TokenySolutions](https://github.com/TokenySolutions).
@@ -51,11 +53,11 @@ For a detailed look at the changes, check out the project's [Change Log](./CHANG
 
 ###### Steps
 
-* Navigate to the root project directory
-* Ensure Hardhat is installed in the local project directory >>  `npm install --save-dev hardhat`
-* Run a local Hardhat node (If wanting to deploy locally) >> `npx hardhat node`
-* Deploy ERC-3643 Raptor to your local node >> `npx hardhat run --network localhost scripts/deploy.js`
-* The deployment script will run and the ERC-3643 Raptor contracts will be deployed
+- Navigate to the root project directory
+- Ensure Hardhat is installed in the local project directory >> `npm install --save-dev hardhat`
+- Run a local Hardhat node (If wanting to deploy locally) >> `npx hardhat node`
+- Deploy ERC-3643 Raptor to your local node >> `npx hardhat run --network localhost scripts/deploy.js`
+- The deployment script will run and the ERC-3643 Raptor contracts will be deployed
 
 ## Thanks
 
