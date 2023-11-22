@@ -57,8 +57,7 @@
   "homepage": "https://github.com/aboudjem/ERC-3643#README",
   "dependencies": {
     "@onchain-id/solidity": "^2.0.0",
-    "@openzeppelin/contracts": "^4.8.3",
-    "hardhat": "^2.14.0"
+    "@openzeppelin/contracts": "^4.8.3"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^2.0.2",
@@ -70,6 +69,7 @@
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^4.2.1",
+    "hardhat": "^2.19.1",
     "hardhat-gas-reporter": "^1.0.9",
     "husky": "^8.0.3",
     "prettier": "^2.8.8",

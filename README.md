@@ -47,6 +47,16 @@ These changes are not an attempt to improve or critique the T-Rex standard. They
 
 For a detailed look at the changes, check out the project's [Change Log](./CHANGELOG.md)
 
+## Deployment Instructions
+
+###### Steps
+
+* Navigate to the root project directory
+* Ensure Hardhat is installed in the local project directory >>  `npm install --save-dev hardhat`
+* Run a local Hardhat node (If wanting to deploy locally) >> `npx hardhat node`
+* Deploy ERC-3643 Raptor to your local node >> `npx hardhat run --network localhost scripts/deploy.js`
+* The deployment script will run and the ERC-3643 Raptor contracts will be deployed
+
 ## Thanks
 
 Many thanks to my former colleagues at @TokenySolutions for their exceptional work in developing the original T-Rex standard. My Raptor project is a personal endeavor, a way for me to revisit this impressive work, simplify it, and make it easier to understand.
