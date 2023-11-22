@@ -41,11 +41,5 @@ jobs:
         run: npm ci
       - name: Build application
         run: npm run build
-      - name: Run test coverage
-        run: npm run coverage
-      - name: Upload coverage to action results
-        uses: actions/upload-artifact@v3
-        with:
-          path: |
-            coverage/
-            coverage.json
+      - name: Run test
+        run: npm run test
