@@ -159,7 +159,7 @@ export async function deployFullSuiteFixture() {
   );
 
   await identityRegistry.grantRole(AGENT_ROLE, tokenAgent.address);
-  await identityRegistry.grantRole(AGENT_ROLE, token.address);
+  await identityRegistry.grantRole(TOKEN_ROLE, token.address);
 
   await identityRegistry
     .connect(tokenAgent)
@@ -235,12 +235,8 @@ export async function deployFullSuiteFixture() {
       ""
     );
 
-  await token.grantRole(AGENT_ROLE, tokenAgent.address);
-
   await token.connect(tokenAgent).mint(aliceWallet.address, 1000);
   await token.connect(tokenAgent).mint(bobWallet.address, 500);
-
-  await identityRegistry.grantRole(AGENT_ROLE, tokenAgent.address);
 
   return {
     accounts: {
