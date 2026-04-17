@@ -108,7 +108,7 @@
     "eslint-config-prettier": "^8.10.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^4.2.1",
-    "ethers": "^5.7.2",
+    "ethers": "^6.16.0",
     "hardhat": "^2.22.2",
     "hardhat-contract-sizer": "^2.10.0",
     "hardhat-gas-reporter": "^1.0.10",
