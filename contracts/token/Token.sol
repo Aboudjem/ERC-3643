@@ -63,7 +63,9 @@ contract Token is IToken, AccessControl, Pausable {
         address onchainID_
     ) {
         require(
-            identityRegistry_ != address(0) && compliance_ != address(0),
+            identityRegistry_ != address(0) &&
+                compliance_ != address(0) &&
+                onchainID_ != address(0),
             "ERC-3643: Invalid zero address"
         );
 
@@ -162,6 +164,7 @@ contract Token is IToken, AccessControl, Pausable {
     /// @param onchainID_ The address of the onchainID.
     /// @notice Emits an UpdatedOnchainID event.
     function setOnchainID(address onchainID_) external onlyRole(OWNER_ROLE) {
+        require(onchainID_ != address(0), "ERC-3643: Invalid zero address");
         _onchainID = onchainID_;
         emit UpdatedOnchainID(onchainID_);
     }
@@ -442,6 +445,10 @@ contract Token is IToken, AccessControl, Pausable {
     function setIdentityRegistry(
         address newIdentityRegistry
     ) external onlyRole(OWNER_ROLE) {
+        require(
+            newIdentityRegistry != address(0),
+            "ERC-3643: Invalid zero address"
+        );
         _identityRegistry = IIdentityRegistry(newIdentityRegistry);
         emit IdentityRegistryAdded(newIdentityRegistry);
     }
@@ -565,7 +572,7 @@ contract Token is IToken, AccessControl, Pausable {
         }
 
         emit Transfer(from, to, amount);
-        _compliance.transferred(_msgSender(), to, amount);
+        _compliance.transferred(from, to, amount);
     }
 
     /// @dev Mints the amount of tokens to the `account`

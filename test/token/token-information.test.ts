@@ -41,15 +41,25 @@ describe("Token - Information", () => {
     });
 
     describe("when the caller is the owner", () => {
-      it("should set the onchainID", async () => {
+      it("should revert when setting the onchainID to the zero address", async () => {
         const {
           suite: { token },
         } = await loadFixture(deployFullSuiteFixture);
-        const tx = await token.setOnchainID(ethers.constants.AddressZero);
+        await expect(
+          token.setOnchainID(ethers.constants.AddressZero)
+        ).to.be.revertedWith("ERC-3643: Invalid zero address");
+      });
+
+      it("should set the onchainID", async () => {
+        const {
+          suite: { token },
+          accounts: { tokenIssuer },
+        } = await loadFixture(deployFullSuiteFixture);
+        const tx = await token.setOnchainID(tokenIssuer.address);
         await expect(tx)
           .to.emit(token, "UpdatedOnchainID")
-          .withArgs(ethers.constants.AddressZero);
-        expect(await token.onchainID()).to.equal(ethers.constants.AddressZero);
+          .withArgs(tokenIssuer.address);
+        expect(await token.onchainID()).to.equal(tokenIssuer.address);
       });
     });
   });

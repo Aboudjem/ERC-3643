@@ -33,6 +33,7 @@ contract BasicCompliance is ICompliance, AccessControl {
                 address(tokenBound) == address(0),
             "ERC-3643: Caller not authorized"
         );
+        require(_token != address(0), "ERC-3643: Invalid zero address");
         tokenBound = IToken(_token);
         emit TokenBound(_token);
     }
