@@ -1,0 +1,10 @@
+{
+  "detectors_to_exclude": "naming-convention,pragma,solc-version,assembly",
+  "filter_paths": "node_modules|contracts/_testContracts|test",
+  "exclude_informational": false,
+  "exclude_low": false,
+  "exclude_medium": false,
+  "exclude_high": false,
+  "exclude_optimization": true,
+  "compile_force_framework": "hardhat"
+}

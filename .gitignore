@@ -16,8 +16,24 @@ docgen/
 
 # NPM
 gas-report
+gas-report.txt
 /bin/
 .env
+.env.local
+.env.*.local
 .DS_Store
+
+# Agent tooling
+.omc/
+.claude/local/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Published artifacts (regenerated on build)
+dist/
 
 node_modules/
