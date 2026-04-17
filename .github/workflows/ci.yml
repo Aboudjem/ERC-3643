@@ -98,7 +98,7 @@ jobs:
       - name: Install dependencies
         run: npm ci --legacy-peer-deps --prefer-offline=false || npm install --legacy-peer-deps --no-audit --no-fund
       - name: Slither
-        uses: crytic/slither-action@v0.4.0
+        uses: crytic/slither-action@v0.4.2
         id: slither
         continue-on-error: true
         with:
