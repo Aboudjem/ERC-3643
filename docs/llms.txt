@@ -1,0 +1,59 @@
+# ERC-3643 Raptor
+
+> Educational, gas-optimized reference implementation of the ERC-3643 (T-REX) permissioned token standard for onchain securities and Real World Asset (RWA) tokenization. Simplified from the production Tokeny T-REX for learning and experimentation. Not audited, not for production.
+
+## Overview
+
+- **Standard implemented:** [EIP-3643](https://eips.ethereum.org/EIPS/eip-3643) (T-REX)
+- **Nickname:** Raptor — Regulated Asset Platform for Tokenized Operations & Resources
+- **Language:** Solidity 0.8.17
+- **License:** GPL-3.0
+- **Status:** Educational. Not audited. Not production-ready.
+- **Canonical repo:** https://github.com/Aboudjem/ERC-3643
+
+## Key documentation
+
+- [README](https://github.com/Aboudjem/ERC-3643/blob/main/README.md): project overview, install, deploy
+- [AGENTS.md](https://github.com/Aboudjem/ERC-3643/blob/main/AGENTS.md): canonical instructions for AI coding agents
+- [CLAUDE.md](https://github.com/Aboudjem/ERC-3643/blob/main/CLAUDE.md): Claude Code-specific guidance
+- [docs/ARCHITECTURE.md](https://github.com/Aboudjem/ERC-3643/blob/main/docs/ARCHITECTURE.md): contract map, role matrix, transfer flow
+- [SECURITY.md](https://github.com/Aboudjem/ERC-3643/blob/main/SECURITY.md): threat model, security invariants, disclosure process
+- [CONTRIBUTING.md](https://github.com/Aboudjem/ERC-3643/blob/main/CONTRIBUTING.md): how to contribute
+- [CHANGELOG.md](https://github.com/Aboudjem/ERC-3643/blob/main/CHANGELOG.md): release notes
+
+## Core contracts
+
+- `contracts/token/Token.sol`: ERC-20 with transfer gating, pause, partial freeze, forced transfer, recovery.
+- `contracts/registry/IdentityRegistry.sol`: binds wallet → ONCHAINID and enforces KYC/AML claim verification.
+- `contracts/registry/IdentityRegistryStorage.sol`: shared identity storage across multiple registries.
+- `contracts/registry/ClaimTopicsRegistry.sol`: required claim topic IDs.
+- `contracts/registry/ClaimIssuersRegistry.sol`: whitelist of authorized claim issuers.
+- `contracts/compliance/BasicCompliance.sol`: pass-through compliance — replace for production rules.
+
+## Key differences vs. production T-REX
+
+- No upgradeable proxies — non-upgradeable by design for clarity.
+- No DVD (Delivery-vs-Delivery) atomic settlement.
+- Compliance returns `true` by default; build your own module implementing `ICompliance`.
+- Uses OpenZeppelin `AccessControl` for roles instead of T-REX `AgentRole`.
+- Uses OpenZeppelin `Pausable` for pausing.
+- Includes batch operations: `batchTransfer`, `batchTransferFrom`, `batchForcedTransfer`, `batchMint`, `batchBurn`.
+- Immutable name, symbol, decimals.
+
+## Role capabilities (Token)
+
+- `DEFAULT_ADMIN_ROLE`: grant/revoke roles.
+- `OWNER_ROLE`: `setCompliance`, `setIdentityRegistry`, `setOnchainID`.
+- `AGENT_ROLE`: `mint`, `burn`, `pause`, `unpause`, `forcedTransfer`, `freezePartialTokens`, `unfreezePartialTokens`, `setAddressFrozen`, `recoveryAddress`, all `batch*` admin functions.
+
+## Related standards & projects
+
+- [ERC-20](https://eips.ethereum.org/EIPS/eip-20): fungible token standard (inherited)
+- [ERC-734 / ERC-735](https://erc725alliance.org/): ONCHAINID identity and claims
+- [ERC-1400](https://polymath.network/erc1400): alternate security token standard
+- [Tokeny T-REX](https://github.com/TokenySolutions/T-REX): production-ready upgradeable reference
+- [ERC-3643 Association](https://www.erc3643.org/)
+
+## Keywords
+
+ERC-3643, EIP-3643, T-REX, T-Rex, Raptor, security token, tokenized security, regulated token, RWA, Real World Asset, tokenization, permissioned token, ONCHAINID, ERC-734, ERC-735, ERC-725, compliance, KYC, AML, identity, claim issuer, security token offering, STO, Tokeny, onchain identity, Ethereum, Solidity, smart contract, DeFi, regulated asset, onchain compliance, transfer restrictions, whitelist, accredited investor, MiCA, MiFID, Reg D, Reg S, Reg CF.

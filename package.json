@@ -1,89 +1,133 @@
 {
-  "name": "ERC-3643",
-  "version": "0.1.0",
-  "description": "ERC-3643: An accessible, optimized, and light-weight version of the T-REX Standard (ERC-3643) security token standard. Ideal for tokenized securities and smart contracts in the blockchain world. Built with Solidity and leverages Web3 technologies.",
+  "name": "erc-3643",
+  "version": "0.2.0",
+  "description": "ERC-3643 Raptor — educational, gas-optimized, AI-ready reference implementation of the T-REX permissioned token standard for onchain securities and Real World Asset (RWA) tokenization.",
   "keywords": [
     "ERC-3643",
     "ERC3643",
+    "EIP-3643",
+    "EIP3643",
+    "T-REX",
+    "T-Rex Standard",
+    "Raptor",
     "Tokenization",
     "Real World Assets",
+    "Real World Asset",
     "RWA",
     "Security Tokens",
+    "Security Token",
+    "Permissioned Token",
+    "Regulated Token",
+    "Compliance",
+    "ONCHAINID",
+    "KYC",
+    "AML",
     "Web3",
     "Smart Contracts",
     "Blockchain",
     "Solidity",
-    "T-REX",
-    "Raptor",
-    "EIP3643",
-    "EIP-3643",
-    "Real World Asset",
-    "T-Rex Standard",
-    "Tokeny Solutions"
+    "Tokeny Solutions",
+    "STO",
+    "MiCA"
   ],
   "main": "index.js",
+  "types": "index.d.ts",
   "directories": {
     "doc": "docs",
     "test": "test"
   },
   "files": [
-    "artifacts",
-    "contracts",
+    "artifacts/contracts/**/*.json",
+    "contracts/**/*.sol",
     "index.js",
     "index.d.ts",
-    "!contract/_testContracts",
+    "AGENTS.md",
+    "CLAUDE.md",
+    "SECURITY.md",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE.md",
+    "!contracts/_testContracts",
     "!artifacts/contracts/_testContracts",
-    "!artifacts/build-info"
+    "!artifacts/build-info",
+    "!**/*.dbg.json"
   ],
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
-    "test": "npx hardhat test",
-    "coverage": "npx hardhat coverage",
-    "build": "npx hardhat compile",
-    "lint:ts": "npx eslint \"**/*.ts\"",
-    "lint:ts-fix": "npx eslint \"**/*.ts\" --fix",
-    "lint:sol": "npx prettier \"**/*.{json,sol,md}\" --check && npx solhint \"contracts/**/*.sol\"",
-    "lint:sol-fix": "npx prettier \"**/*.{json,sol,md}\" --write && npx solhint \"contracts/**/*.sol\" --fix",
+    "test": "hardhat test",
+    "test:gas": "REPORT_GAS=true hardhat test",
+    "coverage": "hardhat coverage",
+    "build": "hardhat compile",
+    "clean": "hardhat clean",
+    "size": "hardhat size-contracts",
+    "lint:ts": "eslint \"**/*.ts\"",
+    "lint:ts:fix": "eslint \"**/*.ts\" --fix",
+    "lint:sol": "prettier \"**/*.{json,sol,md}\" --check && solhint \"contracts/**/*.sol\"",
+    "lint:sol:fix": "prettier \"**/*.{json,sol,md}\" --write && solhint \"contracts/**/*.sol\" --fix",
     "lint": "npm run lint:ts && npm run lint:sol",
-    "lint:fix": "npm run lint:ts-fix && npm run lint:sol-fix",
-    "prepare": "husky install",
-    "docs": "hardhat dodoc"
+    "lint:fix": "npm run lint:ts:fix && npm run lint:sol:fix",
+    "slither": "slither . --config-file slither.config.json",
+    "prepare": "husky install || true",
+    "docs": "hardhat dodoc",
+    "deploy:local": "hardhat run --network localhost scripts/deploy.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/aboudjem/ERC-3643.git"
+    "url": "git+https://github.com/Aboudjem/ERC-3643.git"
   },
-  "author": "Adam BOUDJEMAA (@aboudjem)",
-  "license": "SEE LICENSE IN LICENSE.md",
+  "author": "Adam Boudjemaa <adam@aboudjem.com> (https://github.com/Aboudjem)",
+  "license": "GPL-3.0",
   "bugs": {
-    "url": "https://github.com/aboudjem/ERC-3643/issues"
+    "url": "https://github.com/Aboudjem/ERC-3643/issues"
   },
-  "homepage": "https://github.com/aboudjem/ERC-3643#README",
+  "homepage": "https://github.com/Aboudjem/ERC-3643#readme",
   "dependencies": {
     "@onchain-id/solidity": "^2.0.0",
-    "@openzeppelin/contracts": "^4.8.3"
+    "@openzeppelin/contracts": "^4.9.6"
   },
   "devDependencies": {
+    "@nomicfoundation/hardhat-chai-matchers": "^1.0.6",
+    "@nomicfoundation/hardhat-network-helpers": "^1.0.10",
     "@nomicfoundation/hardhat-toolbox": "^2.0.2",
+    "@nomiclabs/hardhat-ethers": "^2.2.3",
+    "@nomiclabs/hardhat-etherscan": "^3.1.8",
     "@nomiclabs/hardhat-solhint": "^3.0.1",
     "@primitivefi/hardhat-dodoc": "^0.2.3",
-    "@typescript-eslint/eslint-plugin": "^5.59.5",
-    "@typescript-eslint/parser": "^5.59.5",
+    "@typechain/ethers-v5": "^10.2.1",
+    "@typechain/hardhat": "^6.1.6",
+    "@types/chai": "^4.3.11",
+    "@types/mocha": "^10.0.6",
+    "@types/node": "^20.11.24",
+    "@typescript-eslint/eslint-plugin": "^5.62.0",
+    "@typescript-eslint/parser": "^5.62.0",
     "@xyrusworx/hardhat-solidity-json": "^1.0.2",
-    "eslint-config-prettier": "^8.8.0",
+    "chai": "^4.4.1",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^8.10.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^4.2.1",
-    "hardhat": "^2.19.1",
-    "hardhat-gas-reporter": "^1.0.9",
+    "ethers": "^5.7.2",
+    "hardhat": "^2.22.2",
+    "hardhat-contract-sizer": "^2.10.0",
+    "hardhat-gas-reporter": "^1.0.10",
     "husky": "^8.0.3",
     "prettier": "^2.8.8",
-    "solhint-plugin-prettier": "^0.0.5"
+    "prettier-plugin-solidity": "^1.3.1",
+    "solhint": "^3.6.2",
+    "solhint-plugin-prettier": "^0.0.5",
+    "solidity-coverage": "^0.8.11",
+    "ts-node": "^10.9.2",
+    "typechain": "^8.3.2",
+    "typescript": "^5.4.2"
   },
   "lint-staged": {
-    "*.js": [
-      "eslint"
+    "*.{js,ts}": [
+      "eslint --fix"
     ],
-    "*.ts": [
-      "eslint"
+    "*.{json,sol,md}": [
+      "prettier --write"
     ]
   }
 }

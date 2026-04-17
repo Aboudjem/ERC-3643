@@ -1,0 +1,46 @@
+name: 🐛 Bug report
+description: Something doesn't work as expected
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug! 🦖
+        For security vulnerabilities, do NOT open a public issue — see [SECURITY.md](../SECURITY.md).
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What happened? What did you expect to happen?
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Reproduction steps
+      description: A minimal code snippet or failing test is strongly preferred.
+      placeholder: |
+        1. Clone at commit ...
+        2. Run `npm test -- --grep "..."`
+        3. See error ...
+    validations:
+      required: true
+  - type: input
+    id: node-version
+    attributes:
+      label: Node version
+      placeholder: "v20.11.0"
+    validations:
+      required: true
+  - type: input
+    id: os
+    attributes:
+      label: OS
+      placeholder: "macOS 14.4 / Ubuntu 22.04 / Windows 11"
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs / stack traces
+      render: shell

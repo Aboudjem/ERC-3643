@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 540" role="img" aria-label="ERC-3643 Raptor architecture">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0B0F1A"/>
+      <stop offset="100%" stop-color="#1A0B2E"/>
+    </linearGradient>
+    <linearGradient id="tokenGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#00D4FF"/>
+      <stop offset="100%" stop-color="#7C3AED"/>
+    </linearGradient>
+    <linearGradient id="complianceGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#7C3AED"/>
+      <stop offset="100%" stop-color="#FF006E"/>
+    </linearGradient>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#00D4FF"/>
+    </marker>
+    <filter id="glow"><feGaussianBlur stdDeviation="3"/></filter>
+  </defs>
+
+  <rect width="900" height="540" fill="url(#bg)"/>
+
+  <!-- Title -->
+  <g font-family="'Space Grotesk', Arial, sans-serif" fill="#E0E7FF">
+    <text x="36" y="44" font-size="22" font-weight="700" fill="#00D4FF">ERC-3643 Raptor — Contract Architecture</text>
+    <text x="36" y="66" font-size="12" opacity="0.7">Transfer gating via onchain identity + compliance modules</text>
+  </g>
+
+  <!-- Token -->
+  <g>
+    <rect x="330" y="120" width="240" height="110" rx="14" fill="url(#tokenGrad)" opacity="0.18" stroke="#00D4FF" stroke-width="2"/>
+    <text x="450" y="150" text-anchor="middle" font-family="'Space Grotesk', Arial, sans-serif" fill="#00D4FF" font-size="18" font-weight="700">Token (ERC-20)</text>
+    <text x="450" y="172" text-anchor="middle" font-family="'Space Grotesk', Arial, sans-serif" fill="#E0E7FF" font-size="11">AccessControl · Pausable</text>
+    <text x="450" y="193" text-anchor="middle" font-family="'Space Grotesk', Arial, sans-serif" fill="#E0E7FF" font-size="11">transfer · mint · burn · freeze · batch · recovery</text>
+    <text x="450" y="214" text-anchor="middle" font-family="'Space Grotesk', Arial, sans-serif" fill="#FF006E" font-size="10" font-weight="600">AGENT_ROLE · OWNER_ROLE</text>
+  </g>
+
+  <!-- Identity Registry -->
+  <g>
+    <rect x="60" y="310" width="240" height="100" rx="12" fill="#7C3AED" opacity="0.18" stroke="#7C3AED" stroke-width="2"/>
+    <text x="180" y="338" text-anchor="middle" font-family="'Space Grotesk', Arial, sans-serif" fill="#00D4FF" font-size="16" font-weight="700">IdentityRegistry</text>
+    <text x="180" y="360" text-anchor="middle" font-family="'Space Grotesk', Arial, sans-serif" fill="#E0E7FF" font-size="11">isVerified(address) → bool</text>
+    <text x="180" y="380" text-anchor="middle" font-family="'Space Grotesk', Arial, sans-serif" fill="#E0E7FF" font-size="11">register · update · delete</text>
+  </g>
+
+  <!-- IdentityRegistryStorage -->
+  <g>
+    <rect x="60" y="440" width="240" height="70" rx="12" fill="#0B0F1A" stroke="#7C3AED" stroke-width="1.5" opacity="0.9"/>
+    <text x="180" y="470" text-anchor="middle" font-family="'Space Grotesk', Arial, sans-serif" fill="#7C3AED" font-size="13" font-weight="700">IdentityRegistryStorage</text>
+    <text x="180" y="490" text-anchor="middle" font-family="'Space Grotesk', Arial, sans-serif" fill="#E0E7FF" font-size="10" opacity="0.8">wallet → ONCHAINID · country</text>
+  </g>
+
+  <!-- ClaimTopicsRegistry -->
+  <g>
+    <rect x="330" y="310" width="240" height="70" rx="12" fill="#0B0F1A" stroke="#00D4FF" stroke-width="1.5"/>
+    <text x="450" y="338" text-anchor="middle" font-family="'Space Grotesk', Arial, sans-serif" fill="#00D4FF" font-size="13" font-weight="700">ClaimTopicsRegistry</text>
+    <text x="450" y="360" text-anchor="middle" font-family="'Space Grotesk', Arial, sans-serif" fill="#E0E7FF" font-size="10" opacity="0.8">KYC · AML · required topics</text>
+  </g>
+
+  <!-- ClaimIssuersRegistry -->
+  <g>
+    <rect x="330" y="400" width="240" height="70" rx="12" fill="#0B0F1A" stroke="#FF006E" stroke-width="1.5"/>
+    <text x="450" y="428" text-anchor="middle" font-family="'Space Grotesk', Arial, sans-serif" fill="#FF006E" font-size="13" font-weight="700">ClaimIssuersRegistry</text>
+    <text x="450" y="450" text-anchor="middle" font-family="'Space Grotesk', Arial, sans-serif" fill="#E0E7FF" font-size="10" opacity="0.8">whitelist · topics per issuer</text>
+  </g>
+
+  <!-- Compliance -->
+  <g>
+    <rect x="620" y="310" width="220" height="100" rx="12" fill="url(#complianceGrad)" opacity="0.18" stroke="#FF006E" stroke-width="2"/>
+    <text x="730" y="338" text-anchor="middle" font-family="'Space Grotesk', Arial, sans-serif" fill="#FF006E" font-size="16" font-weight="700">ICompliance</text>
+    <text x="730" y="360" text-anchor="middle" font-family="'Space Grotesk', Arial, sans-serif" fill="#E0E7FF" font-size="11">canTransfer() · transferred()</text>
+    <text x="730" y="380" text-anchor="middle" font-family="'Space Grotesk', Arial, sans-serif" fill="#E0E7FF" font-size="11">swap for jurisdictional rules</text>
+  </g>
+
+  <!-- Arrows -->
+  <g stroke="#00D4FF" stroke-width="1.5" fill="none" opacity="0.9">
+    <path d="M 410 230 L 240 305" marker-end="url(#arrow)"/>
+    <path d="M 450 230 L 450 305" marker-end="url(#arrow)"/>
+    <path d="M 490 230 L 660 305" marker-end="url(#arrow)"/>
+    <path d="M 180 410 L 180 435" marker-end="url(#arrow)" stroke="#7C3AED"/>
+    <path d="M 450 380 L 450 395" marker-end="url(#arrow)" stroke="#FF006E"/>
+  </g>
+
+  <!-- Legend -->
+  <g font-family="'Space Grotesk', Arial, sans-serif" fill="#E0E7FF" font-size="11">
+    <circle cx="46" cy="500" r="6" fill="#00D4FF"/>
+    <text x="58" y="504">reads during transfer</text>
+    <circle cx="200" cy="500" r="6" fill="#FF006E"/>
+    <text x="212" y="504">privileged role-gated</text>
+  </g>
+</svg>

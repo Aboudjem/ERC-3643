@@ -1,0 +1,189 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" role="img" aria-labelledby="raptorTitle raptorDesc" width="100%">
+  <title id="raptorTitle">ERC-3643 Raptor</title>
+  <desc id="raptorDesc">An animated T-Rex Raptor mascot representing the ERC-3643 Raptor permissioned token standard implementation.</desc>
+
+  <defs>
+    <!-- Neon Noir gradient -->
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0B0F1A"/>
+      <stop offset="50%" stop-color="#120B2E"/>
+      <stop offset="100%" stop-color="#1A0B2E"/>
+    </linearGradient>
+
+    <linearGradient id="raptorBody" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#00D4FF"/>
+      <stop offset="55%" stop-color="#7C3AED"/>
+      <stop offset="100%" stop-color="#FF006E"/>
+    </linearGradient>
+
+    <linearGradient id="raptorBelly" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#7C3AED"/>
+      <stop offset="100%" stop-color="#FF006E"/>
+    </linearGradient>
+
+    <radialGradient id="sun" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FF006E" stop-opacity="0.9"/>
+      <stop offset="60%" stop-color="#7C3AED" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#7C3AED" stop-opacity="0"/>
+    </radialGradient>
+
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Scanning beam gradient -->
+    <linearGradient id="scanline" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#00D4FF" stop-opacity="0"/>
+      <stop offset="50%" stop-color="#00D4FF" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="#00D4FF" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Backdrop -->
+  <rect width="800" height="400" fill="url(#sky)"/>
+
+  <!-- Neon sun -->
+  <circle cx="640" cy="150" r="90" fill="url(#sun)" filter="url(#softGlow)">
+    <animate attributeName="r" values="90;96;90" dur="4s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="640" cy="150" r="54" fill="#FF006E" opacity="0.85" filter="url(#glow)"/>
+  <g stroke="#0B0F1A" stroke-width="3">
+    <line x1="560" y1="172" x2="720" y2="172"/>
+    <line x1="560" y1="185" x2="720" y2="185"/>
+    <line x1="560" y1="198" x2="720" y2="198"/>
+  </g>
+
+  <!-- Starfield -->
+  <g fill="#E0E7FF">
+    <circle cx="80" cy="60" r="1.5"><animate attributeName="opacity" values="0.2;1;0.2" dur="3s" repeatCount="indefinite"/></circle>
+    <circle cx="180" cy="40" r="1"><animate attributeName="opacity" values="1;0.2;1" dur="2.4s" repeatCount="indefinite"/></circle>
+    <circle cx="260" cy="80" r="1.3"><animate attributeName="opacity" values="0.3;1;0.3" dur="3.6s" repeatCount="indefinite"/></circle>
+    <circle cx="380" cy="50" r="1"><animate attributeName="opacity" values="1;0.2;1" dur="2.8s" repeatCount="indefinite"/></circle>
+    <circle cx="460" cy="30" r="1.2"><animate attributeName="opacity" values="0.4;1;0.4" dur="3.1s" repeatCount="indefinite"/></circle>
+    <circle cx="540" cy="70" r="1"><animate attributeName="opacity" values="1;0.3;1" dur="2.2s" repeatCount="indefinite"/></circle>
+    <circle cx="730" cy="40" r="1.1"><animate attributeName="opacity" values="0.3;1;0.3" dur="3.4s" repeatCount="indefinite"/></circle>
+  </g>
+
+  <!-- Ground grid (retro) -->
+  <g stroke="#00D4FF" stroke-width="1" opacity="0.35">
+    <line x1="0" y1="320" x2="800" y2="320"/>
+    <line x1="0" y1="340" x2="800" y2="340"/>
+    <line x1="0" y1="360" x2="800" y2="360"/>
+    <line x1="0" y1="380" x2="800" y2="380"/>
+  </g>
+  <g stroke="#00D4FF" stroke-width="1" opacity="0.25">
+    <line x1="0" y1="320" x2="100" y2="400"/>
+    <line x1="100" y1="320" x2="200" y2="400"/>
+    <line x1="200" y1="320" x2="300" y2="400"/>
+    <line x1="300" y1="320" x2="350" y2="400"/>
+    <line x1="400" y1="320" x2="400" y2="400"/>
+    <line x1="500" y1="320" x2="450" y2="400"/>
+    <line x1="600" y1="320" x2="500" y2="400"/>
+    <line x1="700" y1="320" x2="600" y2="400"/>
+    <line x1="800" y1="320" x2="700" y2="400"/>
+  </g>
+
+  <!-- Scanning beam -->
+  <rect x="0" y="0" width="800" height="120" fill="url(#scanline)">
+    <animateTransform attributeName="transform" type="translate" from="0,-140" to="0,420" dur="6s" repeatCount="indefinite"/>
+  </rect>
+
+  <!-- Raptor group: subtle bounce -->
+  <g filter="url(#glow)">
+    <g>
+      <animateTransform attributeName="transform" type="translate" values="0,0; 0,-8; 0,0" dur="1.8s" repeatCount="indefinite"/>
+
+      <!-- Tail -->
+      <path d="M340 260 Q260 275 210 300 Q260 285 330 275 Z" fill="url(#raptorBody)"/>
+
+      <!-- Back leg (rear) -->
+      <path d="M410 270 Q420 310 390 350 L408 352 Q430 315 430 275 Z" fill="#7C3AED"/>
+      <rect x="382" y="346" width="38" height="8" rx="2" fill="#FF006E"/>
+
+      <!-- Body -->
+      <path d="M330 180 Q420 160 490 200 Q525 230 515 275 Q470 300 400 290 Q340 280 320 240 Q315 200 330 180 Z" fill="url(#raptorBody)"/>
+
+      <!-- Belly -->
+      <path d="M360 240 Q420 260 495 250 Q495 280 440 290 Q380 290 360 270 Z" fill="url(#raptorBelly)" opacity="0.85"/>
+
+      <!-- Arm -->
+      <path d="M430 250 Q450 275 445 298 L455 300 Q468 275 452 248 Z" fill="#7C3AED"/>
+      <g stroke="#FF006E" stroke-width="2" stroke-linecap="round">
+        <line x1="452" y1="298" x2="458" y2="310"/>
+        <line x1="457" y1="298" x2="463" y2="310"/>
+        <line x1="462" y1="298" x2="468" y2="310"/>
+      </g>
+
+      <!-- Front leg -->
+      <path d="M470 280 Q485 320 455 360 L475 362 Q498 320 498 285 Z" fill="#7C3AED"/>
+      <rect x="448" y="358" width="40" height="8" rx="2" fill="#FF006E"/>
+
+      <!-- Head -->
+      <path d="M320 195 Q280 180 260 200 Q250 215 260 230 Q280 245 320 240 Q340 235 340 215 Q338 200 320 195 Z" fill="url(#raptorBody)"/>
+
+      <!-- Mouth (animated jaw) -->
+      <g>
+        <animateTransform attributeName="transform" type="rotate" values="0 282 225; -6 282 225; 0 282 225" dur="2.4s" repeatCount="indefinite"/>
+        <path d="M258 222 Q245 234 258 240 L310 238 Q318 232 314 226 Z" fill="#0B0F1A"/>
+        <!-- Teeth -->
+        <g fill="#E0E7FF">
+          <polygon points="262,228 266,234 270,228"/>
+          <polygon points="274,228 278,234 282,228"/>
+          <polygon points="286,228 290,234 294,228"/>
+          <polygon points="298,228 302,234 306,228"/>
+        </g>
+      </g>
+
+      <!-- Eye -->
+      <circle cx="295" cy="210" r="6" fill="#0B0F1A"/>
+      <circle cx="297" cy="208" r="2.2" fill="#00D4FF">
+        <animate attributeName="opacity" values="1;0.3;1" dur="3s" repeatCount="indefinite"/>
+      </circle>
+
+      <!-- Nostril -->
+      <circle cx="268" cy="210" r="1.5" fill="#0B0F1A"/>
+
+      <!-- Back ridges -->
+      <g fill="#FF006E">
+        <polygon points="345,180 355,168 365,180"/>
+        <polygon points="380,170 392,158 404,170"/>
+        <polygon points="420,168 432,156 444,168"/>
+        <polygon points="460,175 470,163 482,175"/>
+      </g>
+    </g>
+  </g>
+
+  <!-- Glow shadow -->
+  <ellipse cx="430" cy="378" rx="110" ry="8" fill="#00D4FF" opacity="0.25">
+    <animate attributeName="rx" values="110;96;110" dur="1.8s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.25;0.15;0.25" dur="1.8s" repeatCount="indefinite"/>
+  </ellipse>
+
+  <!-- Text -->
+  <g font-family="'Space Grotesk', 'Helvetica Neue', Arial, sans-serif" fill="#E0E7FF">
+    <text x="44" y="72" font-size="42" font-weight="700" fill="#00D4FF" filter="url(#glow)">ERC-3643</text>
+    <text x="44" y="110" font-size="22" font-weight="500" fill="#FF006E" filter="url(#glow)">RAPTOR</text>
+    <text x="44" y="134" font-size="12" font-weight="400" opacity="0.7">Regulated Asset Platform for Tokenized Operations &amp; Resources</text>
+  </g>
+
+  <!-- Bottom tagline badge -->
+  <g transform="translate(44,340)">
+    <rect width="200" height="32" rx="16" fill="#0B0F1A" stroke="#00D4FF" stroke-width="1.5" opacity="0.85"/>
+    <circle cx="20" cy="16" r="5" fill="#00D4FF">
+      <animate attributeName="opacity" values="1;0.2;1" dur="1.4s" repeatCount="indefinite"/>
+    </circle>
+    <text x="36" y="21" font-family="'Space Grotesk', monospace" font-size="12" font-weight="600" fill="#E0E7FF">onchain · permissioned · RWA</text>
+  </g>
+</svg>
