@@ -1,0 +1,126 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 560" role="img" aria-labelledby="ecoTitle ecoDesc" width="100%">
+  <title id="ecoTitle">ERC-3643 ecosystem</title>
+  <desc id="ecoDesc">Animated infographic showing ERC-3643 at the center of the Real World Asset tokenization ecosystem: bonds, equities, real estate, funds, treasuries, private credit, connected to KYC, AML, accreditation, and jurisdiction claims.</desc>
+
+  <defs>
+    <linearGradient id="ecoBg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0B0F1A"/>
+      <stop offset="100%" stop-color="#120B2E"/>
+    </linearGradient>
+    <radialGradient id="ecoCore" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#00D4FF" stop-opacity="0.4"/>
+      <stop offset="70%" stop-color="#7C3AED" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#7C3AED" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="ecoNode" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1A2335"/>
+      <stop offset="100%" stop-color="#0F1629"/>
+    </linearGradient>
+    <filter id="ecoGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="2.6"/>
+    </filter>
+  </defs>
+
+  <rect width="1000" height="560" fill="url(#ecoBg)"/>
+
+  <!-- Title -->
+  <g font-family="'Space Grotesk', Arial, sans-serif" fill="#E0E7FF">
+    <text x="40" y="42" font-size="20" font-weight="700" fill="#00D4FF">ERC-3643 across RWA</text>
+    <text x="40" y="62" font-size="12" opacity="0.65">One standard, every regulated asset class.</text>
+  </g>
+
+  <!-- Orbital grid -->
+  <g stroke="#00D4FF" fill="none" opacity="0.15">
+    <circle cx="500" cy="310" r="130"/>
+    <circle cx="500" cy="310" r="195"/>
+  </g>
+
+  <!-- Core glow -->
+  <circle cx="500" cy="310" r="180" fill="url(#ecoCore)" filter="url(#ecoGlow)">
+    <animate attributeName="r" values="180;200;180" dur="5s" repeatCount="indefinite"/>
+  </circle>
+
+  <!-- Core badge -->
+  <g>
+    <circle cx="500" cy="310" r="86" fill="#0B0F1A" stroke="#00D4FF" stroke-width="2.5"/>
+    <text x="500" y="304" text-anchor="middle" font-family="'Space Grotesk', Arial, sans-serif" font-size="24" font-weight="700" fill="#00D4FF">ERC-3643</text>
+    <text x="500" y="326" text-anchor="middle" font-family="'Space Grotesk', Arial, sans-serif" font-size="11" fill="#FF006E" font-weight="600">T-REX</text>
+    <text x="500" y="346" text-anchor="middle" font-family="'Space Grotesk', Arial, sans-serif" font-size="10" fill="#E0E7FF" opacity="0.7">permissioned token</text>
+  </g>
+
+  <!-- Pulsing rings from core -->
+  <g fill="none" stroke="#00D4FF" opacity="0.45">
+    <circle cx="500" cy="310" r="90">
+      <animate attributeName="r" values="90;200;90" dur="4s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.5;0;0.5" dur="4s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="500" cy="310" r="90">
+      <animate attributeName="r" values="90;200;90" dur="4s" begin="1.3s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.5;0;0.5" dur="4s" begin="1.3s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="500" cy="310" r="90">
+      <animate attributeName="r" values="90;200;90" dur="4s" begin="2.6s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.5;0;0.5" dur="4s" begin="2.6s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+
+  <!-- 6 RWA category nodes around the core -->
+  <g font-family="'Space Grotesk', Arial, sans-serif">
+    <!-- Treasuries (top) -->
+    <g transform="translate(460,150)">
+      <rect width="180" height="54" rx="27" fill="url(#ecoNode)" stroke="#4BE0A2" stroke-width="1.5"/>
+      <text x="90" y="26" text-anchor="middle" font-size="13" fill="#4BE0A2" font-weight="700">Tokenized Treasuries</text>
+      <text x="90" y="42" text-anchor="middle" font-size="10" fill="#E0E7FF" opacity="0.65">BlackRock BUIDL, Ondo</text>
+    </g>
+
+    <!-- Equities (top-right) -->
+    <g transform="translate(720,230)">
+      <rect width="180" height="54" rx="27" fill="url(#ecoNode)" stroke="#00D4FF" stroke-width="1.5"/>
+      <text x="90" y="26" text-anchor="middle" font-size="13" fill="#00D4FF" font-weight="700">Tokenized Equity</text>
+      <text x="90" y="42" text-anchor="middle" font-size="10" fill="#E0E7FF" opacity="0.65">private co. shares</text>
+    </g>
+
+    <!-- Real Estate (bottom-right) -->
+    <g transform="translate(720,390)">
+      <rect width="180" height="54" rx="27" fill="url(#ecoNode)" stroke="#FF9F1C" stroke-width="1.5"/>
+      <text x="90" y="26" text-anchor="middle" font-size="13" fill="#FF9F1C" font-weight="700">Real Estate</text>
+      <text x="90" y="42" text-anchor="middle" font-size="10" fill="#E0E7FF" opacity="0.65">REITs · fractional</text>
+    </g>
+
+    <!-- Bonds (bottom) -->
+    <g transform="translate(460,470)">
+      <rect width="180" height="54" rx="27" fill="url(#ecoNode)" stroke="#FF006E" stroke-width="1.5"/>
+      <text x="90" y="26" text-anchor="middle" font-size="13" fill="#FF006E" font-weight="700">Tokenized Bonds</text>
+      <text x="90" y="42" text-anchor="middle" font-size="10" fill="#E0E7FF" opacity="0.65">EIB, Franklin Templeton</text>
+    </g>
+
+    <!-- Private Credit (bottom-left) -->
+    <g transform="translate(100,390)">
+      <rect width="180" height="54" rx="27" fill="url(#ecoNode)" stroke="#7C3AED" stroke-width="1.5"/>
+      <text x="90" y="26" text-anchor="middle" font-size="13" fill="#7C3AED" font-weight="700">Private Credit</text>
+      <text x="90" y="42" text-anchor="middle" font-size="10" fill="#E0E7FF" opacity="0.65">Maple, Centrifuge</text>
+    </g>
+
+    <!-- Funds (top-left) -->
+    <g transform="translate(100,230)">
+      <rect width="180" height="54" rx="27" fill="url(#ecoNode)" stroke="#62E8B0" stroke-width="1.5"/>
+      <text x="90" y="26" text-anchor="middle" font-size="13" fill="#62E8B0" font-weight="700">Funds &amp; ETFs</text>
+      <text x="90" y="42" text-anchor="middle" font-size="10" fill="#E0E7FF" opacity="0.65">hedge, PE, VC</text>
+    </g>
+  </g>
+
+  <!-- Connection lines (animated dash) -->
+  <g stroke="#00D4FF" stroke-width="1.5" fill="none" opacity="0.55">
+    <line x1="550" y1="204" x2="500" y2="225"><animate attributeName="stroke-dasharray" values="0,50;25,25;50,0" dur="3s" repeatCount="indefinite"/></line>
+    <line x1="720" y1="257" x2="582" y2="300"><animate attributeName="stroke-dasharray" values="0,50;25,25;50,0" dur="3s" begin="0.5s" repeatCount="indefinite"/></line>
+    <line x1="720" y1="417" x2="582" y2="340"><animate attributeName="stroke-dasharray" values="0,50;25,25;50,0" dur="3s" begin="1s" repeatCount="indefinite"/></line>
+    <line x1="550" y1="470" x2="500" y2="396"><animate attributeName="stroke-dasharray" values="0,50;25,25;50,0" dur="3s" begin="1.5s" repeatCount="indefinite"/></line>
+    <line x1="280" y1="417" x2="418" y2="340"><animate attributeName="stroke-dasharray" values="0,50;25,25;50,0" dur="3s" begin="2s" repeatCount="indefinite"/></line>
+    <line x1="280" y1="257" x2="418" y2="300"><animate attributeName="stroke-dasharray" values="0,50;25,25;50,0" dur="3s" begin="2.5s" repeatCount="indefinite"/></line>
+  </g>
+
+  <!-- Legend bottom -->
+  <g font-family="'Space Grotesk', Arial, sans-serif" fill="#E0E7FF">
+    <text x="40" y="538" font-size="11" opacity="0.6">Every asset class above issues compliant tokens by implementing ERC-3643 with ONCHAINID and a jurisdiction-specific compliance module.</text>
+  </g>
+</svg>

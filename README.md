@@ -23,13 +23,17 @@
 
 ## What is ERC-3643?
 
-**ERC-3643** (also called **T-REX**, short for Token for Regulated EXchanges) is an Ethereum token standard for regulated securities and Real World Assets (RWA). It extends ERC-20 with onchain identity verification, programmable transfer compliance, and agent-controlled freeze and recovery.
+**ERC-3643** (also called **T-REX**, short for Token for Regulated EXchanges) is an Ethereum token standard for regulated securities and Real World Assets. It extends ERC-20 with onchain identity verification, programmable transfer compliance, and agent-controlled freeze and recovery.
 
-[Tokeny Solutions](https://github.com/TokenySolutions/T-REX) wrote the original implementation and the spec was ratified as [EIP-3643](https://eips.ethereum.org/EIPS/eip-3643). It's now the dominant standard for compliant security token issuance on Ethereum and most EVM chains.
+[Tokeny Solutions](https://github.com/TokenySolutions/T-REX) wrote the original implementation and the spec was ratified as [EIP-3643](https://eips.ethereum.org/EIPS/eip-3643). It's widely used for compliant security token issuance on Ethereum and other EVM chains.
 
-Plain ERC-20 can't verify who holds a token. ERC-3643 fixes that. Every transfer runs two onchain checks: the recipient must be linked to a verified [ONCHAINID](https://github.com/onchain-id/solidity) carrying valid KYC/AML claims, and the transfer must satisfy the issuer's compliance rules (country caps, investor caps, transfer windows, and so on).
+Plain ERC-20 can't verify who holds a token. ERC-3643 fixes that. Every transfer runs two onchain checks: the recipient must be linked to a verified [ONCHAINID](https://github.com/onchain-id/solidity) carrying valid KYC/AML claims, and the transfer has to satisfy the issuer's compliance rules (country caps, investor caps, transfer windows, and so on).
 
-**Raptor** is my simplified take on this standard. I contributed to the original T-REX codebase at Tokeny, and Raptor is how I hand the same ideas to developers entering the RWA space. The goal is modest: read it in one sitting, run it in one evening.
+**Raptor** is a stripped-down, readable version of that standard for people learning how it works. Read it in one sitting, run it in one evening.
+
+<div align="center">
+<img src="./docs/img/ecosystem.svg" alt="ERC-3643 at the center of the Real World Asset tokenization ecosystem — treasuries, equities, real estate, bonds, private credit, funds" width="900"/>
+</div>
 
 ## Why ERC-3643 Matters for RWA Tokenization
 
@@ -103,7 +107,13 @@ For the complete role matrix and contract-level breakdown, see [`docs/ARCHITECTU
 
 ## How a Transfer Works
 
-Every user-initiated transfer in an ERC-3643 token follows this exact sequence:
+Every user-initiated transfer passes through this sequence of gates:
+
+<div align="center">
+<img src="./docs/img/transfer-flow.svg" alt="Animated diagram: ERC-3643 transfer passes through pause, freeze, balance, identity, and compliance gates before balances update" width="980"/>
+</div>
+
+Spelled out:
 
 ```
 1. Token.transfer(to, amount) called
@@ -202,6 +212,12 @@ The coverage report drops into `coverage/index.html`. The gas report prints min/
 **`OWNER_ROLE` operations** (wiring): `setIdentityRegistry`, `setCompliance`, `setOnchainID`.
 
 **Events emitted:** `Transfer`, `Approval`, `Paused`, `Unpaused`, `AddressFrozen`, `TokensFrozen`, `TokensUnfrozen`, `RecoverySuccess`, `IdentityRegistryAdded`, `ComplianceAdded`, `UpdatedOnchainID`.
+
+### Role matrix
+
+<div align="center">
+<img src="./docs/img/role-matrix.svg" alt="ERC-3643 role matrix — DEFAULT_ADMIN, OWNER_ROLE, AGENT_ROLE capabilities" width="980"/>
+</div>
 
 ### `IdentityRegistry`
 
@@ -335,11 +351,11 @@ ERC-3643 · ERC3643 · EIP-3643 · T-REX · T-Rex standard · Raptor · security
 
 ## Credits
 
-Huge thanks to [@TokenySolutions](https://github.com/TokenySolutions) and the original **[T-REX / ERC-3643](https://github.com/TokenySolutions/T-REX)** team. I had the privilege of contributing to the original and this repo is my way of paying that work forward in a more approachable form.
+Huge thanks to [@TokenySolutions](https://github.com/TokenySolutions) and everyone behind the original **[T-REX / ERC-3643](https://github.com/TokenySolutions/T-REX)**. Raptor is a tribute, not a replacement.
 
 - [ONCHAINID](https://github.com/onchain-id/solidity) for the identity and claims primitives.
 - [OpenZeppelin](https://docs.openzeppelin.com/contracts/) for battle-tested base contracts.
-- [ERC-3643 Association](https://www.erc3643.org/) for maintaining the standard going forward.
+- [ERC-3643 Association](https://www.erc3643.org/) for stewarding the standard.
 
 ## License
 

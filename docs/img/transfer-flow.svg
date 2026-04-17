@@ -1,0 +1,116 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 340" role="img" aria-labelledby="tfTitle tfDesc" width="100%">
+  <title id="tfTitle">ERC-3643 transfer flow</title>
+  <desc id="tfDesc">Animated diagram showing how an ERC-3643 token transfer passes through pause, freeze, identity, and compliance checks before updating balances.</desc>
+
+  <defs>
+    <linearGradient id="tfBg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0B0F1A"/>
+      <stop offset="100%" stop-color="#120B2E"/>
+    </linearGradient>
+    <linearGradient id="tfTokenGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#00D4FF"/>
+      <stop offset="100%" stop-color="#7C3AED"/>
+    </linearGradient>
+    <linearGradient id="tfBox" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1A2335"/>
+      <stop offset="100%" stop-color="#0F1629"/>
+    </linearGradient>
+    <marker id="tfArrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#00D4FF"/>
+    </marker>
+    <filter id="tfGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="2.2"/>
+    </filter>
+  </defs>
+
+  <rect width="1000" height="340" fill="url(#tfBg)"/>
+
+  <!-- Title -->
+  <g font-family="'Space Grotesk', Arial, sans-serif" fill="#E0E7FF">
+    <text x="40" y="40" font-size="20" font-weight="700" fill="#00D4FF">How a transfer works</text>
+    <text x="40" y="62" font-size="12" opacity="0.65">Every user transfer runs 5 onchain checks before balances update.</text>
+  </g>
+
+  <!-- Check boxes: Pause / Freeze / Balance / Identity / Compliance -->
+  <g font-family="'Space Grotesk', Arial, sans-serif">
+    <!-- Box 1: Pause -->
+    <g transform="translate(60,120)">
+      <rect width="150" height="90" rx="12" fill="url(#tfBox)" stroke="#00D4FF" stroke-width="1.5"/>
+      <text x="75" y="30" text-anchor="middle" font-size="12" fill="#00D4FF" font-weight="700">1. PAUSE</text>
+      <text x="75" y="52" text-anchor="middle" font-size="11" fill="#E0E7FF" opacity="0.85">whenNotPaused</text>
+      <text x="75" y="72" text-anchor="middle" font-size="10" fill="#E0E7FF" opacity="0.55">token active?</text>
+    </g>
+
+    <!-- Box 2: Freeze -->
+    <g transform="translate(240,120)">
+      <rect width="150" height="90" rx="12" fill="url(#tfBox)" stroke="#7C3AED" stroke-width="1.5"/>
+      <text x="75" y="30" text-anchor="middle" font-size="12" fill="#7C3AED" font-weight="700">2. FREEZE</text>
+      <text x="75" y="52" text-anchor="middle" font-size="11" fill="#E0E7FF" opacity="0.85">!frozen(from/to)</text>
+      <text x="75" y="72" text-anchor="middle" font-size="10" fill="#E0E7FF" opacity="0.55">wallets active?</text>
+    </g>
+
+    <!-- Box 3: Balance -->
+    <g transform="translate(420,120)">
+      <rect width="150" height="90" rx="12" fill="url(#tfBox)" stroke="#4BE0A2" stroke-width="1.5"/>
+      <text x="75" y="30" text-anchor="middle" font-size="12" fill="#4BE0A2" font-weight="700">3. BALANCE</text>
+      <text x="75" y="52" text-anchor="middle" font-size="11" fill="#E0E7FF" opacity="0.85">free ≥ amount</text>
+      <text x="75" y="72" text-anchor="middle" font-size="10" fill="#E0E7FF" opacity="0.55">unfrozen check</text>
+    </g>
+
+    <!-- Box 4: Identity -->
+    <g transform="translate(600,120)">
+      <rect width="150" height="90" rx="12" fill="url(#tfBox)" stroke="#FF9F1C" stroke-width="1.5"/>
+      <text x="75" y="30" text-anchor="middle" font-size="12" fill="#FF9F1C" font-weight="700">4. IDENTITY</text>
+      <text x="75" y="52" text-anchor="middle" font-size="11" fill="#E0E7FF" opacity="0.85">isVerified(to)</text>
+      <text x="75" y="72" text-anchor="middle" font-size="10" fill="#E0E7FF" opacity="0.55">KYC + AML claims</text>
+    </g>
+
+    <!-- Box 5: Compliance -->
+    <g transform="translate(780,120)">
+      <rect width="150" height="90" rx="12" fill="url(#tfBox)" stroke="#FF006E" stroke-width="1.5"/>
+      <text x="75" y="30" text-anchor="middle" font-size="12" fill="#FF006E" font-weight="700">5. COMPLIANCE</text>
+      <text x="75" y="52" text-anchor="middle" font-size="11" fill="#E0E7FF" opacity="0.85">canTransfer()</text>
+      <text x="75" y="72" text-anchor="middle" font-size="10" fill="#E0E7FF" opacity="0.55">country · caps · rules</text>
+    </g>
+  </g>
+
+  <!-- Arrows between boxes -->
+  <g stroke="#00D4FF" stroke-width="1.6" fill="none" opacity="0.7">
+    <line x1="210" y1="165" x2="238" y2="165" marker-end="url(#tfArrow)"/>
+    <line x1="390" y1="165" x2="418" y2="165" marker-end="url(#tfArrow)"/>
+    <line x1="570" y1="165" x2="598" y2="165" marker-end="url(#tfArrow)"/>
+    <line x1="750" y1="165" x2="778" y2="165" marker-end="url(#tfArrow)"/>
+  </g>
+
+  <!-- Traveling token animation -->
+  <g filter="url(#tfGlow)">
+    <circle r="14" fill="url(#tfTokenGrad)" stroke="#E0E7FF" stroke-width="1.5">
+      <animateMotion dur="5s" repeatCount="indefinite" rotate="auto">
+        <mpath href="#tfPath"/>
+      </animateMotion>
+    </circle>
+  </g>
+  <path id="tfPath" d="M 40 165 L 945 165 L 960 165 L 960 280 L 40 280 L 40 165" fill="none"/>
+
+  <!-- End states -->
+  <g font-family="'Space Grotesk', Arial, sans-serif">
+    <!-- Success -->
+    <g transform="translate(560,250)">
+      <rect width="170" height="60" rx="10" fill="#0B2A1A" stroke="#4BE0A2" stroke-width="1.5"/>
+      <text x="14" y="26" font-size="12" fill="#4BE0A2" font-weight="700">✓ Transfer event</text>
+      <text x="14" y="44" font-size="10" fill="#E0E7FF" opacity="0.7">balances update + post-hook</text>
+    </g>
+
+    <!-- Revert -->
+    <g transform="translate(60,250)">
+      <rect width="170" height="60" rx="10" fill="#2A0B1C" stroke="#FF006E" stroke-width="1.5"/>
+      <text x="14" y="26" font-size="12" fill="#FF006E" font-weight="700">✗ Revert</text>
+      <text x="14" y="44" font-size="10" fill="#E0E7FF" opacity="0.7">any check fails = no state change</text>
+    </g>
+  </g>
+
+  <!-- Legend -->
+  <g font-family="'Space Grotesk', Arial, sans-serif" fill="#E0E7FF" font-size="11" opacity="0.75">
+    <text x="40" y="310">The token travels through every gate. Steps 4–5 are what ERC-3643 adds on top of ERC-20.</text>
+  </g>
+</svg>

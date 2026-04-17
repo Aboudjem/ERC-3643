@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 420" role="img" aria-labelledby="rmTitle rmDesc" width="100%">
+  <title id="rmTitle">ERC-3643 role matrix</title>
+  <desc id="rmDesc">Animated infographic of the three privileged roles in ERC-3643: DEFAULT_ADMIN, OWNER_ROLE, and AGENT_ROLE, with their capabilities.</desc>
+
+  <defs>
+    <linearGradient id="rmBg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0B0F1A"/>
+      <stop offset="100%" stop-color="#120B2E"/>
+    </linearGradient>
+    <linearGradient id="rmCol1" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#00D4FF" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#00D4FF" stop-opacity="0.05"/>
+    </linearGradient>
+    <linearGradient id="rmCol2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#7C3AED" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#7C3AED" stop-opacity="0.05"/>
+    </linearGradient>
+    <linearGradient id="rmCol3" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FF006E" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#FF006E" stop-opacity="0.05"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1000" height="420" fill="url(#rmBg)"/>
+
+  <!-- Title -->
+  <g font-family="'Space Grotesk', Arial, sans-serif" fill="#E0E7FF">
+    <text x="40" y="40" font-size="20" font-weight="700" fill="#00D4FF">Who can do what</text>
+    <text x="40" y="60" font-size="12" opacity="0.65">Three-tier role model. OpenZeppelin AccessControl.</text>
+  </g>
+
+  <!-- Column 1: DEFAULT_ADMIN -->
+  <g transform="translate(40,90)">
+    <rect width="300" height="300" rx="14" fill="url(#rmCol1)" stroke="#00D4FF" stroke-width="1.6"/>
+    <text x="150" y="40" text-anchor="middle" font-family="'Space Grotesk', Arial, sans-serif" font-size="18" font-weight="700" fill="#00D4FF">DEFAULT_ADMIN</text>
+    <text x="150" y="60" text-anchor="middle" font-family="'Space Grotesk', Arial, sans-serif" font-size="11" fill="#E0E7FF" opacity="0.65">bytes32(0) · the root</text>
+    <g font-family="'Space Grotesk', Arial, sans-serif" fill="#E0E7FF" font-size="13">
+      <text x="22" y="100">🔑 grantRole</text>
+      <text x="22" y="130">🔑 revokeRole</text>
+      <text x="22" y="160">🔑 renounceRole</text>
+    </g>
+    <g font-family="'Space Grotesk', Arial, sans-serif" fill="#E0E7FF" opacity="0.75" font-size="11">
+      <text x="22" y="210">Transfer or renounce before</text>
+      <text x="22" y="226">mainnet. Hold in multisig.</text>
+    </g>
+    <g transform="translate(22,252)">
+      <rect width="120" height="26" rx="13" fill="#0B0F1A" stroke="#00D4FF" stroke-width="1.2"/>
+      <text x="60" y="17" text-anchor="middle" font-size="11" fill="#00D4FF" font-weight="600">multisig only</text>
+    </g>
+  </g>
+
+  <!-- Column 2: OWNER_ROLE -->
+  <g transform="translate(350,90)">
+    <rect width="300" height="300" rx="14" fill="url(#rmCol2)" stroke="#7C3AED" stroke-width="1.6"/>
+    <text x="150" y="40" text-anchor="middle" font-family="'Space Grotesk', Arial, sans-serif" font-size="18" font-weight="700" fill="#7C3AED">OWNER_ROLE</text>
+    <text x="150" y="60" text-anchor="middle" font-family="'Space Grotesk', Arial, sans-serif" font-size="11" fill="#E0E7FF" opacity="0.65">wiring &amp; upgrades</text>
+    <g font-family="'Space Grotesk', Arial, sans-serif" fill="#E0E7FF" font-size="13">
+      <text x="22" y="100">⚙️ setCompliance</text>
+      <text x="22" y="130">⚙️ setIdentityRegistry</text>
+      <text x="22" y="160">⚙️ setOnchainID</text>
+      <text x="22" y="190">⚙️ set*Registry (topics, issuers, storage)</text>
+    </g>
+    <g font-family="'Space Grotesk', Arial, sans-serif" fill="#E0E7FF" opacity="0.75" font-size="11">
+      <text x="22" y="230">Issuer operations team.</text>
+      <text x="22" y="246">Swaps contracts on upgrade.</text>
+    </g>
+    <g transform="translate(22,272)">
+      <rect width="110" height="26" rx="13" fill="#0B0F1A" stroke="#7C3AED" stroke-width="1.2"/>
+      <text x="55" y="17" text-anchor="middle" font-size="11" fill="#7C3AED" font-weight="600">issuer ops</text>
+    </g>
+  </g>
+
+  <!-- Column 3: AGENT_ROLE -->
+  <g transform="translate(660,90)">
+    <rect width="300" height="300" rx="14" fill="url(#rmCol3)" stroke="#FF006E" stroke-width="1.6"/>
+    <text x="150" y="40" text-anchor="middle" font-family="'Space Grotesk', Arial, sans-serif" font-size="18" font-weight="700" fill="#FF006E">AGENT_ROLE</text>
+    <text x="150" y="60" text-anchor="middle" font-family="'Space Grotesk', Arial, sans-serif" font-size="11" fill="#E0E7FF" opacity="0.65">daily operations</text>
+    <g font-family="'Space Grotesk', Arial, sans-serif" fill="#E0E7FF" font-size="13">
+      <text x="22" y="100">💸 mint · burn · forcedTransfer</text>
+      <text x="22" y="130">⏸️ pause · unpause</text>
+      <text x="22" y="160">🧊 setAddressFrozen · partial freeze</text>
+      <text x="22" y="190">🔄 recoveryAddress</text>
+      <text x="22" y="220">📝 registerIdentity (on IR)</text>
+    </g>
+    <g font-family="'Space Grotesk', Arial, sans-serif" fill="#E0E7FF" opacity="0.75" font-size="11">
+      <text x="22" y="252">Bypasses pause, respects frozen.</text>
+    </g>
+    <g transform="translate(22,272)">
+      <rect width="130" height="26" rx="13" fill="#0B0F1A" stroke="#FF006E" stroke-width="1.2"/>
+      <text x="65" y="17" text-anchor="middle" font-size="11" fill="#FF006E" font-weight="600">transfer agent</text>
+    </g>
+  </g>
+
+  <!-- animated underline pulse on each header -->
+  <g stroke-linecap="round" fill="none">
+    <line x1="60" y1="138" x2="320" y2="138" stroke="#00D4FF" stroke-width="1.5" opacity="0.3">
+      <animate attributeName="opacity" values="0.3;0.7;0.3" dur="3s" repeatCount="indefinite"/>
+    </line>
+    <line x1="370" y1="138" x2="630" y2="138" stroke="#7C3AED" stroke-width="1.5" opacity="0.3">
+      <animate attributeName="opacity" values="0.3;0.7;0.3" dur="3s" begin="1s" repeatCount="indefinite"/>
+    </line>
+    <line x1="680" y1="138" x2="940" y2="138" stroke="#FF006E" stroke-width="1.5" opacity="0.3">
+      <animate attributeName="opacity" values="0.3;0.7;0.3" dur="3s" begin="2s" repeatCount="indefinite"/>
+    </line>
+  </g>
+
+  <!-- Footnote -->
+  <g font-family="'Space Grotesk', Arial, sans-serif" fill="#E0E7FF" opacity="0.6">
+    <text x="40" y="410" font-size="11">Each role is checked with onlyRole() at the function boundary. See docs/ARCHITECTURE.md for the full matrix across all five core contracts.</text>
+  </g>
+</svg>
