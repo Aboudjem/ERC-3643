@@ -4,7 +4,39 @@ This log documents all notable changes to the ERC-3643 project. The project is a
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-Here is the updated change log:
+## [Unreleased]
+
+### 🛡️ Security
+
+- Token constructor now rejects a zero-address `onchainID_` in addition to zero-address identity registry and compliance.
+- `Token.setOnchainID` now rejects zero address.
+- `Token.setIdentityRegistry` now rejects zero address.
+- `BasicCompliance.bindToken` now rejects zero address.
+- `Token._transfer` now forwards the true `from` account to `compliance.transferred` instead of `msg.sender`, so compliance modules see the correct sender even on `forcedTransfer`, `batchForcedTransfer`, and `recoveryAddress` flows.
+
+### ➕ Added
+
+- `AGENTS.md`, `CLAUDE.md`, `.cursorrules`, `.github/copilot-instructions.md`, and `docs/llms.txt` to make the repo AI-ready.
+- `docs/ARCHITECTURE.md` with role matrix, transfer flow, and contract map.
+- `SECURITY.md` with threat model, invariants, and disclosure process.
+- `CONTRIBUTING.md` and `CODE_OF_CONDUCT.md`.
+- `.github/workflows/ci.yml`: matrix tests (Node 18/20/22), coverage (Codecov), Slither SARIF to GitHub Security, CodeQL, Gitleaks, gas report artifact.
+- `.github/dependabot.yml`, `CODEOWNERS`, `FUNDING.yml`, `PULL_REQUEST_TEMPLATE.md`, `ISSUE_TEMPLATE/*`.
+- `slither.config.json`, `.editorconfig`, `.nvmrc`, `.env.example`.
+- Animated SVG mascot (`docs/img/raptor-animated.svg`) and architecture diagram (`docs/img/architecture.svg`).
+- Hardhat config: multi-network (`sepolia`, `polygon`, `mainnet`), contract sizer, gas report to file in CI, Etherscan verification scaffold.
+- `package.json` scripts: `size`, `slither`, `deploy:local`, `test:gas`.
+
+### ⚙️ Changed
+
+- Completely rewritten `README.md` with badges, architecture diagram, SEO/GEO keyword section, AI-ready section, roadmap, and full contract API reference.
+- Rewrote `index.js` / `index.d.ts` so published artifacts match the actual repo layout — the previous files referenced T-REX contracts that do not exist here.
+- `package.json`: dropped the obsolete `typescript@^6` tag, pinned to `typescript@^5.4`, added `engines.node >= 18`, added `types` field, tightened the `files` whitelist, and expanded keywords for npm discoverability.
+- Old CI workflow (`push_checking.yml`) kept; the new `ci.yml` is the canonical pipeline.
+
+### 📝 Documentation
+
+- Licensing disclosure clarified (GPL-3.0 + T-REX upstream attribution).
 
 ## [5.0.0] - 2023-05-16 - ERC-3643 - Raptor-5.0.0
 
