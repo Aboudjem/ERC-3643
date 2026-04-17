@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 🛡️ Security vulnerability
+    url: https://github.com/Aboudjem/ERC-3643/security/advisories/new
+    about: Please report security issues privately via GitHub Security Advisories.
+  - name: 💬 Discussions
+    url: https://github.com/Aboudjem/ERC-3643/discussions
+    about: Questions, ideas, and general discussion.
+  - name: 📖 ERC-3643 standard
+    url: https://eips.ethereum.org/EIPS/eip-3643
+    about: Read the official EIP-3643 specification.

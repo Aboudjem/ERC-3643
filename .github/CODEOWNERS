@@ -1,0 +1,11 @@
+# Default owner for the whole repo
+*                             @Aboudjem
+
+# Security-critical contracts get a heavier review path
+/contracts/token/             @Aboudjem
+/contracts/registry/          @Aboudjem
+/contracts/compliance/        @Aboudjem
+
+# CI and governance files
+/.github/                     @Aboudjem
+/SECURITY.md                  @Aboudjem
