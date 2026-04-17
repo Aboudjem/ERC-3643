@@ -93,18 +93,21 @@ Before marking any task complete:
 ## 6. Task Patterns
 
 **Adding a new compliance module:**
+
 1. Extend `ICompliance`
 2. Implement `bindToken`, `canTransfer`, `transferred`, `created`, `destroyed`
 3. Write tests covering enforcement path AND bypass attempts (forced transfer, mint)
 4. Update `docs/ARCHITECTURE.md` compliance section
 
 **Modifying `Token._transfer`:**
+
 1. Re-read all call sites (`transfer`, `transferFrom`, `_forcedTransfer`, `recoveryAddress`)
 2. Confirm compliance hooks still fire with correct `from` (not `msg.sender`)
 3. Add a regression test for your specific scenario
 4. Check gas delta — `_transfer` runs on every transfer
 
 **Adding a new role:**
+
 1. Add `bytes32 public constant X_ROLE = <precomputed keccak256>;` with comment
 2. Grant in constructor (or via an explicit grant function gated by default admin)
 3. Document the capability boundaries in `AGENTS.md` §3 and `SECURITY.md`

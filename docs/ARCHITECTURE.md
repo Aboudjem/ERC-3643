@@ -4,14 +4,14 @@
 
 ## Contracts at a glance
 
-| Contract | Purpose | Inherits |
-|---|---|---|
-| `Token` | ERC-20 with transfer gating via compliance + identity checks | `IToken`, `AccessControl`, `Pausable` |
-| `IdentityRegistry` | Binds wallet → ONCHAINID and checks KYC/AML claim verification | `IIdentityRegistry`, `AccessControl` |
-| `IdentityRegistryStorage` | Shared identity storage; can be bound to multiple `IdentityRegistry` contracts | `IIdentityRegistryStorage`, `AccessControl` |
-| `ClaimTopicsRegistry` | Required claim topic IDs (KYC=1, AML=2, …) | `IClaimTopicsRegistry`, `Ownable` |
-| `ClaimIssuersRegistry` | Whitelist of authorized claim-issuer ONCHAINID contracts and the topics they can issue | `IClaimIssuersRegistry`, `Ownable` |
-| `BasicCompliance` | Pass-through compliance — replace with a custom module implementing `ICompliance` for real rules | `ICompliance`, `AccessControl` |
+| Contract                  | Purpose                                                                                          | Inherits                                    |
+| ------------------------- | ------------------------------------------------------------------------------------------------ | ------------------------------------------- |
+| `Token`                   | ERC-20 with transfer gating via compliance + identity checks                                     | `IToken`, `AccessControl`, `Pausable`       |
+| `IdentityRegistry`        | Binds wallet → ONCHAINID and checks KYC/AML claim verification                                   | `IIdentityRegistry`, `AccessControl`        |
+| `IdentityRegistryStorage` | Shared identity storage; can be bound to multiple `IdentityRegistry` contracts                   | `IIdentityRegistryStorage`, `AccessControl` |
+| `ClaimTopicsRegistry`     | Required claim topic IDs (KYC=1, AML=2, …)                                                       | `IClaimTopicsRegistry`, `Ownable`           |
+| `ClaimIssuersRegistry`    | Whitelist of authorized claim-issuer ONCHAINID contracts and the topics they can issue           | `IClaimIssuersRegistry`, `Ownable`          |
+| `BasicCompliance`         | Pass-through compliance — replace with a custom module implementing `ICompliance` for real rules | `ICompliance`, `AccessControl`              |
 
 ## Transfer Flow
 
@@ -44,14 +44,14 @@ sequenceDiagram
 
 ## Role matrix
 
-| Role | Where | Capabilities |
-|---|---|---|
-| `DEFAULT_ADMIN_ROLE` (`0x00`) | `Token`, `IdentityRegistry`, `IdentityRegistryStorage`, `BasicCompliance` | Can grant/revoke all roles. Set on deployer. |
-| `OWNER_ROLE` | `Token`, `IdentityRegistry`, `IdentityRegistryStorage` | Upgrade wiring: `setCompliance`, `setIdentityRegistry`, `setIdentityRegistryStorage`, `setClaimTopicsRegistry`, `setClaimIssuersRegistry`, `setOnchainID`, `bindIdentityRegistry`, `unbindIdentityRegistry` |
-| `AGENT_ROLE` | `Token`, `IdentityRegistry`, `IdentityRegistryStorage` | Operational: `mint`, `burn`, `pause`, `unpause`, `forcedTransfer`, `setAddressFrozen`, `registerIdentity`, `updateIdentity`, `updateCountry`, `deleteIdentity`, `recoveryAddress` |
-| `ADMIN_ROLE` | `BasicCompliance` | Bind/unbind tokens |
-| `TOKEN_ROLE` | `BasicCompliance` | Granted to the bound `Token` — lets the token call back for unbind |
-| `onlyOwner` | `ClaimTopicsRegistry`, `ClaimIssuersRegistry` | Add/remove topics and issuers |
+| Role                          | Where                                                                     | Capabilities                                                                                                                                                                                                |
+| ----------------------------- | ------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `DEFAULT_ADMIN_ROLE` (`0x00`) | `Token`, `IdentityRegistry`, `IdentityRegistryStorage`, `BasicCompliance` | Can grant/revoke all roles. Set on deployer.                                                                                                                                                                |
+| `OWNER_ROLE`                  | `Token`, `IdentityRegistry`, `IdentityRegistryStorage`                    | Upgrade wiring: `setCompliance`, `setIdentityRegistry`, `setIdentityRegistryStorage`, `setClaimTopicsRegistry`, `setClaimIssuersRegistry`, `setOnchainID`, `bindIdentityRegistry`, `unbindIdentityRegistry` |
+| `AGENT_ROLE`                  | `Token`, `IdentityRegistry`, `IdentityRegistryStorage`                    | Operational: `mint`, `burn`, `pause`, `unpause`, `forcedTransfer`, `setAddressFrozen`, `registerIdentity`, `updateIdentity`, `updateCountry`, `deleteIdentity`, `recoveryAddress`                           |
+| `ADMIN_ROLE`                  | `BasicCompliance`                                                         | Bind/unbind tokens                                                                                                                                                                                          |
+| `TOKEN_ROLE`                  | `BasicCompliance`                                                         | Granted to the bound `Token` — lets the token call back for unbind                                                                                                                                          |
+| `onlyOwner`                   | `ClaimTopicsRegistry`, `ClaimIssuersRegistry`                             | Add/remove topics and issuers                                                                                                                                                                               |
 
 ## Threat boundary
 

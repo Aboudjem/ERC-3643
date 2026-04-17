@@ -4,10 +4,10 @@
 
 ## Supported Versions
 
-| Version | Supported |
-|---|---|
-| Raptor `5.x` (`main`) | ✅ |
-| `< 5.0` | ❌ |
+| Version               | Supported |
+| --------------------- | --------- |
+| Raptor `5.x` (`main`) | ✅        |
+| `< 5.0`               | ❌        |
 
 ## Reporting a Vulnerability
 
@@ -22,11 +22,11 @@ Please email **[adam.boudjemaa@protonmail.com](mailto:adam.boudjemaa@protonmail.
 
 **Response targets:**
 
-| Severity | Initial reply | Fix or mitigation |
-|---|---|---|
-| Critical | 24h | 7 days |
-| High | 48h | 14 days |
-| Medium / Low | 7 days | Next minor release |
+| Severity     | Initial reply | Fix or mitigation  |
+| ------------ | ------------- | ------------------ |
+| Critical     | 24h           | 7 days             |
+| High         | 48h           | 14 days            |
+| Medium / Low | 7 days        | Next minor release |
 
 ## Threat Model
 

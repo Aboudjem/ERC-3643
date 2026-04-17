@@ -350,7 +350,9 @@ describe("Token - Transfers", () => {
           .connect(tokenAgent)
           .freezePartialTokens(aliceWallet.address, balance.sub(100));
 
-        token.connect(aliceWallet).approve(tokenAgent.address, 10000000000);
+        await token
+          .connect(aliceWallet)
+          .approve(tokenAgent.address, 10000000000);
 
         await expect(
           token

@@ -12,5 +12,12 @@
     "declaration": true
   },
   "include": ["./scripts", "./test", "./typechain", "./hardhat.config.ts"],
-  "exclude": ["node_modules", "artifacts", "cache", "coverage", "docgen", "dist"]
+  "exclude": [
+    "node_modules",
+    "artifacts",
+    "cache",
+    "coverage",
+    "docgen",
+    "dist"
+  ]
 }

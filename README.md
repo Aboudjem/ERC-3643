@@ -187,17 +187,17 @@ The coverage report drops into `coverage/index.html`. The gas report prints min/
 
 **`AGENT_ROLE` operations** (mint, burn, freeze, recover, pause):
 
-| Function | Description |
-|---|---|
-| `mint(to, amount)` | Mint tokens to a verified wallet |
-| `burn(from, amount)` | Burn tokens from any wallet |
-| `forcedTransfer(from, to, amount)` | Move tokens between wallets without compliance check |
-| `pause()` / `unpause()` | Halt / resume all user transfers |
-| `setAddressFrozen(addr, frozen)` | Freeze or unfreeze a wallet entirely |
-| `freezePartialTokens(addr, amount)` | Lock a portion of a wallet's balance |
-| `unfreezePartialTokens(addr, amount)` | Unlock a previously frozen partial balance |
-| `recoveryAddress(lostWallet, newWallet, investorOnchainID)` | Recover tokens from a lost wallet |
-| `batch*` variants | All the above, applied in a single transaction to arrays of targets |
+| Function                                                    | Description                                                         |
+| ----------------------------------------------------------- | ------------------------------------------------------------------- |
+| `mint(to, amount)`                                          | Mint tokens to a verified wallet                                    |
+| `burn(from, amount)`                                        | Burn tokens from any wallet                                         |
+| `forcedTransfer(from, to, amount)`                          | Move tokens between wallets without compliance check                |
+| `pause()` / `unpause()`                                     | Halt / resume all user transfers                                    |
+| `setAddressFrozen(addr, frozen)`                            | Freeze or unfreeze a wallet entirely                                |
+| `freezePartialTokens(addr, amount)`                         | Lock a portion of a wallet's balance                                |
+| `unfreezePartialTokens(addr, amount)`                       | Unlock a previously frozen partial balance                          |
+| `recoveryAddress(lostWallet, newWallet, investorOnchainID)` | Recover tokens from a lost wallet                                   |
+| `batch*` variants                                           | All the above, applied in a single transaction to arrays of targets |
 
 **`OWNER_ROLE` operations** (wiring): `setIdentityRegistry`, `setCompliance`, `setOnchainID`.
 
@@ -235,7 +235,11 @@ The `BasicCompliance` contract is intentionally trivial. For real RWA issuance, 
 To build one, inherit `ICompliance` and implement:
 
 ```solidity
-function canTransfer(address _from, address _to, uint256 _amount) external view returns (bool);
+function canTransfer(
+  address _from,
+  address _to,
+  uint256 _amount
+) external view returns (bool);
 function transferred(address _from, address _to, uint256 _amount) external;
 function created(address _to, uint256 _amount) external;
 function destroyed(address _from, uint256 _amount) external;
@@ -246,16 +250,16 @@ Wire it to the token via `token.setCompliance(address(yourModule))` using an `OW
 
 ## Differences vs. Production T-REX
 
-| Area | T-REX (Tokeny) | Raptor |
-|---|---|---|
-| Upgradeability | Proxy + implementation authority | Non-upgradeable (educational) |
-| Compliance | Modular (country, holders, times, DVD, ...) | Pass-through `BasicCompliance` — roll your own |
-| Roles | Custom `AgentRole` / `OwnerRoles` | OpenZeppelin `AccessControl` |
-| Pause | Custom | OpenZeppelin `Pausable` |
-| Batch API | Partial | Extended (`batchTransferFrom`, `batchBurn`, ...) |
-| `setName` / `setSymbol` / `setDecimals` | Supported | Not supported — immutable at deploy |
-| Audit | Production-audited | Not audited |
-| Recommended for | Mainnet issuance | Learning, research, prototypes |
+| Area                                    | T-REX (Tokeny)                              | Raptor                                           |
+| --------------------------------------- | ------------------------------------------- | ------------------------------------------------ |
+| Upgradeability                          | Proxy + implementation authority            | Non-upgradeable (educational)                    |
+| Compliance                              | Modular (country, holders, times, DVD, ...) | Pass-through `BasicCompliance` — roll your own   |
+| Roles                                   | Custom `AgentRole` / `OwnerRoles`           | OpenZeppelin `AccessControl`                     |
+| Pause                                   | Custom                                      | OpenZeppelin `Pausable`                          |
+| Batch API                               | Partial                                     | Extended (`batchTransferFrom`, `batchBurn`, ...) |
+| `setName` / `setSymbol` / `setDecimals` | Supported                                   | Not supported — immutable at deploy              |
+| Audit                                   | Production-audited                          | Not audited                                      |
+| Recommended for                         | Mainnet issuance                            | Learning, research, prototypes                   |
 
 For the full change log, see [`CHANGELOG.md`](./CHANGELOG.md). For the security implications of each difference, see [`SECURITY.md`](./SECURITY.md).
 
