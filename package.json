@@ -84,7 +84,7 @@
   },
   "homepage": "https://github.com/Aboudjem/ERC-3643#readme",
   "dependencies": {
-    "@onchain-id/solidity": "^2.0.0",
+    "@onchain-id/solidity": "^2.2.1",
     "@openzeppelin/contracts": "^4.9.6"
   },
   "devDependencies": {
